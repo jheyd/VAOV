@@ -30,8 +30,8 @@ public class Ini {
 	}
 
 	public void fromJSON(JSONObject jo){
-		caption = (String) jo.get("caption");
-		text = (String) jo.get("text");
+		this.caption = (String) jo.get("caption");
+		this.text = (String) jo.get("text");
 	}
 	
 	public JSONObject toJSON() {
@@ -40,4 +40,5 @@ public class Ini {
 		jo.put("text", this.text);
 		return jo;
 	}
+
 }

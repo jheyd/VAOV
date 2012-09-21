@@ -11,6 +11,7 @@ public class Messenger {
 	public Messenger(Account author){
 		this.author = author;
 		this.outputStream = new PrintWriter(System.out);
+		this.outputStream.println("test");
 	}
 	
 	public Messenger(Account author, String outputPath) throws FileNotFoundException{

@@ -32,7 +32,7 @@ public class TestTopicList {
 		texts.add("Ich finde, dass Blumen zu viel Arbeit machen");
 		
 		tl = new TopicList();
-		tl.addIniInNewTopic(new Ini(captions.get(0),texts.get(0)) , tags);
+		tl.addIniInNewTopic(new Ini(captions.get(0),texts.get(0)), tags);
 		tl.addIniToTopic(new Ini(captions.get(1), texts.get(1)), 0);
 		
 		assertTrue(tl.getCategories().equals(tags));
@@ -60,7 +60,7 @@ public class TestTopicList {
 			System.out.println(e.getMessage());
 			assertTrue(false);
 		}
-		tl = new TopicList(jo);
+		tl = new TopicList((JSONObject) jo.get("data"));
 
 		assertTrue(tl.getCategories().equals(tags));
 
@@ -71,7 +71,6 @@ public class TestTopicList {
 		
 		assertTrue(tl.getTopics().get(0).getInis().get(0).getText().equals(texts.get(0)));
 		assertTrue(tl.getTopics().get(0).getInis().get(1).getText().equals(texts.get(1)));
-		
 	}
 
 }
