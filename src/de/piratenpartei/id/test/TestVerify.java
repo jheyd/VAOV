@@ -9,11 +9,11 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import de.piratenpartei.id.Account;
-import de.piratenpartei.id.IllegalFormatException;
-import de.piratenpartei.id.KeyException;
-import de.piratenpartei.id.Message;
-import de.piratenpartei.id.VerificationException;
+import de.piratenpartei.id.vote.Account;
+import de.piratenpartei.id.vote.IllegalFormatException;
+import de.piratenpartei.id.vote.KeyException;
+import de.piratenpartei.id.vote.Message;
+import de.piratenpartei.id.vote.VerificationException;
 
 public class TestVerify {
 

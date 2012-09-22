@@ -10,8 +10,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import de.piratenpartei.id.Account;
-import de.piratenpartei.id.KeyException;
+import de.piratenpartei.id.vote.Account;
+import de.piratenpartei.id.vote.KeyException;
 
 public class TestPrint {
 

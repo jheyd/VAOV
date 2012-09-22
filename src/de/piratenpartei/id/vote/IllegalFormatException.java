@@ -1,4 +1,5 @@
-package de.piratenpartei.id;
+package de.piratenpartei.id.vote;
+
 
 /**
  * This Exception is thrown if something failed while reading some message/file.

@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import de.piratenpartei.id.Helper;
-import de.piratenpartei.id.KeyException;
-import de.piratenpartei.id.PrivateAccount;
+import de.piratenpartei.id.vote.Helper;
+import de.piratenpartei.id.vote.KeyException;
+import de.piratenpartei.id.vote.PrivateAccount;
 
 public class TestKeyStore {
 

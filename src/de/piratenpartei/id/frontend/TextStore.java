@@ -1,4 +1,5 @@
-package de.piratenpartei.id;
+package de.piratenpartei.id.frontend;
+
 
 /**
  * A wrapper class for serializing data.

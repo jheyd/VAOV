@@ -1,4 +1,5 @@
-package de.piratenpartei.id;
+package de.piratenpartei.id.frontend;
+
 
 import java.io.BufferedReader;
 import java.io.IOException; 
@@ -9,6 +10,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.json.simple.*;
+
+import de.piratenpartei.id.vote.Account;
+import de.piratenpartei.id.vote.IllegalFormatException;
+import de.piratenpartei.id.vote.KeyException;
+import de.piratenpartei.id.vote.VerificationException;
+
 
 /**
  * 

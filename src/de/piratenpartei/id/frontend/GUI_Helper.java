@@ -1,7 +1,12 @@
-package de.piratenpartei.id;
+package de.piratenpartei.id.frontend;
+
 
 import java.io.IOException;
 import java.security.KeyStore;
+
+import de.piratenpartei.id.vote.KeyException;
+import de.piratenpartei.id.vote.PrivateAccount;
+
 
 public class GUI_Helper {
 	private VAOV v;

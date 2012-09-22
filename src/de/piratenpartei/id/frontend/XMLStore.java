@@ -1,7 +1,8 @@
+package de.piratenpartei.id.frontend;
 /**
  * 
  */
-package de.piratenpartei.id;
+
 
 import java.io.File;
 

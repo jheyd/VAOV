@@ -5,7 +5,7 @@ import java.security.Security;
 
 import org.junit.Test;
 
-import de.piratenpartei.id.Config;
+import de.piratenpartei.id.vote.Config;
 
 public class TestProviders {
 

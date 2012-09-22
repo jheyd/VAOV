@@ -1,4 +1,5 @@
-package de.piratenpartei.id;
+package de.piratenpartei.id.vote;
+
 
 import gnu.jpdf.BoundingBox;
 import gnu.jpdf.PDFJob;

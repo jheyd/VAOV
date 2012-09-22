@@ -1,4 +1,5 @@
-package de.piratenpartei.id;
+package de.piratenpartei.id.vote;
+
 
 import java.io.File;
 import java.io.FileInputStream;

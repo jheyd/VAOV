@@ -1,4 +1,5 @@
-package de.piratenpartei.id;
+package de.piratenpartei.id.frontend;
+
 
 public class LogEntry implements Comparable{
 	private int timeStamp;

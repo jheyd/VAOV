@@ -1,8 +1,16 @@
-package de.piratenpartei.id;
+package de.piratenpartei.id.frontend;
+
 
 import java.io.*;
 
 import org.json.simple.*;
+
+import de.piratenpartei.id.vote.Account;
+import de.piratenpartei.id.vote.IllegalFormatException;
+import de.piratenpartei.id.vote.KeyException;
+import de.piratenpartei.id.vote.Message;
+import de.piratenpartei.id.vote.VerificationException;
+
 
 public class Messenger {
 	private PrintWriter outputStream;

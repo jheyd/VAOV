@@ -1,4 +1,5 @@
-package de.piratenpartei.id;
+package de.piratenpartei.id.vote;
+
 
 /**
  * This exception is thrown, if a message failed to verify.
