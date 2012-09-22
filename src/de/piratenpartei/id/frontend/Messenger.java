@@ -35,8 +35,8 @@ public class Messenger {
 	}
 
 	public void sendVote(int topicID, Vote vote, String type) throws IOException, IllegalFormatException, KeyException, VerificationException{
-		TextStore ts1 = new TextStore();
-		TextStore ts2 = new TextStore();
+		JSONStore ts1 = new JSONStore();
+		JSONStore ts2 = new JSONStore();
 		ts1.put("type",type);
 		ts1.put("vote", vote);
 		ts1.put("topic", topicID);
@@ -44,8 +44,8 @@ public class Messenger {
 		this.sendMessage(ts2.toString());
 	}
 	public void sendMessageToUser(String userName, String message) throws IOException, IllegalFormatException, KeyException, VerificationException{
-		TextStore ts1 = new TextStore();
-		TextStore ts2 = new TextStore();
+		JSONStore ts1 = new JSONStore();
+		JSONStore ts2 = new JSONStore();
 		ts1.put("userName",userName);
 		ts1.put("message",message);
 		ts2.put("userMsg",ts1);

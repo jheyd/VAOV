@@ -89,7 +89,7 @@ public class VAOV {
 	
 	public void buildTopicList(String data) throws IOException{
 		System.out.println("Building Topics ...");
-		TextStore ts = new TextStore(data);
+		JSONStore ts = new JSONStore(data);
 
 		String structure = (String) ts.get("structure");
 		if(structure.equals("list")){

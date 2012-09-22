@@ -3,13 +3,17 @@ package de.piratenpartei.id.frontend;
 
 import org.json.simple.*;
 
-public class JSONSimpleStore implements Store {
+public class JSONStore implements Store {
 	JSONObject store;
 	
-	public JSONSimpleStore() {
+	public JSONStore() {
 		store = new JSONObject();
 	}
 	
+	public JSONStore(String data) {
+		this.fromString(data);
+	}
+
 	@Override
 	public void put(String key, Object value){
 		store.put(key, value);
