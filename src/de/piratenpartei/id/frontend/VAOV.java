@@ -25,7 +25,6 @@ import de.piratenpartei.id.vote.VerificationException;
  */
 public class VAOV {
 	private TopicList tops;
-	private List<Ini> inis;
 	private Messenger m;
 	private MessageLog messages;
 	
@@ -34,7 +33,6 @@ public class VAOV {
 	 * @throws IOException 
 	 */
 	public VAOV(Account a, String path) throws IOException {
-		this.inis = new ArrayList<Ini>();
 		this.buildTopicList(loadInis(path));
 		System.out.println("Building Topics finished");
 		
@@ -42,7 +40,6 @@ public class VAOV {
 	}
 
 	public VAOV(Account a) {
-		this.inis = new ArrayList<Ini>();
 		this.tops = new TopicList();
 
 		m = new Messenger(a); // TODO
@@ -92,41 +89,18 @@ public class VAOV {
 		JSONStore ts = new JSONStore(data);
 
 		String structure = (String) ts.get("structure");
-		if(structure.equals("list")){
+		if(structure.equals("list"))
 			tops = new TopicList((JSONObject) ts.get("data"));
-			for(int i=0; i<tops.getTopics().size(); i++){
-				ArrayList<Ini> inis = this.tops.getTopics().get(i).getInis();
-				for(int k=0; k<inis.size(); k++){
-					this.inis.add(inis.get(k));
-				}
-			}
-		}
+		
 		else throw new RuntimeException("Structure property in JOSN-file has unknown value:" + structure);		
 	}
 	
 	public void addIniInNewTopic(Ini ini, ArrayList<String> tags){
 		this.tops.addIniInNewTopic(ini, tags);
-		this.inis.add(ini);
 	}
 	
 	public void addIniToTopic(Ini ini, int topicIndex){
 		this.tops.addIniToTopic(ini, topicIndex);
-		this.inis.add(ini);
-	}
-	
-	public int getIndexOf(Ini ini){
-		return this.inis.indexOf(ini);
-	}
-	
-	public Topic getTopicOf(Ini ini){
-		Topic result = null;
-		for(int i=0; i<tops.getTopics().size(); i++){
-			if(tops.getTopics().get(i).getInis().indexOf(ini) != -1){
-				result = tops.getTopics().get(i);
-				i = tops.getTopics().size();
-			}
-		}
-		return result;
 	}
 	
 	public String loadInis(String path) throws IOException{

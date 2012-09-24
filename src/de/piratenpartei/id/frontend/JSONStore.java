@@ -4,10 +4,10 @@ package de.piratenpartei.id.frontend;
 import org.json.simple.*;
 
 public class JSONStore {
-	JSONObject store;
+	JSONObject jo;
 	
 	public JSONStore() {
-		store = new JSONObject();
+		jo = new JSONObject();
 	}
 	
 	public JSONStore(String data) {
@@ -15,19 +15,19 @@ public class JSONStore {
 	}
 
 	public void put(String key, Object value){
-		store.put(key, value);
+		jo.put(key, value);
 	}
 	
 	public Object get(String key){
-		return store.get(key);
+		return jo.get(key);
 	}
 	
 	public void fromString(String s) {
-		store = (JSONObject) JSONValue.parse(s);
+		jo = (JSONObject) JSONValue.parse(s);
 	}
 
 	public String toString(){
-		return store.toJSONString();
+		return jo.toJSONString();
 	}
 
 }
