@@ -1,4 +1,4 @@
-package de.piratenpartei.id.frontend;
+package de.piratenpartei.id.frontend.topic;
 
 
 import java.util.ArrayList;
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+
+import de.piratenpartei.id.frontend.Vote;
 
 public class Topic {
 	private ArrayList<String> tags;

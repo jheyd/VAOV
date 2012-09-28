@@ -1,4 +1,4 @@
-package de.piratenpartei.id.frontend;
+package de.piratenpartei.id.frontend.gui;
 
 
 import java.awt.EventQueue;
@@ -6,6 +6,13 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
+
 import javax.swing.JPanel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -13,18 +20,23 @@ import javax.swing.JTree;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextPane;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JList;
 
+import de.piratenpartei.id.vote.IllegalFormatException;
+import de.piratenpartei.id.vote.KeyException;
+import de.piratenpartei.id.vote.VerificationException;
+
 
 public class GUI {
 
 	private JFrame frame;
 	private GUI_Helper gh;
-
+	private Listeners l; 
 	
 	
 	/**
@@ -47,9 +59,10 @@ public class GUI {
 	 * Create the application.
 	 */
 	public GUI() {
-		initialize();
-		
 		gh = new GUI_Helper();
+		l = new Listeners(gh);
+
+		initialize();		
 	}
 
 	/**
@@ -64,10 +77,13 @@ public class GUI {
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		
 		JButton btnVoteNo = new JButton("Vote No");
+		btnVoteNo.addMouseListener(l.getBtnVoteNoMouseListener());
 		
 		JButton btnAbstain = new JButton("Abstain");
+		btnAbstain.addMouseListener(l.getBtnAbstainMouseListener());
 		
 		JButton btnVoteYes = new JButton("Vote Yes");
+		btnVoteYes.addMouseListener(l.getBtnVoteYesMouseListener());
 		
 		JTextPane textPane = new JTextPane();
 		
@@ -113,21 +129,40 @@ public class GUI {
 					.addContainerGap())
 		);
 		panel.setLayout(gl_panel);
-		frame.pack();
 		
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
 		JMenu mnMenu = new JMenu("Menu");
 		menuBar.add(mnMenu);
+		JPopupMenu popup = new JPopupMenu();
+		mnMenu.setComponentPopupMenu(popup);
+		//mnMenu.addMouseListener(l.getMnMenuMouseListener());
+		//mnMenu.
+		
+		ActionListener al = new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
 		
 		JMenuItem mntmQuit = new JMenuItem("Quit");
-		mnMenu.add(mntmQuit);
+		mntmQuit.addActionListener(al);
+		popup.add(mntmQuit);
+		mntmQuit.addMouseListener(l.getMntmQuitMouseListener());
 		
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
+		popup = new JPopupMenu();
+		mnHelp.setComponentPopupMenu(popup);
 		
 		JMenuItem mntmAbout = new JMenuItem("About");
-		mnHelp.add(mntmAbout);
+		popup.add(mntmAbout);
+		mntmAbout.addMouseListener(l.getMntmQuitMouseListener());
+
+		frame.pack();
 	}
 }

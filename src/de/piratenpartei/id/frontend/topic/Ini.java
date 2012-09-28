@@ -1,4 +1,4 @@
-package de.piratenpartei.id.frontend;
+package de.piratenpartei.id.frontend.topic;
 
 
 import org.json.simple.JSONObject;

@@ -1,4 +1,4 @@
-package de.piratenpartei.id.frontend;
+package de.piratenpartei.id.frontend.topic;
 
 
 import java.util.*;
@@ -48,7 +48,7 @@ public class TopicList {
 	 * create a new Topic and add an Ini to it
 	 * @param ini: the first Ini in the topic
 	 */
-	public void addIniInNewTopic(Ini ini, ArrayList<String> tags){
+	public void addIniInNewTopic(Ini ini, List<String> tags){
 		Topic t = new Topic();
 		t.addIni(ini);
 		for(int i=0; i<tags.size(); i++){

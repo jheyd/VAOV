@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import de.piratenpartei.id.*;
-import de.piratenpartei.id.frontend.Messenger;
+import de.piratenpartei.id.vote.Messenger;
 import de.piratenpartei.id.vote.PrivateAccount;
 
 import org.junit.Test;

@@ -5,15 +5,20 @@ import java.io.BufferedReader;
 import java.io.IOException; 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.json.simple.*;
 
+import de.piratenpartei.id.frontend.topic.Ini;
+import de.piratenpartei.id.frontend.topic.Topic;
+import de.piratenpartei.id.frontend.topic.TopicList;
 import de.piratenpartei.id.vote.Account;
 import de.piratenpartei.id.vote.IllegalFormatException;
 import de.piratenpartei.id.vote.KeyException;
+import de.piratenpartei.id.vote.Messenger;
 import de.piratenpartei.id.vote.VerificationException;
 
 
@@ -36,17 +41,25 @@ public class VAOV {
 		this.buildTopicList(loadInis(path));
 		System.out.println("Building Topics finished");
 		
-		m = new Messenger(a); // TODO
+		m = new Messenger(a);
 	}
 
 	public VAOV(Account a) {
 		this.tops = new TopicList();
 
-		m = new Messenger(a); // TODO
+		m = new Messenger(a);
 	}
 	
-	public void vote(Topic topic, Vote vote, String type) throws IOException, IllegalFormatException, KeyException, VerificationException{
-		m.sendVote(this.tops.getTopics().indexOf(topic), vote, type);
+	public VAOV(boolean test, Account a){
+		if(test) test(a);
+		else this.tops = new TopicList();
+
+		m = new Messenger(a);
+	}
+	
+	
+	public void vote(Topic topic, Vote vote) throws IOException, IllegalFormatException, KeyException, VerificationException{
+		m.sendVote(this.tops.getTopics().indexOf(topic), vote);
 	}
 	
 	/**
@@ -114,4 +127,15 @@ public class VAOV {
 		return result;
 	}
 	
+	public void test(Account a){
+		List<String> tags = Arrays.asList(new String[]{"Gartengestaltung"});
+		
+		this.tops = new TopicList();
+		this.tops.addIniInNewTopic(new Ini("Blumen sind schön","Ich finde, dass Blumen schön sind"), tags);
+		this.tops.addIniToTopic(new Ini("Blumen machen Arbeit","Ich finde, dass Blumen zu viel Arbeit machen"), 0);
+		System.out.println("Building TopicList for testing finished");
+	}
+	public Topic getTestTopic(){
+		return tops.getTopics().get(0);
+	}
 }
