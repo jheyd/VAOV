@@ -77,4 +77,9 @@ public class Topic {
 		jo.put("tags", tagsArray);
 		return jo;
 	}
+
+	public String getID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
