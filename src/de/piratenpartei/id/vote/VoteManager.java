@@ -17,8 +17,7 @@ import de.piratenpartei.id.frontend.cui.Asker;
 
 public class VoteManager {
 	public static final String[] commandNames = new String[]{ "message" , "vote" , "newIni" , "newTopic"};
-	public static final String[] commandShortNames = new String[]{ "m" , "v" , "i" , "t" , "h" };
-	public static final String paramDelimiter = ",";
+	public static final String[] commandShortNames = new String[]{ "m" , "v" , "i" , "t" };
 	
 	private PrivateAccount acc;
 		

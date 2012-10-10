@@ -34,7 +34,6 @@ import de.piratenpartei.id.vote.VerificationException;
 public class VAOV {
 	private TopicList tops;
 	private Messenger m;
-	private MessageLog messages;
 	private KeyStore ks;
 	private Account account;
 	
@@ -75,11 +74,11 @@ public class VAOV {
 	
 	public void buildTopicList(String data) throws IOException{
 		System.out.println("Building Topics ...");
-		JSONStore ts = new JSONStore(data);
+		JSONObject jo = (JSONObject) JSONValue.parse(data);
 
-		String structure = (String) ts.get("structure");
+		String structure = (String) jo.get("structure");
 		if(structure.equals("list"))
-			tops = new TopicList((JSONObject) ts.get("data"));
+			tops = new TopicList((JSONObject) jo.get("data"));
 		
 		else throw new RuntimeException("Structure property in JOSN-file has unknown value:" + structure);		
 	}
