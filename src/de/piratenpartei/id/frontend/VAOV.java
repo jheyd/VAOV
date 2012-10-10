@@ -70,42 +70,7 @@ public class VAOV {
 	}
 	
 	public void vote(Topic topic, Vote vote) throws IOException, IllegalFormatException, KeyException, VerificationException{
-		m.sendVote(this.tops.getTopics().indexOf(topic), vote);
-	}
-	
-	/**
-	 * Pull data (new messages, new TopicList, notifications) from server
-	 * should be run at application start
-	 */
-	public void pull(){
-		Hashtable hashes = pullHashes();
-		if((Integer)hashes.get("topicList") == this.tops.hashCode()) this.tops = (TopicList) pullData("topicList");
-		if((Integer)hashes.get("messages") == this.messages.hashCode()) this.messages = (MessageLog) pullData("messages");
-	}
-	
-	private Object pullData(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private Hashtable pullHashes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private int[] localHashes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * Push data (Messages, new Inis, new Topics) to server.
-	 * There should be run two methods to use it:
-	 * 1) automatically after each action that creates new data
-	 * 2) manually by the user (esp, for low bandwith connections)
-	 */
-	public void push(){
-		
+		m.sendVote(vote);
 	}
 	
 	public void buildTopicList(String data) throws IOException{

@@ -42,5 +42,16 @@ public class Asker {
 		String buf = scan();
 		return buf == "y" || buf == "Y" || buf == "";
 	}
+	public static char[] askCharArray(String question){
+		System.out.println(question);
+		java.io.BufferedReader systemInReader = new java.io.BufferedReader(new java.io.InputStreamReader(System.in));
+		char[] buf = new char[256];
+		try {
+			systemInReader.read(buf);
+		} catch(Exception e) {
+			throw new RuntimeException("read error: " + e.getMessage());
+		}
+		return buf;
+	}
 
 }

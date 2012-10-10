@@ -1,15 +1,9 @@
 package de.piratenpartei.id.frontend.gui;
 
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.IOException;
 
-import de.piratenpartei.id.frontend.YesNoVote;
-import de.piratenpartei.id.vote.IllegalFormatException;
-import de.piratenpartei.id.vote.KeyException;
-import de.piratenpartei.id.vote.VerificationException;
+import de.piratenpartei.id.frontend.Vote;
 
 public class Listeners {
 	GUI_Helper gh;
@@ -27,7 +21,7 @@ public class Listeners {
 		
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				gh.vote(new YesNoVote(false,false));
+				gh.vote(new Vote());
 			}
 		};
 		return ml;
@@ -42,7 +36,7 @@ public class Listeners {
 		
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				gh.vote(new YesNoVote(true,false));
+				gh.vote(new Vote());
 			}
 		};
 		return ml;
@@ -57,7 +51,7 @@ public class Listeners {
 		
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				gh.vote(new YesNoVote(false,true));
+				gh.vote(new Vote());
 			}
 		};
 		return ml;
