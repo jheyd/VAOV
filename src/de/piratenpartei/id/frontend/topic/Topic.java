@@ -77,9 +77,17 @@ public class Topic {
 		jo.put("tags", tagsArray);
 		return jo;
 	}
-
-	public String getID() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	@Override
+	public String toString(){
+		String result = "inis: ";
+		for(int i=0; i<this.inis.size(); i++)
+			result += "\"" + this.inis.get(i).getCaption() + "\", ";
+		result = result.substring(0, result.length()-3);
+		result += "; tags: ";
+		for(int i=0; i<this.inis.size(); i++)
+			result += "\"" + this.tags.get(i) + "\", ";
+		
+		return result;
 	}
 }

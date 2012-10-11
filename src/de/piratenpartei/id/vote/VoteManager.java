@@ -3,8 +3,8 @@ package de.piratenpartei.id.vote;
 import java.io.IOException;
 import java.util.Arrays;
 
+import de.piratenpartei.id.frontend.Asker;
 import de.piratenpartei.id.frontend.Vote;
-import de.piratenpartei.id.frontend.cui.Asker;
 
 /**
  * This class manages the voting part of this application: Key and Account Management, sending signed Messages, controlling Signatures of other Messages.

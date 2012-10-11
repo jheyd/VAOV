@@ -41,10 +41,8 @@ public class Ini {
 		jo.put("text", this.text);
 		return jo;
 	}
-
-	public String getID() {
-		// TODO Auto-generated method stub
-		return null;
+	@Override
+	public String toString(){
+		return caption + ": " + text;
 	}
-
 }

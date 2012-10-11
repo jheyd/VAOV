@@ -1,4 +1,4 @@
-package de.piratenpartei.id.frontend.cui;
+package de.piratenpartei.id.frontend;
 import java.util.List;
 
 
