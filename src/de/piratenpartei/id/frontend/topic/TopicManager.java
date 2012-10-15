@@ -3,17 +3,13 @@ package de.piratenpartei.id.frontend.topic;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import de.piratenpartei.id.vote.IllegalFormatException;
-import de.piratenpartei.id.vote.KeyException;
-import de.piratenpartei.id.vote.VerificationException;
-import de.piratenpartei.id.vote.VoteManager;
+import de.piratenpartei.id.frontend.Asker;
 
 /**
  * This class manages the proposal part of this application: downloading, uploading, showing, creating, editing propsals.
@@ -23,7 +19,6 @@ import de.piratenpartei.id.vote.VoteManager;
  * @author artus
  *
  */
-
 public class TopicManager {
 	public static final String[] commandNames = new String[]{ "listTopics" , "showTopic" , "showIni" , "pull" };
 	public static final String[] commandShortNames = new String[]{ "l" , "t" , "i" , "p" };
@@ -36,15 +31,16 @@ public class TopicManager {
 		if(args.length > 1){ // batch mode
 			tm.execute(Arrays.copyOfRange(args, 1, args.length-1));
 		} else { // interactive mode
-			//TODO
+			String s = Asker.askString("Enter the Command to execute: ");
+			tm.execute(s.split(" "));
 		}		
 	}
 
 	private void execute(String[] args) {
 		switch(Arrays.asList(commandNames).indexOf(args[0])){
 		case(0): this.listTopics();			break;
-		case(1): this.showTopic(args[0]);	break;
-		case(2): this.showIni(args[0]);		break;
+		case(1): this.showTopic(args[1]);	break;
+		case(2): this.showIni(args[1]);		break;
 		case(3): this.pull();				break;
 		}
 	}
@@ -52,7 +48,7 @@ public class TopicManager {
 	private void listTopics() {
 		this.buildTopicList();
 		List<Topic> t = tops.getTopics();
-		for(int i=0; i<t.size(); i++) System.out.println(t.get(i).toString());
+		for(int i=0; i<t.size(); i++) System.out.println("TOP" + String.valueOf(i) + ": " + t.get(i).toString());
 	}
 
 	/**
@@ -71,13 +67,17 @@ public class TopicManager {
 	 */
 	private void showIni(String targetID) {
 		this.buildTopicList();
-		int index1 = Integer.parseInt(targetID.substring(3).split(".")[0]);
-		int index2 = Integer.parseInt(targetID.substring(3).split(".")[1]);
+		String[] indices = targetID.substring(3).split("\\.");
+		int index1 = Integer.parseInt(indices[0]);
+		int index2 = Integer.parseInt(indices[1]);
 		System.out.println(this.tops.getTopics().get(index1).getInis().get(index2).toString());
 	}
 
+	/**
+	 * load TopicList data from server and write them to the file at topicListFilePath
+	 */
 	private void pull() {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 	}
 	
 	private void buildTopicList(){

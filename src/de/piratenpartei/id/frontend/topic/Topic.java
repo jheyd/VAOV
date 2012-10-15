@@ -2,6 +2,7 @@ package de.piratenpartei.id.frontend.topic;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -78,16 +79,9 @@ public class Topic {
 		return jo;
 	}
 	
-	@Override
-	public String toString(){
-		String result = "inis: ";
-		for(int i=0; i<this.inis.size(); i++)
-			result += "\"" + this.inis.get(i).getCaption() + "\", ";
-		result = result.substring(0, result.length()-3);
-		result += "; tags: ";
-		for(int i=0; i<this.inis.size(); i++)
-			result += "\"" + this.tags.get(i) + "\", ";
-		
+	public List<String> getIniNames() {
+		List<String> result = new ArrayList<String>();
+		for(int i=0; i<inis.size(); i++) result.add(this.inis.get(i).getCaption());
 		return result;
 	}
 }

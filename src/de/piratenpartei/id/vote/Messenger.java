@@ -1,6 +1,5 @@
 package de.piratenpartei.id.vote;
 
-
 import java.io.*;
 
 import org.json.simple.*;
@@ -30,6 +29,17 @@ public class Messenger {
 		this.outputStream.flush();
 	}
 
+	@SuppressWarnings("unchecked")
+	public void sendNewIni(String name, String text, String targetID) throws IOException, IllegalFormatException, KeyException, VerificationException{
+		JSONObject jo1 = new JSONObject();
+		JSONObject jo2 = new JSONObject();
+		jo1.put("name", name);
+		jo1.put("text", text);
+		jo1.put("targetID", targetID);
+		jo2.put("data", jo1);
+		jo2.put("type", "newIni");
+		this.sendMessage(jo2.toJSONString());
+	}
 	@SuppressWarnings("unchecked")
 	public void sendVote(Vote vote) throws IOException, IllegalFormatException, KeyException, VerificationException{
 		JSONObject jo1 = new JSONObject();
