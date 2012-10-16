@@ -11,7 +11,7 @@ import de.piratenpartei.id.frontend.Vote;
  * Dies ist ein Versuch, Abstimmungs- und Antragsanzeigetool voneinander zu trennen.
  * Diese Klasse ist  darauf ausgelegt, allein ausfühbar und mittels Texteingaben steuerbar zu sein (bspw. ID eines Antrags eingeben um über diese Antrag abzustimmen).
  * 
- * @author artus
+ * @author dunkelzahn
  *
  */
 
@@ -106,8 +106,7 @@ public class VoteManager {
 	 * @throws IOException 
 	 */
 	public void message(String target, String message) throws KeyException, IOException, IllegalFormatException, VerificationException{
-		Messenger m = new Messenger(this.acc);
-		m.sendMessageToUser(target, message);
+		Messenger.sendMessageToUser(target, message, acc);
 	}
 	
 	/**
@@ -120,7 +119,6 @@ public class VoteManager {
 	 * @throws IOException 
 	 */
 	public void vote(String targetID, String voteString) throws IOException, IllegalFormatException, KeyException, VerificationException{
-		Messenger m = new Messenger(this.acc);
 		char[] buf = voteString.toCharArray();
 		boolean[] votes = new boolean[buf.length];
 		for(int i=0; i<buf.length; i++){
@@ -136,7 +134,7 @@ public class VoteManager {
 				return;
 			}
 		}
-		m.sendVote(new Vote(votes,targetID));
+		Messenger.sendVote(new Vote(votes,targetID), acc);
 	}
 
 	/**

@@ -16,7 +16,7 @@ import de.piratenpartei.id.frontend.Asker;
  * Dies ist ein Versuch, Abstimmungs- und Antragsanzeigetool voneinander zu trennen.
  * Diese Klasse ist  darauf ausgelegt, allein ausfühbar und mittels Texteingaben steuerbar zu sein.
  * 
- * @author artus
+ * @author dunkelzahn
  *
  */
 public class TopicManager {

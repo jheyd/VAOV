@@ -5,14 +5,18 @@ import java.util.*;
 
 import org.json.simple.*;
 
+import de.piratenpartei.id.frontend.JSONConstructable;
+
 /**
  * 
- * @author artus
+ * @author dunkelzahn
  *
  */
-public class TopicList {
-	/*
-	 * The Categories from Liquid Feedback are implemented here as "tags". Categories are a special case of tags: every topic can only habe one tag.
+public class TopicList implements JSONConstructable {
+	
+	/* 
+	 * The Categories from Liquid Feedback are implemented here as "tags".
+	 * Categories are a special case of tags: every topic can only have one tag.
 	 */
 	private ArrayList<String> tags;
 	private ArrayList<Topic> topics;
@@ -21,15 +25,18 @@ public class TopicList {
 		this.init();
 	}
 	
+	public TopicList(JSONObject jo) {
+		this.fromJSON(jo);
+	}
+
 	private void init() {
 		this.topics = new ArrayList<Topic>();
 		this.refreshTags();
 	}
 
-	public TopicList(JSONObject jo) {
-		this.fromJSON(jo);
-	}
-
+	/**
+	 * read tags from the Elements of this.topics and write them to this.tags
+	 */
 	private void refreshTags(){
 		this.tags = new ArrayList<String>();
 		for(int i=0; i<topics.size(); i++){
@@ -68,13 +75,8 @@ public class TopicList {
 		this.refreshTags();
 	}
 	
-	// default Setters and Getters
-	public ArrayList<String> getCategories(){
-		return this.tags;
-	}
-	public ArrayList<Topic> getTopics(){
-		return this.topics;
-	}
+	@Override
+	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(){
 		JSONObject jo = new JSONObject();
 		JSONArray ja = new JSONArray();
@@ -84,6 +86,8 @@ public class TopicList {
 		jo.put("list", ja);
 		return jo;
 	}
+	
+	@Override
 	public void fromJSON(JSONObject jo){
 		this.init();
 		JSONArray arr = (JSONArray) jo.get("list");
@@ -96,4 +100,14 @@ public class TopicList {
 	public static TopicList parseJSONString(JSONObject jo){
 		return new TopicList(jo);
 	}
+
+	// default Setters and Getters
+	public ArrayList<String> getCategories(){
+		return this.tags;
+	}
+	
+	public ArrayList<Topic> getTopics(){
+		return this.topics;
+	}
+	
 }

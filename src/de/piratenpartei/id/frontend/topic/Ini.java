@@ -16,6 +16,23 @@ public class Ini {
 		this.fromJSON(jo);
 	}
 
+	public void fromJSON(JSONObject jo){
+		this.caption = (String) jo.get("caption");
+		this.text = (String) jo.get("text");
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject toJSON() {
+		JSONObject jo = new JSONObject();
+		jo.put("caption", this.caption);
+		jo.put("text", this.text);
+		return jo;
+	}
+	@Override
+	public String toString(){
+		return caption + ": " + text;
+	}
+
 	//Setters and Getters
 	public String getCaption() {
 		return caption;
@@ -28,21 +45,5 @@ public class Ini {
 	}
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	public void fromJSON(JSONObject jo){
-		this.caption = (String) jo.get("caption");
-		this.text = (String) jo.get("text");
-	}
-	
-	public JSONObject toJSON() {
-		JSONObject jo = new JSONObject();
-		jo.put("caption", this.caption);
-		jo.put("text", this.text);
-		return jo;
-	}
-	@Override
-	public String toString(){
-		return caption + ": " + text;
 	}
 }

@@ -6,9 +6,6 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-
-import de.piratenpartei.id.frontend.Vote;
 
 public class Topic {
 	private ArrayList<String> tags;
@@ -18,19 +15,24 @@ public class Topic {
 		this.init();
 	}
 
+	public Topic(JSONObject jo) {
+		this.fromJSON(jo);
+	}
+
 	public void init(){
 		this.tags = new ArrayList<String>();
 		this.inis = new ArrayList<Ini>();
 	}
 	
-	public Topic(JSONObject jo) {
-		this.fromJSON(jo);
+	/**
+	 * map "getName()" to all elements of "inis" and return the return values as a List<String>
+	 */
+	public List<String> getIniNames() {
+		List<String> result = new ArrayList<String>();
+		for(int i=0; i<inis.size(); i++) result.add(this.inis.get(i).getCaption());
+		return result;
 	}
 
-	public void vote(Vote v){
-		
-	}
-	
 	public void addTag(String tag){
 		this.tags.add(tag);
 	}
@@ -39,20 +41,7 @@ public class Topic {
 		this.inis.add(ini);
 	}
 	
-	// Setters and Getters
-	public ArrayList<String> getTags() {
-		return tags;
-	}
-	public void setTags(ArrayList<String> tags) {
-		this.tags = tags;
-	}
-	public ArrayList<Ini> getInis() {
-		return inis;
-	}
-	public void setInis(ArrayList<Ini> inis) {
-		this.inis = inis;
-	}
-
+	@SuppressWarnings("unchecked")
 	public void fromJSON(JSONObject jo){
 		this.init();
 
@@ -64,6 +53,7 @@ public class Topic {
 		tags.addAll(tagsArr);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject toJSON() {
 		JSONObject jo = new JSONObject();
 		JSONArray inisArr = new JSONArray();
@@ -78,10 +68,18 @@ public class Topic {
 		jo.put("tags", tagsArray);
 		return jo;
 	}
-	
-	public List<String> getIniNames() {
-		List<String> result = new ArrayList<String>();
-		for(int i=0; i<inis.size(); i++) result.add(this.inis.get(i).getCaption());
-		return result;
+
+	// Setters and Getters
+	public ArrayList<String> getTags() {
+		return tags;
+	}
+	public void setTags(ArrayList<String> tags) {
+		this.tags = tags;
+	}
+	public ArrayList<Ini> getInis() {
+		return inis;
+	}
+	public void setInis(ArrayList<Ini> inis) {
+		this.inis = inis;
 	}
 }

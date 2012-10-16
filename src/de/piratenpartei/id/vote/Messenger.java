@@ -8,29 +8,37 @@ import de.piratenpartei.id.frontend.Vote;
 
 
 public class Messenger {
-	private PrintWriter outputStream;
-	private Account author;
+	public static PrintWriter outputStream = new PrintWriter(System.out);
 	
-	public Messenger(Account author){
-		this.author = author;
-		this.outputStream = new PrintWriter(System.out);
-		this.outputStream.println("test");
-	}
-	
-	public Messenger(Account author, String outputPath) throws FileNotFoundException{
-		this.author = author;
-		this.outputStream = new PrintWriter(outputPath);
-	}
-	
-	public void sendMessage(String s) throws IOException, IllegalFormatException, KeyException, VerificationException{
-		Message m = new Message(this.author);
+	/**
+	 * Send the a Message to the Server
+	 * @param s the Message to send
+	 * @param author the Account to sign the Message with
+	 * @throws IOException
+	 * @throws IllegalFormatException
+	 * @throws KeyException
+	 * @throws VerificationException
+	 */
+	public static void sendMessage(String s, Account author) throws IOException, IllegalFormatException, KeyException, VerificationException{
+		Message m = new Message(author);
 		m.setMessage(s);
-		m.send(this.outputStream);
-		this.outputStream.flush();
+		m.send(outputStream);
+		outputStream.flush();
 	}
 
+	/**
+	 * Send a request to create a new Ini to the Server
+	 * @param name the name to create the Ini with
+	 * @param text the text to create the Ini with
+	 * @param targetID the Topic to create the Ini in. If targetID == "new", create in new Topic
+	 * @param author the Account to sign the Message with
+	 * @throws IOException
+	 * @throws IllegalFormatException
+	 * @throws KeyException
+	 * @throws VerificationException
+	 */
 	@SuppressWarnings("unchecked")
-	public void sendNewIni(String name, String text, String targetID) throws IOException, IllegalFormatException, KeyException, VerificationException{
+	public static void sendNewIni(String name, String text, String targetID, Account author) throws IOException, IllegalFormatException, KeyException, VerificationException{
 		JSONObject jo1 = new JSONObject();
 		JSONObject jo2 = new JSONObject();
 		jo1.put("name", name);
@@ -38,34 +46,65 @@ public class Messenger {
 		jo1.put("targetID", targetID);
 		jo2.put("data", jo1);
 		jo2.put("type", "newIni");
-		this.sendMessage(jo2.toJSONString());
+		sendMessage(jo2.toJSONString(),author);
 	}
+	
+	/**
+	 * Send a vote message to the Server
+	 * @param vote the Vote to send
+	 * @param author the Account to sign the Message with
+	 * @throws IOException
+	 * @throws IllegalFormatException
+	 * @throws KeyException
+	 * @throws VerificationException
+	 */
 	@SuppressWarnings("unchecked")
-	public void sendVote(Vote vote) throws IOException, IllegalFormatException, KeyException, VerificationException{
+	public static void sendVote(Vote vote, Account author) throws IOException, IllegalFormatException, KeyException, VerificationException{
 		JSONObject jo1 = new JSONObject();
 		JSONObject jo2 = new JSONObject();
 		jo1.put("vote", vote.toJSON());
 		jo2.put("data", jo1);
 		jo2.put("type", "vote");
-		this.sendMessage(jo2.toJSONString());
+		sendMessage(jo2.toJSONString(),author);
 	}
+	
+	/**
+	 * Publicly send a message to another user
+	 * @param userName the name of the user to send the message to
+	 * @param message the message to send
+	 * @param author the Account to sign the Message with
+	 * @throws IOException
+	 * @throws IllegalFormatException
+	 * @throws KeyException
+	 * @throws VerificationException
+	 */
 	@SuppressWarnings("unchecked")
-	public void sendMessageToUser(String userName, String message) throws IOException, IllegalFormatException, KeyException, VerificationException{
+	public static void sendMessageToUser(String userName, String message, Account author) throws IOException, IllegalFormatException, KeyException, VerificationException{
 		JSONObject jo1 = new JSONObject();
 		JSONObject jo2 = new JSONObject();
 		jo1.put("userName",userName);
 		jo1.put("message",message);
 		jo2.put("data",jo1);
 		jo2.put("type","messageToUser");
-		this.sendMessage(jo2.toJSONString());
+		sendMessage(jo2.toJSONString(),author);
 	}
+	
+	/**
+	 * Request a nickname change from the server
+	 * @param newNick the new nickname
+	 * @param author the Account to sign the Message with
+	 * @throws IOException
+	 * @throws IllegalFormatException
+	 * @throws KeyException
+	 * @throws VerificationException
+	 */
 	@SuppressWarnings("unchecked")
-	public void sendNickchange(String newNick) throws IOException, IllegalFormatException, KeyException, VerificationException{
+	public static void sendNickchange(String newNick, Account author) throws IOException, IllegalFormatException, KeyException, VerificationException{
 		JSONObject jo1 = new JSONObject();
 		JSONObject jo2 = new JSONObject();
 		jo1.put("newNick", newNick);
 		jo2.put("data", jo1);
 		jo2.put("type", "nickChange");
-		this.sendMessage(jo2.toJSONString());
+		sendMessage(jo2.toJSONString(),author);
 	}
 }

@@ -1,8 +1,6 @@
 package de.piratenpartei.id.frontend.gui;
 
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import de.piratenpartei.id.frontend.VAOV;

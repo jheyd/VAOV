@@ -1,11 +1,5 @@
 package de.piratenpartei.id.test;
 
-import static org.junit.Assert.*;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import de.piratenpartei.id.*;
 import de.piratenpartei.id.vote.Messenger;
 import de.piratenpartei.id.vote.PrivateAccount;
 
@@ -18,8 +12,7 @@ public class TestMessenger {
 		PrivateAccount pa;
 		try {
 			pa = new PrivateAccount();
-			Messenger m = new Messenger(pa,"test_files/messengerTest");
-			m.sendMessageToUser("troll", "Hallo, ich kenn dich nicht");
+			Messenger.sendMessageToUser("troll", "Hallo, ich kenn dich nicht", pa);
 			System.out.println("successful");
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -23,7 +23,7 @@ import de.piratenpartei.id.vote.VerificationException;
 
 /**
  * API for the Client
- * @author artus
+ * @author dunkelzahn
  *
  */
 public class Client {
@@ -165,8 +165,7 @@ public class Client {
 	 * @param message the message text
 	 */
 	public static void message(PrivateAccount acc, String target, String message) {
-		Messenger m = new Messenger(acc);
-		try { m.sendMessageToUser(target, message); }
+		try { Messenger.sendMessageToUser(target, message,acc); }
 		catch (IOException e)				{ e.printStackTrace(); }
 		catch (IllegalFormatException e)	{ e.printStackTrace(); }
 		catch (KeyException e)				{ e.printStackTrace(); }
@@ -179,7 +178,6 @@ public class Client {
 	 * @param voteString the encoded vote String (typically something like "YYNYN")
 	 */
 	public static void vote(PrivateAccount acc, String targetID, String voteString) throws ParseException {
-		Messenger m = new Messenger(acc);
 		char[] buf = voteString.toCharArray();
 		boolean[] votes = new boolean[buf.length];
 		for(int i=0; i<buf.length; i++){
@@ -189,7 +187,7 @@ public class Client {
 			default: throw new ParseException("voteString contains invalid characters.", i); 
 			}
 		}
-		try { m.sendVote(new Vote(votes,targetID)); }
+		try { Messenger.sendVote(new Vote(votes,targetID),acc); }
 		catch (IOException e)				{ e.printStackTrace(); }
 		catch (IllegalFormatException e)	{ e.printStackTrace(); }
 		catch (KeyException e)				{ e.printStackTrace(); }
@@ -203,8 +201,7 @@ public class Client {
 	 * @param text the text of the Ini
 	 */
 	public static void newIni(PrivateAccount acc, String topicID, String name, String text){
-		Messenger m = new Messenger(acc);
-		try { m.sendNewIni(name, text, topicID); }
+		try { Messenger.sendNewIni(name, text, topicID, acc); }
 		catch (IOException e)				{ e.printStackTrace(); }
 		catch (IllegalFormatException e)	{ e.printStackTrace(); }
 		catch (KeyException e)				{ e.printStackTrace(); }

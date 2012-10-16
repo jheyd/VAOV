@@ -3,12 +3,11 @@ package de.piratenpartei.id.test;
 import static org.junit.Assert.*;
 
 import org.json.simple.*;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.junit.Test;
 
 public class TestJSON {
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void test() {
 		

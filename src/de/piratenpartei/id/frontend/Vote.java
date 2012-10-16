@@ -10,20 +10,42 @@ import org.json.simple.JSONObject;
  * @author Dunkelzahn
  *
  */
-public class Vote {
+public class Vote implements JSONConstructable {
 	private boolean[] votes;
 	private String targetID;
 	
+	
 	public Vote() {
+	}
+
+	public Vote(boolean[] votes, String target) {
+		this.votes = votes;
+		this.targetID = target;
 	}
 
 	public Vote(JSONObject jo) {
 		this.fromJSON(jo);
 	}
 
-	public Vote(boolean[] votes, String target) {
-		this.votes = votes;
-		this.targetID = target;
+	@Override
+	public void fromJSON(JSONObject jo) {
+		JSONArray ja = (JSONArray) jo.get("votes");
+		this.votes = new boolean[ja.size()];
+		for(int i=0; i<ja.size(); i++){
+			this.votes[i] = (Boolean) ja.get(i);
+		}
+		this.targetID = (String) jo.get("targetID");
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public JSONObject toJSON() {
+		JSONObject jo = new JSONObject();
+		JSONArray ja = new JSONArray();
+		for(int i=0; i<votes.length; i++) ja.add(votes[i]);
+		jo.put("votes", ja);
+		jo.put("targetID", this.targetID);
+		return jo;
 	}
 
 	public boolean[] getVotes() {
@@ -40,24 +62,6 @@ public class Vote {
 
 	public void setTargetID(String targetID) {
 		this.targetID = targetID;
-	}
-
-	public void fromJSON(JSONObject jo) {
-		JSONArray ja = (JSONArray) jo.get("votes");
-		this.votes = new boolean[ja.size()];
-		for(int i=0; i<ja.size(); i++){
-			this.votes[i] = (Boolean) ja.get(i);
-		}
-		this.targetID = (String) jo.get("targetID");
-	}
-
-	public JSONObject toJSON() {
-		JSONObject jo = new JSONObject();
-		JSONArray ja = new JSONArray();
-		for(int i=0; i<votes.length; i++) ja.add(votes[i]);
-		jo.put("votes", ja);
-		jo.put("targetID", this.targetID);
-		return jo;
 	}
 
 }

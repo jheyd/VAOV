@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import org.json.simple.*;
 import org.junit.Test;
-import de.piratenpartei.id.*;
 import de.piratenpartei.id.frontend.topic.Ini;
 import de.piratenpartei.id.frontend.topic.TopicList;
 
@@ -20,6 +19,7 @@ public class TestTopicList {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testNormal() {
 		ArrayList<String> tags = new ArrayList<String>();

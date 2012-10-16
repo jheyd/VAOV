@@ -3,12 +3,8 @@ package de.piratenpartei.id.frontend;
 
 import java.io.BufferedReader;
 import java.io.IOException; 
-import java.io.InputStreamReader;
-import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.json.simple.*;
@@ -17,24 +13,20 @@ import de.piratenpartei.id.frontend.topic.Ini;
 import de.piratenpartei.id.frontend.topic.Topic;
 import de.piratenpartei.id.frontend.topic.TopicList;
 import de.piratenpartei.id.vote.Account;
-import de.piratenpartei.id.vote.Config;
 import de.piratenpartei.id.vote.IllegalFormatException;
 import de.piratenpartei.id.vote.KeyException;
 import de.piratenpartei.id.vote.Messenger;
-import de.piratenpartei.id.vote.PrivateAccount;
 import de.piratenpartei.id.vote.VerificationException;
 
 
 /**
- * 
+ * outdated
  * This class ist the top-level interface that should be used by GUIs. Data should be processed using only this class.
  * @author Dunkelzahn
  *
  */
 public class VAOV {
 	private TopicList tops;
-	private Messenger m;
-	private KeyStore ks;
 	private Account account;
 	
 	/**
@@ -65,11 +57,10 @@ public class VAOV {
 	}
 	
 	public void init(){
-		m = new Messenger(this.account);
 	}
 	
 	public void vote(Topic topic, Vote vote) throws IOException, IllegalFormatException, KeyException, VerificationException{
-		m.sendVote(vote);
+		Messenger.sendVote(vote,account);
 	}
 	
 	public void buildTopicList(String data) throws IOException{
