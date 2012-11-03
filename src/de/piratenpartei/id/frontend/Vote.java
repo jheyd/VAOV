@@ -15,9 +15,11 @@ public class Vote implements JSONConstructable {
 	private String targetID;
 	
 	
-	public Vote() {
-	}
-
+	/**
+	 * Votes should always be constructed 
+	 * @param votes
+	 * @param target
+	 */
 	public Vote(boolean[] votes, String target) {
 		this.votes = votes;
 		this.targetID = target;
@@ -52,16 +54,8 @@ public class Vote implements JSONConstructable {
 		return votes;
 	}
 
-	public void setVotes(boolean[] votes) {
-		this.votes = votes;
-	}
-
 	public String getTargetID() {
 		return targetID;
-	}
-
-	public void setTargetID(String targetID) {
-		this.targetID = targetID;
 	}
 
 }

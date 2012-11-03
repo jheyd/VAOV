@@ -7,9 +7,14 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+/**
+ * A Topic contains a List of Inis (List<Ini) and a List of tags (List<String>).
+ * @author dunkelzahn
+ *
+ */
 public class Topic {
-	private ArrayList<String> tags;
-	private ArrayList<Ini> inis;
+	private List<String> tags;
+	private List<Ini> inis;
 	
 	public Topic(){
 		this.init();
@@ -19,6 +24,12 @@ public class Topic {
 		this.fromJSON(jo);
 	}
 
+	public Topic(Ini ini, List<String> tags){
+		this.init();
+		this.inis.add(ini);
+		this.tags = tags;
+	}
+	
 	public void init(){
 		this.tags = new ArrayList<String>();
 		this.inis = new ArrayList<Ini>();
@@ -70,13 +81,13 @@ public class Topic {
 	}
 
 	// Setters and Getters
-	public ArrayList<String> getTags() {
+	public List<String> getTags() {
 		return tags;
 	}
 	public void setTags(ArrayList<String> tags) {
 		this.tags = tags;
 	}
-	public ArrayList<Ini> getInis() {
+	public List<Ini> getInis() {
 		return inis;
 	}
 	public void setInis(ArrayList<Ini> inis) {

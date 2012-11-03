@@ -1,7 +1,11 @@
 package de.piratenpartei.id.frontend;
 import java.util.List;
 
-
+/**
+ * Utility class for asking questions (and receiving answers) on the command line
+ * @author dunkelzahn
+ *
+ */
 public class Asker {
 	
 	/**

@@ -21,7 +21,7 @@ public class Listeners {
 		
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				gh.vote(new Vote());
+				//gh.vote(new Vote()); TODO
 			}
 		};
 		return ml;
@@ -36,7 +36,7 @@ public class Listeners {
 		
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				gh.vote(new Vote());
+				//gh.vote(new Vote()); TODO
 			}
 		};
 		return ml;
@@ -51,7 +51,7 @@ public class Listeners {
 		
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				gh.vote(new Vote());
+				// gh.vote(new Vote()); TODO
 			}
 		};
 		return ml;

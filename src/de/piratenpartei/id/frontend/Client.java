@@ -231,21 +231,21 @@ public class Client {
 	 */
 	public static void newIni(PrivateAccount acc, String topicID, String name, String text) throws ParseException{
 		// check if topicID has valid format
-		if(topicID != "new") {
-			String toParse;
-			if(topicID.substring(0, 2) == "TOP") toParse = topicID.substring(3);
-			else toParse = topicID;
-			try { Integer.parseInt(toParse); }
-			catch(NumberFormatException e) { System.out.println("topicID has invalid format"); }
-		}
-
+		String toParse;
+		String[] validBegins = new String[]{"new","NEW","top","TOP"};
+		if(Arrays.asList(validBegins).contains(topicID.substring(0, 3)))
+			toParse = topicID.substring(0, 3);
+		else
+			toParse = topicID;
+		try { Integer.parseInt(toParse); }
+		catch(NumberFormatException e) { throw new ParseException("topicID has invalid format", 0); }
+		
 		try { Messenger.sendNewIni(name, text, topicID, acc); }
 		catch (IOException e)				{ e.printStackTrace(); }
 		catch (IllegalFormatException e)	{ e.printStackTrace(); }
 		catch (KeyException e)				{ e.printStackTrace(); }
 		catch (VerificationException e)		{ e.printStackTrace(); }
-	}
-		
+	}	
 
 	public static List<String> listTopics() {
 		TopicList tops = buildTopicList();

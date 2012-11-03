@@ -40,7 +40,7 @@ public class TopicList implements JSONConstructable {
 	private void refreshTags(){
 		this.tags = new ArrayList<String>();
 		for(int i=0; i<topics.size(); i++){
-			ArrayList<String> tagList = topics.get(i).getTags();
+			List<String> tagList = topics.get(i).getTags();
 			for(int k=0; k<tagList.size(); k++){
 				String thisTag = tagList.get(k);
 				if(!tags.contains(thisTag)){
@@ -97,11 +97,7 @@ public class TopicList implements JSONConstructable {
 		this.refreshTags();
 	}
 	
-	public static TopicList parseJSONString(JSONObject jo){
-		return new TopicList(jo);
-	}
-
-	// default Setters and Getters
+	// default Getters
 	public ArrayList<String> getCategories(){
 		return this.tags;
 	}
