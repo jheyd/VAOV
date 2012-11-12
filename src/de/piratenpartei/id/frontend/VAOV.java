@@ -70,8 +70,8 @@ public class VAOV {
 		String structure = (String) jo.get("structure");
 		if(structure.equals("list"))
 			tops = new TopicList((JSONObject) jo.get("data"));
-		
-		else throw new RuntimeException("Structure property in JOSN-file has unknown value:" + structure);		
+		else
+			throw new RuntimeException("Structure property in JSON-file has unknown value:" + structure);		
 	}
 	
 	public void addIniInNewTopic(Ini ini, ArrayList<String> tags){

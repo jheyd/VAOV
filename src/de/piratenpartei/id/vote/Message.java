@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import org.json.simple.JSONObject;
+
 /**
  * A signed message that is used to communicate with any kind of service.
  * Every Message is associated to an {@link Account}. The account supplies the key for verifying the message.
@@ -125,9 +127,21 @@ public class Message {
 		}
 		String digest = Helper.computeDigest(message);
 		String signature = Helper.computeSignature(digest, privateauthor.getPrivateKey());
+		
+		// old
+		/*
 		ps.print("Author: "+Helper.computeHash(author.getPublicKey())+"\n");
 		ps.print("Digest: "+digest+"\n");
 		ps.print("Signature: "+signature+"\n");
 		ps.print(message); // message already contains newline
+		*/
+		
+		// new
+		JSONObject jo = new JSONObject();
+		jo.put("author", Helper.computeHash(author.getPublicKey()));
+		jo.put("digest", digest);
+		jo.put("signature",signature);
+		jo.put("message", message);
+		ps.print(jo.toJSONString());
 	}
 }
