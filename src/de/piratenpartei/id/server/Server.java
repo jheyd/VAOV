@@ -103,6 +103,10 @@ public class Server {
 		}
 	}
 
+	private boolean checkSignature(JSONObject jo){
+		return false;
+	}
+	
 	private String getMessage(){
 		String msg="";
         Iterator<SelectionKey> iter = select.keys().iterator();

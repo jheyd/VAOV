@@ -203,6 +203,21 @@ public class Client {
 	 * @param voteString the encoded vote String (typically something like "YYNYN")
 	 * @throws ParseException if voteString contains characters that are not in {'Y','N','y','n'}
 	 */
+	public static void vote(PrivateAccount acc, Vote vote) throws ParseException {
+		try { Messenger.sendVote(vote,acc); }
+		catch (IOException e)				{ e.printStackTrace(); }
+		catch (IllegalFormatException e)	{ e.printStackTrace(); }
+		catch (KeyException e)				{ e.printStackTrace(); }
+		catch (VerificationException e)		{ e.printStackTrace(); }
+	}
+
+	/**
+	 * vote a Topic from Strings
+	 * @param acc
+	 * @param targetID ID code of the targat Topic (typically somthing like "TOP12345")
+	 * @param voteString the encoded vote String (typically something like "YYNYN")
+	 * @throws ParseException if voteString contains characters that are not in {'Y','N','y','n'}
+	 */
 	public static void vote(PrivateAccount acc, String targetID, String voteString) throws ParseException {
 		boolean[] votes = new boolean[voteString.length()];
 		for(int i=0; i<voteString.length(); i++){
@@ -214,13 +229,8 @@ public class Client {
 			default: throw new ParseException("voteString contains invalid characters.", i); 
 			}
 		}
-		try { Messenger.sendVote(new Vote(votes,targetID),acc); }
-		catch (IOException e)				{ e.printStackTrace(); }
-		catch (IllegalFormatException e)	{ e.printStackTrace(); }
-		catch (KeyException e)				{ e.printStackTrace(); }
-		catch (VerificationException e)		{ e.printStackTrace(); }
+		vote(acc, new Vote(votes,targetID));
 	}
-
 
 	/**
 	 * creates a new Ini

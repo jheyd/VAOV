@@ -1,46 +1,32 @@
 package de.piratenpartei.id.frontend.gui;
 
 
-import java.io.IOException;
+import java.text.ParseException;
 
-import de.piratenpartei.id.frontend.VAOV;
+import de.piratenpartei.id.frontend.Client;
 import de.piratenpartei.id.frontend.Vote;
-import de.piratenpartei.id.frontend.topic.Topic;
-import de.piratenpartei.id.vote.IllegalFormatException;
 import de.piratenpartei.id.vote.KeyException;
 import de.piratenpartei.id.vote.PrivateAccount;
-import de.piratenpartei.id.vote.VerificationException;
 
 
 public class GUI_Helper {
-	public VAOV v;
-	public Topic activeTopic;
-	
 	private PrivateAccount account;
-	private static final String keyId = "foo";
-	public static final String readPath = "data.dat";
-
+	
 	public GUI_Helper() {
 		this.cryptInit();
-		this.vaovInit();
-		this.activeTopic = v.getTestTopic();
 	}
 	
 	public void cryptInit() {
 		try {
-			this.account = this.queryAccount();
+			this.setAccount(this.queryAccount());
 		} catch (KeyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//Helper.initKeyStore(password)
 	}
 
-	public void vaovInit(){
-		v = new VAOV(true, this.account);
-	}
-	
 	public PrivateAccount queryAccount() throws KeyException {
+		// TODO	
 		PrivateAccount result;
 		result = new PrivateAccount();
 		return result;
@@ -48,20 +34,24 @@ public class GUI_Helper {
 
 	public void vote(Vote vote) {
 		try {
-			v.vote(this.activeTopic, vote);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (KeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (VerificationException e) {
+			Client.vote(getAccount(), vote);
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static String getIniIDFromJListSelectedValue(String selectedValue) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public PrivateAccount getAccount() {
+		return account;
+	}
+
+	public void setAccount(PrivateAccount account) {
+		this.account = account;
 	}
 
 }
