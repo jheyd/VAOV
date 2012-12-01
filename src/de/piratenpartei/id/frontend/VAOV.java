@@ -25,6 +25,7 @@ import de.piratenpartei.id.vote.VerificationException;
  * @author Dunkelzahn
  *
  */
+@Deprecated
 public class VAOV {
 	private TopicList tops;
 	private Account account;

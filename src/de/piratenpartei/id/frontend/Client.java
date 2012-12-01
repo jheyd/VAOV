@@ -30,12 +30,13 @@ public class Client {
 	public static final String topicListFilePath = "topics.dat";
 
 	public static void main(String[] args) {
+		Client cli = new Client();
 		if(args.length > 1){
-			try { execute(Arrays.copyOfRange(args, 1, args.length-1)); }
+			try { cli.execute(Arrays.copyOfRange(args, 1, args.length-1)); }
 			catch (WrongParameterCountException e) { System.out.println("Wrong parameter count!"); }
 		}
 		else {
-			try { while(execute(Asker.askString("#: ").split(" "))); }
+			try { while(cli.execute(Asker.askString("#: ").split(" "))); }
 			catch (WrongParameterCountException e) { System.out.println("Wrong parameter count!");  }
 		}
 	}
@@ -46,7 +47,7 @@ public class Client {
 	 * @return false if args[0] == "quit"
 	 * @throws WrongParameterCountException 
 	 */
-	public static boolean execute(String[] args) throws WrongParameterCountException {
+	public boolean execute(String[] args) throws WrongParameterCountException {
 		/*
 		 * commands:
 		 * message <from> <to> <text>
@@ -123,23 +124,23 @@ public class Client {
 	 * @param username
 	 * @return
 	 */
-	public static PrivateAccount askAcc(String username){
-		// TODO
-		// for testing only
-		try { return new PrivateAccount(); }
-		catch (KeyException e) { e.printStackTrace(); }
-		return null;
-		/*
+	public PrivateAccount askAcc(String username){
 		char[] pass = Asker.askCharArray("password for " + username + ": ");
-		try {
-			acc = new PrivateAccount(username,pass);
-		} catch (KeyException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		PrivateAccount acc = getAcc(username, pass);
 		if(pass != null)
 			for(int i=0; i<pass.length; i++) pass[i] = 'a'; // overwrite password in memory
-		*/
+		return acc;
+	}
+	
+	
+	public PrivateAccount getAcc(String username, char[] pass){
+		PrivateAccount acc = null;
+		try {
+			acc = new PrivateAccount(username,pass);
+		} catch (KeyException e) {
+			e.printStackTrace();
+		}
+		return acc;
 	}
 	
 	
@@ -149,7 +150,7 @@ public class Client {
 	 * @param pass
 	 * @return
 	 */
-	public static PrivateAccount registerAccount(String username, char[] pass, char[] privateKey, char[] publicKey) {
+	public PrivateAccount registerAccount(String username, char[] pass, char[] privateKey, char[] publicKey) {
 		// TODO
 		try {
 			PrivateAccount acc = new PrivateAccount();
@@ -170,7 +171,7 @@ public class Client {
 	 * @param pass Password of the new Account
 	 * @return the new Account
 	 */
-	public static PrivateAccount newAccount(String username, char[] pass) {
+	public PrivateAccount newAccount(String username, char[] pass) {
 		try {
 			PrivateAccount acc = new PrivateAccount();
 			acc.store(username, pass);
@@ -181,13 +182,12 @@ public class Client {
 		return null;
 	}
 
-	
 	/**
 	 * publicly sends a message to a user
 	 * @param target the name of the user who shall receive the message
 	 * @param message the message text
 	 */
-	public static void message(PrivateAccount acc, String target, String message) {
+	public void message(PrivateAccount acc, String target, String message) {
 		try { Messenger.sendMessageToUser(target, message, acc); }
 		catch (IOException e)				{ e.printStackTrace(); }
 		catch (IllegalFormatException e)	{ e.printStackTrace(); }
@@ -203,7 +203,7 @@ public class Client {
 	 * @param voteString the encoded vote String (typically something like "YYNYN")
 	 * @throws ParseException if voteString contains characters that are not in {'Y','N','y','n'}
 	 */
-	public static void vote(PrivateAccount acc, Vote vote) throws ParseException {
+	public void vote(PrivateAccount acc, Vote vote) throws ParseException {
 		try { Messenger.sendVote(vote,acc); }
 		catch (IOException e)				{ e.printStackTrace(); }
 		catch (IllegalFormatException e)	{ e.printStackTrace(); }
@@ -218,7 +218,7 @@ public class Client {
 	 * @param voteString the encoded vote String (typically something like "YYNYN")
 	 * @throws ParseException if voteString contains characters that are not in {'Y','N','y','n'}
 	 */
-	public static void vote(PrivateAccount acc, String targetID, String voteString) throws ParseException {
+	public void vote(PrivateAccount acc, String targetID, String voteString) throws ParseException {
 		boolean[] votes = new boolean[voteString.length()];
 		for(int i=0; i<voteString.length(); i++){
 			switch(voteString.charAt(i)){
@@ -239,7 +239,7 @@ public class Client {
 	 * @param text the text of the Ini
 	 * @throws ParseException 
 	 */
-	public static void newIni(PrivateAccount acc, String topicID, String name, String text) throws ParseException{
+	public void newIni(PrivateAccount acc, String topicID, String name, String text) throws ParseException{
 		// check if topicID has valid format
 		String toParse;
 		String[] validBegins = new String[]{"new","NEW","top","TOP"};
@@ -257,7 +257,7 @@ public class Client {
 		catch (VerificationException e)		{ e.printStackTrace(); }
 	}	
 
-	public static List<String> listTopics() {
+	public List<String> listTopics() {
 		TopicList tops = buildTopicList();
 		List<String> l = new ArrayList<String>();
 		List<Topic> t = tops.getTopics();
@@ -270,7 +270,7 @@ public class Client {
 	 * 
 	 * @param topicID ID of the Topic to show. Format: "TOP" + index
 	 */
-	public static List<String> getTopicInfo(String topicID) {
+	public List<String> getTopicInfo(String topicID) {
 		TopicList tops = buildTopicList();
 		int index = Integer.parseInt(topicID.substring(3));
 		
@@ -290,7 +290,7 @@ public class Client {
 	 * 
 	 * @param targetID ID of the Ini to show, Format: "INI" + topicIndex + "." + iniIndex
 	 */
-	public static String getIni(String targetID) {
+	public String getIni(String targetID) {
 		TopicList tops = buildTopicList();
 		String[] indices = targetID.substring(3).split("\\.");
 		int index1 = Integer.parseInt(indices[0]);
@@ -302,7 +302,7 @@ public class Client {
 	/**
 	 * load TopicList data from server and write them to the file at topicListFilePath
 	 */
-	public static void pull() {
+	public void pull() {
 		// TODO Auto-generated method stub
 	}
 	
@@ -311,7 +311,7 @@ public class Client {
 	 * Build a TopicList from the File at topicListFilePath;
 	 * @return the built TopicList
 	 */
-	private static TopicList buildTopicList(){
+	private TopicList buildTopicList(){
 		BufferedReader br;
 		String s = "";
 		String buf = "";

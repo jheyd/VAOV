@@ -17,7 +17,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import de.piratenpartei.id.frontend.Vote;
 
-public class GUI extends JFrame implements ActionListener{
+public class View extends JFrame implements ActionListener{
 
 	/**
 	 * 
@@ -25,7 +25,7 @@ public class GUI extends JFrame implements ActionListener{
 	private static final long serialVersionUID = -2716891312327036374L;
 	
 	
-	private GUI_Helper gh;
+	private Control control;
 	private JPanel pn_Main;
 	private JButton btn_VoteNo;	
 	private JButton btn_Abstain;
@@ -41,7 +41,7 @@ public class GUI extends JFrame implements ActionListener{
 	 */
 	public static void main(String[] args) {
 		try {
-			GUI window = new GUI();
+			View window = new View();
 			window.setVisible(true);
 			window.setLayout();
 			window.setSize(500,500);
@@ -53,8 +53,8 @@ public class GUI extends JFrame implements ActionListener{
 	/**
 	 * Create the application.
 	 */
-	public GUI() {
-		gh = new GUI_Helper();
+	public View() {
+		control = new Control();
 
 		setBounds(200, 200, 900, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -73,11 +73,12 @@ public class GUI extends JFrame implements ActionListener{
 		textPane_1 = new JTextPane();
 		btn_Change = new JButton("Change");
 		list = new JList<String>();
-		menuBar = new MyMenuBar(this,gh);
+		menuBar = new MyMenuBar(control,this);
 		setJMenuBar(menuBar);
 	}
 
 	private void setLayout() {
+		// DONT TOUCH
 		GroupLayout gl_panel = new GroupLayout(pn_Main);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.TRAILING)
@@ -116,35 +117,38 @@ public class GUI extends JFrame implements ActionListener{
 		);
 		pn_Main.setLayout(gl_panel);
 	}
-
+	
+	public void setButtonsEnabled(boolean votingEnabled){
+		this.btn_Abstain.setEnabled(votingEnabled);
+		this.btn_VoteNo.setEnabled(votingEnabled);
+		this.btn_VoteYes.setEnabled(votingEnabled);
+		this.btn_Change.setEnabled(!votingEnabled);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == this.btn_Abstain){
-			gh.vote(new Vote(new boolean[]{false,false},GUI_Helper.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
-			this.btn_Abstain.setEnabled(false);
-			this.btn_VoteNo.setEnabled(false);
-			this.btn_VoteYes.setEnabled(false);
-			this.btn_Change.setEnabled(true);
+			control.vote(new Vote(new boolean[]{false,false},Control.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
+			this.setButtonsEnabled(false);
 		}
 		if(e.getSource() == this.btn_VoteYes){
-			gh.vote(new Vote(new boolean[]{true,false},GUI_Helper.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
-			this.btn_Abstain.setEnabled(false);
-			this.btn_VoteNo.setEnabled(false);
-			this.btn_VoteYes.setEnabled(false);
-			this.btn_Change.setEnabled(true);
+			control.vote(new Vote(new boolean[]{true,false},Control.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
+			this.setButtonsEnabled(false);
 		}
 		if(e.getSource() == this.btn_VoteNo){
-			gh.vote(new Vote(new boolean[]{false,true},GUI_Helper.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
-			this.btn_Abstain.setEnabled(false);
-			this.btn_VoteNo.setEnabled(false);
-			this.btn_VoteYes.setEnabled(false);
-			this.btn_Change.setEnabled(true);
+			control.vote(new Vote(new boolean[]{false,true},Control.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
+			this.setButtonsEnabled(false);
 		}
 		if(e.getSource() == this.btn_Change){
-			this.btn_Change.setEnabled(false);
-			this.btn_Abstain.setEnabled(true);
-			this.btn_VoteNo.setEnabled(true);
-			this.btn_VoteYes.setEnabled(true);
+			this.setButtonsEnabled(true);
 		}
+		
+	}
+
+	public Pair<String,char[]> queryAccount() {
+		// TODO
+		String username = "foo";
+		char[] pass = "bar".toCharArray();
+		return new Pair<String,char[]>(username,pass);
 	}
 }

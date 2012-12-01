@@ -3,28 +3,19 @@ package de.piratenpartei.id.frontend.gui;
 
 import java.text.ParseException;
 
-import de.piratenpartei.id.frontend.Client;
+import de.piratenpartei.id.frontend.Model;
 import de.piratenpartei.id.frontend.Vote;
 import de.piratenpartei.id.vote.KeyException;
 import de.piratenpartei.id.vote.PrivateAccount;
 
 
-public class GUI_Helper {
-	private PrivateAccount account;
+public class Control {
+	Model model;
 	
-	public GUI_Helper() {
-		this.cryptInit();
+	public Control() {
+		this.model = new Model();
 	}
 	
-	public void cryptInit() {
-		try {
-			this.setAccount(this.queryAccount());
-		} catch (KeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	public PrivateAccount queryAccount() throws KeyException {
 		// TODO	
 		PrivateAccount result;
@@ -34,7 +25,7 @@ public class GUI_Helper {
 
 	public void vote(Vote vote) {
 		try {
-			Client.vote(getAccount(), vote);
+			model.vote(getAccount(), vote);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -47,11 +38,27 @@ public class GUI_Helper {
 	}
 
 	public PrivateAccount getAccount() {
-		return account;
+		return model.getAccount();
 	}
 
-	public void setAccount(PrivateAccount account) {
-		this.account = account;
+	public void loadAccount(String username, char[] pass) {
+		try {
+			this.model.setAccount(new PrivateAccount(username,pass));
+		} catch (KeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void newAccount(String username, char[] pass) {
+		try {
+			this.model.setAccount(new PrivateAccount());
+			this.model.getAccount().store(username, pass);
+		} catch (KeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }

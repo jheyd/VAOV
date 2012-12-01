@@ -1,41 +1,28 @@
 package de.piratenpartei.id.server;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import de.piratenpartei.id.frontend.topic.Ini;
 import de.piratenpartei.id.frontend.topic.TopicList;
 import de.piratenpartei.id.vote.Account;
+import de.piratenpartei.id.vote.KeyException;
 
 public class Server {
 	private TopicList topics;
 	private List<Account> accounts;
-	private ServerSocket socket;
-	private DataInputStream in;
-	private DataOutputStream out;
-	private ServerSocketChannel ssc;
-	private Selector select;private static final int PORT = 8020;
-
+	private ServerSocket serverSocket;
+	private static final int PORT = 8020;
 
 	public final static String defaultInPath = "bla";
 	public final static String defaultOutPath = "foo";
@@ -44,14 +31,8 @@ public class Server {
 		Server server;
 		server = new Server(Server.defaultInPath);
 		server.run();
-		server.storeInis(Server.defaultOutPath);
 	}
 	
-	private void storeInis(String path) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public Server(String path) {
 		init(path);
 	}
@@ -63,120 +44,81 @@ public class Server {
 			System.out.println("Error reading Inis from file " + path);
 			e.printStackTrace();
 		}
-		System.out.println("Building Topics finished");
+		System.out.println("Building Topics finished");		
 
-		try {
-			select = Selector.open();
-			ssc = ServerSocketChannel.open();
-        	ssc.configureBlocking(false);
-        	ssc.socket().bind(new InetSocketAddress(PORT));
-        	ssc.register(select, SelectionKey.OP_ACCEPT);
+		try{
+			serverSocket = new ServerSocket(PORT);
 		} catch (IOException e) {
 			System.out.println("Error while opening ServerSocket");
 			e.printStackTrace();
 		}
-
-		
+		System.out.println("ServerSocket opened at port " + PORT);
 	}
 
 	public void run() {
 		boolean quit = false;
-        while(!quit) {
-        	try {
-        		if(select.select() <= 0)
-        			quit = true;
-        	} catch(IOException e) {
-        		System.out.println("The select broke!");
-        		e.printStackTrace();
-        		quit = true;
-        		break;
-        	}
-        	String msg = this.getMessage();
-        	action(msg);
+		String msg;
+		while(!quit) {
+            try{
+                Socket server = serverSocket.accept();
+                System.out.println("connected to " + server.getRemoteSocketAddress());
+                DataInputStream in = new DataInputStream(server.getInputStream());
+                DataOutputStream out = new DataOutputStream(server.getOutputStream());
+                msg = in.readUTF();
+            	String returnMsg = action(msg);
+            	out.writeUTF(returnMsg);
+                server.close();
+             }catch(IOException e){
+                e.printStackTrace();
+                break;
+             } catch (KeyException e) {
+            	System.out.println(e.getMessage());
+				e.printStackTrace();
+				break;
+			}
         }
+		storeInis(this.topics.toJSON(),Server.defaultOutPath);
 	}
 
-	private void action(String msg) {
+	private String action(String msg) throws KeyException {
 		JSONObject jo = (JSONObject) JSONValue.parse(msg);
+		if(!checkSignature(jo)) throw new KeyException("Signature not matching");
 		String[] commands = new String[]{};
+		String result = "";
 		switch(Arrays.asList(commands).indexOf((String)jo.get("type"))){
 		}
+		return result;
 	}
 
 	private boolean checkSignature(JSONObject jo){
-		return false;
+		return true;
 	}
 	
-	private String getMessage(){
-		String msg="";
-        Iterator<SelectionKey> iter = select.keys().iterator();
-		while(iter.hasNext()){
-			SelectionKey key = iter.next();
-    		if(key.isAcceptable()) {
-    			// System.out.println("accept");
-    			try {
-    				SocketChannel sockChan = ssc.accept();
-    				sockChan.configureBlocking(false);
-    				sockChan.register(select, SelectionKey.OP_READ);
-    			} catch(IOException e) {
-    				System.out.println("Error while accepting socket");
-    				e.printStackTrace();
-    			}
-    		} else if(key.isReadable()) {
-    			// System.out.println("read");
-    			SocketChannel client = (SocketChannel)key.channel();
-    			
-    			ByteBuffer buf = ByteBuffer.allocate(1024);
-    			try {
-    				
-    				int readBytes = -1;
-   					readBytes = client.read(buf);
-					if(readBytes < 0) {
-						// Client closed connection
-						// System.out.println("client closed");
-						client.close();
-					} else {
-						buf.flip();
-						msg = decodeBuf(buf).toString().trim();
-					}
-					} catch (IOException e) {
-						System.out.println("Error while receiving data from client");
-						e.printStackTrace();
-					}
-
-
-    		}
+	public List<Account> loadAccounts(String path) throws IOException{
+		JSONArray ja = (JSONArray) FileManager.load(path).get("accounts");
+		List<Account> accs = new ArrayList<Account>();
+		for(int i=0; i<ja.size(); i++){
+			// TODO
+			// accs.add(new Account((JSONObject) ja.get(i)));
 		}
-		return msg;
-	}
-
-	public static CharBuffer decodeBuf(ByteBuffer buf) {
-		Charset charset = Charset.forName("UTF-8");
-		CharsetDecoder decoder = charset.newDecoder();
-		CharBuffer charBuffer = null;
-		try {
-			charBuffer = decoder.decode(buf);
-		} catch (CharacterCodingException e) {
-			System.out.println("Error: Could not decode ByteBuffer");
-		}
-		
-		return charBuffer;
+		return accs; 
 	}
 	
-	public String loadInis(String path) throws IOException{
-		BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(path));
+	private void storeAccounts(List<Account> accs, String path) {
+		// TODO
+		// FileManager.save(accs.toJSON, path);
+	}
 
-		String s;
-		String result = "";
-		while((s = br.readLine()) != null) result += s;
-		br.close();
-		
-		return result;
+	private TopicList loadInis(String path) throws IOException{
+		return new TopicList(FileManager.load(path));
 	}
 	
-	public void buildTopicList(String data) throws IOException{
+	private void storeInis(TopicList tl, String path) {
+		FileManager.save(tl.toJSON(), path);
+	}
+
+	public void buildTopicList(JSONObject jo) throws IOException{
 		System.out.println("Building Topics ...");
-		JSONObject jo = (JSONObject) JSONValue.parse(data);
 
 		String structure = (String) jo.get("structure");
 		if(structure.equals("list"))
@@ -192,6 +134,4 @@ public class Server {
 	public void addIniToTopic(Ini ini, int topicIndex){
 		this.topics.addIniToTopic(ini, topicIndex);
 	}
-	
-
 }

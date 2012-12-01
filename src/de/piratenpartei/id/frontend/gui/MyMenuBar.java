@@ -2,13 +2,16 @@ package de.piratenpartei.id.frontend.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
-import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import de.piratenpartei.id.frontend.Client;
+import de.piratenpartei.id.frontend.Util;
+import de.piratenpartei.id.vote.KeyException;
+import de.piratenpartei.id.vote.PrivateAccount;
 
 public class MyMenuBar extends JMenuBar implements ActionListener{
 
@@ -18,8 +21,8 @@ public class MyMenuBar extends JMenuBar implements ActionListener{
 	private static final long serialVersionUID = -8938821142026068736L;
 	
 	
-	private GUI_Helper gh;
-	private GUI v;
+	private Control control;
+	private View view;
 	
 	private JMenuItem jmi_About;
 	private JMenuItem jmi_Quit;
@@ -28,9 +31,9 @@ public class MyMenuBar extends JMenuBar implements ActionListener{
 	private JMenuItem jmi_ExportAccount;
 	private JMenuItem jmi_RevokeAccount;
 	
-	public MyMenuBar(GUI g, GUI_Helper gh){
-		this.gh = gh;
-		this.v = g;
+	public MyMenuBar(Control c, View v){
+		this.control = c;
+		this.view = v;
 		
 		// MenuBar items
 		this.jm_MenuCreate();
@@ -42,7 +45,7 @@ public class MyMenuBar extends JMenuBar implements ActionListener{
 		this.add(jm_Help);
 		
 		jmi_About = new JMenuItem("About");
-		jmi_About.addActionListener(this);
+		jmi_About.addActionListener(view);
 		jm_Help.add(jmi_About);
 	}
 	
@@ -51,43 +54,55 @@ public class MyMenuBar extends JMenuBar implements ActionListener{
 		this.add(jm_Menu);
 		
 		jmi_Quit = new JMenuItem("Quit");
-		jmi_Quit.addActionListener(this);
+		jmi_Quit.addActionListener(view);
 		jm_Menu.add(jmi_Quit);
 		
 		
 		jmi_NewAccount = new JMenuItem("New Account");
-		jmi_NewAccount.addActionListener(this);
+		jmi_NewAccount.addActionListener(view);
 		jm_Menu.add(jmi_NewAccount);
 		
 		
 		jmi_ImportAccount = new JMenuItem("Import Account");
-		jmi_ImportAccount.addActionListener(this);
+		jmi_ImportAccount.addActionListener(view);
 		jm_Menu.add(jmi_ImportAccount);
 		
 		
 		jmi_ExportAccount = new JMenuItem("Export Account");
-		jmi_ExportAccount.addActionListener(this);
+		jmi_ExportAccount.addActionListener(view);
 		jm_Menu.add(jmi_ExportAccount);
 		
 		
 		jmi_RevokeAccount = new JMenuItem("Revoke Account");
-		jmi_RevokeAccount.addActionListener(this);
+		jmi_RevokeAccount.addActionListener(view);
 		jm_Menu.add(jmi_RevokeAccount);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == this.jmi_NewAccount){
-			String username = "bla";
-			String pass = "foo";
-			//javax.swing.JDialog d = new JDialog(v);
-			//d.setVisible(true);
-			gh.setAccount(Client.newAccount(username, pass.toCharArray()));
-
+			Pair<String,char[]> pair = view.queryAccount();
+			String username = pair.first;
+			char[] pass = pair.second;
+			control.newAccount(username, pass);
+			Util.overwriteChar(pass);
 		}
 		if(e.getSource() == this.jmi_ImportAccount){
-			//TODO
-			
+			Pair<String,char[]> pair = view.queryAccount();
+			String username = pair.first;
+			char[] pass = pair.second;
+
+			JFileChooser jfc = new JFileChooser();
+	    	jfc.setMultiSelectionEnabled(false);
+	    	jfc.showOpenDialog(view);
+			File f = jfc.getSelectedFile();
+			PrivateAccount pa = null;
+			try {
+				// TODO load pa from f
+				pa = new PrivateAccount();
+				pa.store(username, pass);
+			}
+			catch (KeyException e1) { e1.printStackTrace();	}
 		}
 		if(e.getSource() == this.jmi_ExportAccount){
 			//TODO
