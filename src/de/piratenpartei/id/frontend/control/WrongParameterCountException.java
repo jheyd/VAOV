@@ -1,4 +1,4 @@
-package de.piratenpartei.id.frontend;
+package de.piratenpartei.id.frontend.control;
 
 public class WrongParameterCountException extends Exception {
 

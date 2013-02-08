@@ -7,6 +7,7 @@ import org.junit.Test;
 import de.piratenpartei.id.vote.KeyException;
 import de.piratenpartei.id.vote.PrivateAccount;
 
+@Deprecated
 public class TestCreate {
 
 	@Test

@@ -1,10 +1,11 @@
 package de.piratenpartei.id.test;
 
-import de.piratenpartei.id.vote.Messenger;
+import de.piratenpartei.id.frontend.control.MessageHandler;
 import de.piratenpartei.id.vote.PrivateAccount;
 
 import org.junit.Test;
 
+@Deprecated
 public class TestMessenger {
 
 	@Test
@@ -12,7 +13,7 @@ public class TestMessenger {
 		PrivateAccount pa;
 		try {
 			pa = new PrivateAccount();
-			Messenger.sendMessageToUser("troll", "Hallo, ich kenn dich nicht", pa);
+			MessageHandler.sendMessageToUser("troll", "Hallo, ich kenn dich nicht", pa);
 			System.out.println("successful");
 		} catch (Exception e) {
 			e.printStackTrace();

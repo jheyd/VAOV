@@ -1,4 +1,4 @@
-package de.piratenpartei.id.frontend.topic;
+package de.piratenpartei.id.frontend.control;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -9,7 +9,8 @@ import java.util.List;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import de.piratenpartei.id.frontend.Asker;
+import de.piratenpartei.id.frontend.model.topic.Topic;
+import de.piratenpartei.id.frontend.model.topic.TopicList;
 
 /**
  * This class manages the proposal part of this application: downloading, uploading, showing, creating, editing propsals.
@@ -19,6 +20,7 @@ import de.piratenpartei.id.frontend.Asker;
  * @author dunkelzahn
  *
  */
+@Deprecated
 public class TopicManager {
 	public static final String[] commandNames = new String[]{ "listTopics" , "showTopic" , "showIni" , "pull" };
 	public static final String[] commandShortNames = new String[]{ "l" , "t" , "i" , "p" };
@@ -31,7 +33,7 @@ public class TopicManager {
 		if(args.length > 1){ // batch mode
 			tm.execute(Arrays.copyOfRange(args, 1, args.length-1));
 		} else { // interactive mode
-			String s = Asker.askString("Enter the Command to execute: ");
+			String s = Util.askString("Enter the Command to execute: ");
 			tm.execute(s.split(" "));
 		}		
 	}

@@ -8,9 +8,11 @@ import java.util.ArrayList;
 
 import org.json.simple.*;
 import org.junit.Test;
-import de.piratenpartei.id.frontend.topic.Ini;
-import de.piratenpartei.id.frontend.topic.TopicList;
 
+import de.piratenpartei.id.frontend.model.topic.Ini;
+import de.piratenpartei.id.frontend.model.topic.TopicList;
+
+@Deprecated
 public class TestTopicList {
 
 	private TopicList tl;

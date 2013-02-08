@@ -1,4 +1,4 @@
-package de.piratenpartei.id.frontend.topic;
+package de.piratenpartei.id.frontend.model.topic;
 
 
 import java.util.ArrayList;

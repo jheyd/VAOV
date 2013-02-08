@@ -6,15 +6,14 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import de.piratenpartei.id.frontend.topic.Ini;
-import de.piratenpartei.id.frontend.topic.TopicList;
+import de.piratenpartei.id.frontend.model.topic.Ini;
+import de.piratenpartei.id.frontend.model.topic.TopicList;
 import de.piratenpartei.id.vote.Account;
 import de.piratenpartei.id.vote.KeyException;
 
@@ -39,7 +38,7 @@ public class Server {
 	
 	private void init(String path) {
 		try {
-			this.buildTopicList(loadInis(path));
+			this.loadInis(path);
 		} catch (IOException e) {
 			System.out.println("Error reading Inis from file " + path);
 			e.printStackTrace();
@@ -77,15 +76,68 @@ public class Server {
 				break;
 			}
         }
-		storeInis(this.topics.toJSON(),Server.defaultOutPath);
+		storeInis(this.topics,Server.defaultOutPath);
 	}
 
 	private String action(String msg) throws KeyException {
 		JSONObject jo = (JSONObject) JSONValue.parse(msg);
-		if(!checkSignature(jo)) throw new KeyException("Signature not matching");
-		String[] commands = new String[]{};
+		if(!checkSignature(jo))
+			throw new KeyException("Signature not matching");
 		String result = "";
-		switch(Arrays.asList(commands).indexOf((String)jo.get("type"))){
+		JSONObject data;
+		switch((String)jo.get("type")){
+		case("newIni"):
+			data = (JSONObject) jo.get("data");
+			String s_idNum = ((String)data.get("targetID")).substring(3);
+			int idNum=0;
+			try{
+				idNum = Integer.parseInt(s_idNum);
+			} catch (Exception e){
+				return "malformed targetID";
+			}
+			this.topics.addIniToTopic(new Ini((String) data.get("caption"), (String) data.get("text")), idNum);
+			result="Ini created in Topic TOP" + idNum + "with ID INI" + String.valueOf(this.topics.getTopics().get(idNum).getInis().size()-1);
+			break;
+		case("newTopic"):
+			data = (JSONObject) jo.get("data");
+			JSONArray ja_tags = (JSONArray) data.get("tags");
+			List<String> tags = new ArrayList<String>();
+			for(int i=0; i<ja_tags.size(); i++)
+				tags.add((String) ja_tags.get(i));
+			this.topics.addIniInNewTopic(new Ini((String) data.get("caption"), (String) data.get("text")), tags);
+			result="New Topic created as TOP" + String.valueOf(this.topics.getTopics().size()-1);
+			break;
+		case("deleteIni"):
+			result="";
+			break;
+		case("changeIni"):
+			result="";
+			break;
+		case("vote"):
+			result="";
+			break;
+		case("messageToUser"):
+			result="";
+			break;
+		case("nickChange"):
+			result="";
+			break;
+		case("pullTopicList"):
+			result=this.topics.toJSON().toJSONString();
+			break;
+		case("pullUserMessages"):
+			result="";
+			break;
+		case("newAccount"):
+			// TODO
+			//accounts.add(new Account());
+			result="";
+			break;
+		case("revokeAccount"):
+			result="";
+			break;
+		default:
+			result = "unknown Command";
 		}
 		return result;
 	}
@@ -99,14 +151,19 @@ public class Server {
 		List<Account> accs = new ArrayList<Account>();
 		for(int i=0; i<ja.size(); i++){
 			// TODO
-			// accs.add(new Account((JSONObject) ja.get(i)));
+			// accs.adJSONObjectd(new Account((JSONObject) ja.get(i)));
 		}
 		return accs; 
 	}
 	
 	private void storeAccounts(List<Account> accs, String path) {
-		// TODO
-		// FileManager.save(accs.toJSON, path);
+		JSONArray ja = new JSONArray();
+		for(int i=0; i<accs.size(); i++)
+			// TODO
+			ja.add(accs.get(i)/*.toJSON*/);
+		JSONObject jo = new JSONObject();
+		jo.put("accounts", ja);
+		FileManager.save(jo, path);
 	}
 
 	private TopicList loadInis(String path) throws IOException{
@@ -117,17 +174,7 @@ public class Server {
 		FileManager.save(tl.toJSON(), path);
 	}
 
-	public void buildTopicList(JSONObject jo) throws IOException{
-		System.out.println("Building Topics ...");
-
-		String structure = (String) jo.get("structure");
-		if(structure.equals("list"))
-			topics = new TopicList((JSONObject) jo.get("data"));
-		else
-			throw new RuntimeException("Structure property in JSON-file has unknown value:" + structure);		
-	}
-	
-	public void addIniInNewTopic(Ini ini, ArrayList<String> tags){
+	public void addIniInNewTopic(Ini ini, List<String> tags){
 		this.topics.addIniInNewTopic(ini, tags);
 	}
 	

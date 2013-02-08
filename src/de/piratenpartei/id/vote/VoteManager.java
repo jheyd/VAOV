@@ -3,8 +3,9 @@ package de.piratenpartei.id.vote;
 import java.io.IOException;
 import java.util.Arrays;
 
-import de.piratenpartei.id.frontend.Asker;
-import de.piratenpartei.id.frontend.Vote;
+import de.piratenpartei.id.frontend.control.Util;
+import de.piratenpartei.id.frontend.control.MessageHandler;
+import de.piratenpartei.id.frontend.model.Vote;
 
 /**
  * This class manages the voting part of this application: Key and Account Management, sending signed Messages, controlling Signatures of other Messages.
@@ -14,7 +15,7 @@ import de.piratenpartei.id.frontend.Vote;
  * @author dunkelzahn
  *
  */
-
+@Deprecated
 public class VoteManager {
 	public static final String[] commandNames = new String[]{ "message" , "vote" , "newIni" , "newTopic"};
 	public static final String[] commandShortNames = new String[]{ "m" , "v" , "i" , "t" };
@@ -85,7 +86,7 @@ public class VoteManager {
 	}
 	
 	private void setAcc(String username){
-		char[] pass = Asker.askCharArray("password for " + username + ": ");
+		char[] pass = Util.askCharArray("password for " + username + ": ");
 		try {
 			acc = new PrivateAccount(username,pass);
 		} catch (KeyException e1) {
@@ -106,7 +107,7 @@ public class VoteManager {
 	 * @throws IOException 
 	 */
 	public void message(String target, String message) throws KeyException, IOException, IllegalFormatException, VerificationException{
-		Messenger.sendMessageToUser(target, message, acc);
+		MessageHandler.sendMessageToUser(target, message, acc);
 	}
 	
 	/**
@@ -134,7 +135,7 @@ public class VoteManager {
 				return;
 			}
 		}
-		Messenger.sendVote(new Vote(votes,targetID), acc);
+		MessageHandler.sendVote(new Vote(votes,targetID), acc);
 	}
 
 	/**

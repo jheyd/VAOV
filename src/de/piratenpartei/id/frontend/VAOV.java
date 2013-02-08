@@ -9,13 +9,14 @@ import java.util.List;
 
 import org.json.simple.*;
 
-import de.piratenpartei.id.frontend.topic.Ini;
-import de.piratenpartei.id.frontend.topic.Topic;
-import de.piratenpartei.id.frontend.topic.TopicList;
+import de.piratenpartei.id.frontend.control.MessageHandler;
+import de.piratenpartei.id.frontend.model.Vote;
+import de.piratenpartei.id.frontend.model.topic.Ini;
+import de.piratenpartei.id.frontend.model.topic.Topic;
+import de.piratenpartei.id.frontend.model.topic.TopicList;
 import de.piratenpartei.id.vote.Account;
 import de.piratenpartei.id.vote.IllegalFormatException;
 import de.piratenpartei.id.vote.KeyException;
-import de.piratenpartei.id.vote.Messenger;
 import de.piratenpartei.id.vote.VerificationException;
 
 
@@ -61,7 +62,7 @@ public class VAOV {
 	}
 	
 	public void vote(Topic topic, Vote vote) throws IOException, IllegalFormatException, KeyException, VerificationException{
-		Messenger.sendVote(vote,account);
+		MessageHandler.sendVote(vote,account);
 	}
 	
 	public void buildTopicList(String data) throws IOException{

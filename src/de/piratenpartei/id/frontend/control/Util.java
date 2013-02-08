@@ -1,4 +1,4 @@
-package de.piratenpartei.id.frontend;
+package de.piratenpartei.id.frontend.control;
 import java.util.List;
 
 /**
@@ -6,11 +6,11 @@ import java.util.List;
  * @author dunkelzahn
  *
  */
-public class Asker {
+public class Util {
 	
 	/**
 	 * Read a line from System.in
-	 * @return the read line
+	 * @return the read line as a String
 	 */
 	public static String scan(){
 		java.io.BufferedReader systemInReader = new java.io.BufferedReader(new java.io.InputStreamReader(System.in));
@@ -108,6 +108,20 @@ public class Asker {
 			throw new RuntimeException("read error: " + e.getMessage());
 		}
 		return buf;
+	}
+
+
+	/**
+	 * overwrites a char Array with 'a's
+	 * @param c the Array to overwrite
+	 */
+	public static void overwriteChar(char[] c) {
+		for(int i=0; i<c.length; i++) c[i] = 'a';		
+	}
+
+	public static String getIniIDFromJListSelectedValue(String selectedValue) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

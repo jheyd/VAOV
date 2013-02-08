@@ -1,4 +1,4 @@
-package de.piratenpartei.id.frontend.gui;
+package de.piratenpartei.id.frontend.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,7 +9,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import de.piratenpartei.id.frontend.Util;
+import de.piratenpartei.id.frontend.control.Control;
+import de.piratenpartei.id.frontend.control.Util;
+import de.piratenpartei.id.frontend.model.Pair;
 import de.piratenpartei.id.vote.KeyException;
 import de.piratenpartei.id.vote.PrivateAccount;
 
@@ -84,7 +86,7 @@ public class MyMenuBar extends JMenuBar implements ActionListener{
 			Pair<String,char[]> pair = view.queryAccount();
 			String username = pair.first;
 			char[] pass = pair.second;
-			control.newAccount(username, pass);
+			//control.newAccount(username, pass); TODO
 			Util.overwriteChar(pass);
 		}
 		if(e.getSource() == this.jmi_ImportAccount){

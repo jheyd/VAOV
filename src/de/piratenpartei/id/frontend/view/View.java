@@ -1,4 +1,4 @@
-package de.piratenpartei.id.frontend.gui;
+package de.piratenpartei.id.frontend.view;
 
 
 import java.awt.BorderLayout;
@@ -15,7 +15,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-import de.piratenpartei.id.frontend.Vote;
+import de.piratenpartei.id.frontend.control.Control;
+import de.piratenpartei.id.frontend.control.Util;
+import de.piratenpartei.id.frontend.model.Pair;
+import de.piratenpartei.id.frontend.model.Vote;
 
 public class View extends JFrame implements ActionListener{
 
@@ -128,15 +131,15 @@ public class View extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == this.btn_Abstain){
-			control.vote(new Vote(new boolean[]{false,false},Control.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
+			control.voteWithLoadedAccount(new Vote(new boolean[]{false,false},Util.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
 			this.setButtonsEnabled(false);
 		}
 		if(e.getSource() == this.btn_VoteYes){
-			control.vote(new Vote(new boolean[]{true,false},Control.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
+			control.voteWithLoadedAccount(new Vote(new boolean[]{true,false},Util.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
 			this.setButtonsEnabled(false);
 		}
 		if(e.getSource() == this.btn_VoteNo){
-			control.vote(new Vote(new boolean[]{false,true},Control.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
+			control.voteWithLoadedAccount(new Vote(new boolean[]{false,true},Util.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
 			this.setButtonsEnabled(false);
 		}
 		if(e.getSource() == this.btn_Change){
