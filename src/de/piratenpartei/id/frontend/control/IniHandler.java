@@ -1,8 +1,5 @@
 package de.piratenpartei.id.frontend.control;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +7,6 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 import de.piratenpartei.id.frontend.model.IniModel;
 import de.piratenpartei.id.frontend.model.topic.Topic;
@@ -26,18 +22,8 @@ public class IniHandler {
 	
 	public IniHandler() {
 		pull();
-		BufferedReader br;
-		String s = "";
-		String buf = "";
-		try {
-			br = new java.io.BufferedReader(new java.io.FileReader(topicListFilePath));
-			while((buf = br.readLine()) != null) s += buf;
-			br.close();
-		}
-		catch (FileNotFoundException e1) { e1.printStackTrace(); }
-		catch (IOException e) { e.printStackTrace(); } 
 
-		JSONObject jo = (JSONObject) JSONValue.parse(s);
+		JSONObject jo = Util.loadJSONDataFromFile(topicListFilePath);
 		JSONObject jo_data = (JSONObject) jo.get("data");
 		
 		List<Topic> topics = new ArrayList<Topic>();
@@ -105,8 +91,9 @@ public class IniHandler {
 		if(topicID.length() < 4){
 			throw new ParseException("", 0);
 		}
-		if(topicID.substring(0, 2) != "TOP")
+		if(!topicID.substring(0, 3).equals("TOP")){
 			throw new ParseException("", 0);
+		}
 		try{
 			int index = Integer.parseInt(topicID.substring(3));
 			List<String> tags = model.getTopics().get(index).getTags();
@@ -133,7 +120,7 @@ public class IniHandler {
 		if(targetID.length() < 6){
 			throw new ParseException("", 0);
 		}
-		if(targetID.substring(0, 2) !="INI")
+		if(!targetID.substring(0, 3).equals("INI"))
 			throw new ParseException("", 0);
 		String[] indices = targetID.substring(3).split("\\.");
 		if(indices.length != 2)

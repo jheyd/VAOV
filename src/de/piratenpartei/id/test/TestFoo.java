@@ -4,11 +4,11 @@ import java.security.PublicKey;
 
 import org.json.simple.JSONObject;
 
-import de.piratenpartei.id.vote.Account;
 import de.piratenpartei.id.vote.KeyException;
 import de.piratenpartei.id.vote.PrivateAccount;
 
 public class TestFoo {
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		try {
 			PublicKey pk = new PrivateAccount().getPublicKey();

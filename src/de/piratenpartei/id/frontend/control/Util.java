@@ -1,5 +1,11 @@
 package de.piratenpartei.id.frontend.control;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
+
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 /**
  * Utility class for asking questions (and receiving answers) on the command line
@@ -123,5 +129,29 @@ public class Util {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	public static JSONObject loadJSONDataFromFile(String path){
+		String temp = "";
+		String s;
+		try {
+			java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(path));
+			while((s = br.readLine()) != null) temp += s;
+			br.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Error reading file \"" + path + "\": " + e.getMessage());
+		}
+		JSONObject jo = (JSONObject) JSONValue.parse(temp);
+		return jo;
+	}
+	
+	public static void storeJSONDataToFile(JSONObject jo, String path){
+		BufferedWriter out;
+		try {
+			out = new BufferedWriter(new FileWriter(path));
+			out.write(jo.toString());
+			out.close();
+		} catch (IOException e) {
+			throw new RuntimeException("Error writing to file \"" + path + "\": " + e.getMessage());
+		}
+	}
 }

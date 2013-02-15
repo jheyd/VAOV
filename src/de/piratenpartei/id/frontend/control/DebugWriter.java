@@ -2,7 +2,7 @@ package de.piratenpartei.id.frontend.control;
 
 import java.io.IOException;
 
-public class TestWriter extends MyWriter {
+public class DebugWriter extends MyWriter {
 	private String s="";
 	private boolean lastMessageSentSuccessfully = true;
 

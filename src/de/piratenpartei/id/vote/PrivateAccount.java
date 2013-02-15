@@ -95,8 +95,11 @@ public class PrivateAccount extends Account {
 	public void store(String keyId, char[] password) throws KeyException {
 		try {
 			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
+			System.out.println("1");
 			ks.load(new FileInputStream(Config.getKeyStore()), password);
+			System.out.println("2");
 			ks.setKeyEntry(keyId+Config.ACCOUNT_ALIAS_PUBLIC, keys.getPublic(), password, null);
+			System.out.println("3");
 			
 			/*
 			 * We need a stupid certificate to store the key, so just create a self-signed one.
@@ -132,8 +135,11 @@ public class PrivateAccount extends Account {
 			
 			Certificate[] certs = {cert};
 			
+			System.out.println("4");
 			ks.setKeyEntry(keyId+Config.ACCOUNT_ALIAS_PRIVATE, keys.getPrivate(), password, certs);
+			System.out.println("5");
 			ks.store(new FileOutputStream(Config.getKeyStore()), password);
+			System.out.println("6");
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		} catch (CertificateException e) {

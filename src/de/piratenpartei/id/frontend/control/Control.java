@@ -20,13 +20,9 @@ public class Control {
 		this.i_handler = new IniHandler();
 	}
 	
-	public void voteWithLoadedAccount(Vote vote) {
-		try {
-			vote(a_handler.getAccount(), vote);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void voteWithLoadedAccount(Vote vote, char[] pass) throws KeyException, ParseException {
+		PrivateAccount pa = a_handler.getAccount(pass); 
+		vote(pa, vote);
 	}
 
 	public void message(PrivateAccount acc, String target, String message) {
@@ -69,8 +65,13 @@ public class Control {
 		a_handler.registerNewAccount(username, pass);
 	}
 
-	public PrivateAccount getAcc(String username, char[] pass) {
-		return a_handler.getAccount();
+	public PrivateAccount getAccount(String username, char[] pass) throws KeyException {
+		a_handler.setAccount(username);
+		return a_handler.getAccount(pass);
+	}
+
+	public PrivateAccount getLoadedAccount(char[] pass) throws KeyException {
+		return a_handler.getAccount(pass);
 	}
 
 	public List<String> listTopics() {

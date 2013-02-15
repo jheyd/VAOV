@@ -131,15 +131,15 @@ public class View extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == this.btn_Abstain){
-			control.voteWithLoadedAccount(new Vote(new boolean[]{false,false},Util.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
+			//control.voteWithLoadedAccount(new Vote(new boolean[]{false,false},Util.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
 			this.setButtonsEnabled(false);
 		}
 		if(e.getSource() == this.btn_VoteYes){
-			control.voteWithLoadedAccount(new Vote(new boolean[]{true,false},Util.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
+			//control.voteWithLoadedAccount(new Vote(new boolean[]{true,false},Util.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
 			this.setButtonsEnabled(false);
 		}
 		if(e.getSource() == this.btn_VoteNo){
-			control.voteWithLoadedAccount(new Vote(new boolean[]{false,true},Util.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
+			//control.voteWithLoadedAccount(new Vote(new boolean[]{false,true},Util.getIniIDFromJListSelectedValue(this.list.getSelectedValue())));
 			this.setButtonsEnabled(false);
 		}
 		if(e.getSource() == this.btn_Change){

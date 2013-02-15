@@ -17,7 +17,7 @@ import de.piratenpartei.id.vote.VerificationException;
 
 
 public class MessageHandler {
-	public static MyWriter mw_output = new TestWriter();
+	public static MyWriter mw_output = new DebugWriter();
 	public static PrintWriter pw_output = new PrintWriter(mw_output);
 	
 	private static List<String> unsentMessages = new ArrayList<String>();
@@ -156,6 +156,7 @@ public class MessageHandler {
 		sendMessage(jo2.toJSONString(),author);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static void sendNewAccount(Account acc) throws IllegalFormatException, KeyException, VerificationException{
 		PublicKey pk = acc.getPublicKey();
 		String[] lines = pk.toString().split("\n");

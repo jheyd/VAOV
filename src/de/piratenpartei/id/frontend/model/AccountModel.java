@@ -1,21 +1,19 @@
 package de.piratenpartei.id.frontend.model;
 
+import de.piratenpartei.id.frontend.control.Util;
 import de.piratenpartei.id.vote.KeyException;
 import de.piratenpartei.id.vote.PrivateAccount;
 
 public class AccountModel {
-	private PrivateAccount account;
-
-	public PrivateAccount getAccount() {
-		return account;
-	}
-
-	public void setAccount(PrivateAccount account) {
-		this.account = account;
-	}
+	String keyID;
 	
-	public void loadAccount(String username, char[] pass) throws KeyException{
-		this.account = new PrivateAccount(username, pass);
+	public PrivateAccount getPrivateAccount(char[] pass) throws KeyException {
+		PrivateAccount pa = new PrivateAccount(keyID, pass);
+		Util.overwriteChar(pass);
+		return pa;
 	}
 
-}
+	public void setPrivateAccount(String keyId) {
+		this.keyID = keyId;
+	}
+	}
