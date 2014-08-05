@@ -1,7 +1,7 @@
 package vaov.client.vote;
 
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -47,43 +47,34 @@ public class PrivateAccount extends Account {
 
 	/**
 	 * Loads a previously created PrivateAccount from the KeyStore.
-	 * 
+	 *
 	 * @param password
 	 * @throws KeyException
 	 */
 	public PrivateAccount(String keyId, char[] password) throws KeyException {
 		try {
-			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(),
-					Config.getProvider());
+			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
 			ks.load(new FileInputStream(Config.getKeyStore()), password);
-			PublicKey publicKey = (PublicKey) ks.getKey(keyId
-					+ Config.ACCOUNT_ALIAS_PUBLIC, password);
-			PrivateKey privateKey = (PrivateKey) ks.getKey(keyId
-					+ Config.ACCOUNT_ALIAS_PRIVATE, password);
+			PublicKey publicKey = (PublicKey) ks.getKey(keyId + Config.ACCOUNT_ALIAS_PUBLIC, password);
+			PrivateKey privateKey = (PrivateKey) ks.getKey(keyId + Config.ACCOUNT_ALIAS_PRIVATE, password);
 
 			if (publicKey == null || privateKey == null)
-				throw new KeyException("Key with id \"" + keyId
-						+ "\" does not exist");
+				throw new KeyException("Key with id \"" + keyId + "\" does not exist");
 
 			keys = new KeyPair(publicKey, privateKey);
-		} catch (UnrecoverableKeyException e) {
-			throw new KeyException("Cannot read Key from KeyStore", e);
-		} catch (NoSuchAlgorithmException e) {
+			init(keys.getPublic());
+		} catch (NoSuchAlgorithmException | CertificateException | KeyStoreException e) {
 			throw new RuntimeException(e);
-		} catch (CertificateException e) {
-			throw new RuntimeException(e);
-		} catch (FileNotFoundException e) {
-			throw new KeyException("Cannot open KeyStore", e);
 		} catch (IOException e) {
 			throw new KeyException("Cannot open KeyStore", e);
-		} catch (KeyStoreException e) {
-			throw new RuntimeException(e);
+		} catch (UnrecoverableKeyException e) {
+			throw new KeyException("Cannot read Key from KeyStore", e);
 		}
 	}
 
 	/**
 	 * Gets the private key of this account. Usually used to sign messages.
-	 * 
+	 *
 	 * @see Message#send(PrintWriter)
 	 * @return the private key
 	 */
@@ -104,11 +95,9 @@ public class PrivateAccount extends Account {
 		Helper.writePublicKey(builder, getPublicKey());
 		m.setMessage(builder.toString());
 
-		/*
-		 * URLConnection conn = Config.publishAccount.openConnection();
+		/* URLConnection conn = Config.publishAccount.openConnection();
 		 * OutputStream out = conn.getOutputStream(); PrintWriter pw = new
-		 * PrintWriter(new OutputStreamWriter(out, Config.CHARSET)); m.send(pw);
-		 */
+		 * PrintWriter(new OutputStreamWriter(out, Config.CHARSET)); m.send(pw); */
 		PrintWriter pw = new PrintWriter(System.out);
 		m.send(pw); // dirty hack for testing
 		pw.flush();
@@ -116,26 +105,25 @@ public class PrivateAccount extends Account {
 
 	/**
 	 * stores the keys of this account.
-	 * 
+	 *
 	 * @param password
 	 * @throws KeyException
 	 */
-	@SuppressWarnings("deprecation")
 	public void store(String keyId, char[] password) throws KeyException {
 		try {
-			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(),
-					Config.getProvider());
-			System.out.println("1");
-			ks.load(new FileInputStream(Config.getKeyStore()), password);
-			System.out.println("2");
-			ks.setKeyEntry(keyId + Config.ACCOUNT_ALIAS_PUBLIC,
-					keys.getPublic(), password, null);
-			System.out.println("3");
+			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
+			File keyStoreFile = Config.getKeyStore();
+			if (keyStoreFile.exists())
+				if (keyStoreFile.isFile())
+					ks.load(new FileInputStream(keyStoreFile), password);
+				else
+					throw new RuntimeException("a directory with the name of the keystore exists");
+			else
+				ks.load(null, null);
+			ks.setKeyEntry(keyId + Config.ACCOUNT_ALIAS_PUBLIC, keys.getPublic(), password, null);
 
-			/*
-			 * We need a stupid certificate to store the key, so just create a
-			 * self-signed one.
-			 */
+			/* We need a stupid certificate to store the key, so just create a
+			 * self-signed one. */
 			Date startDate = Date.valueOf("2000-01-01"); // time from which
 															// certificate is
 															// valid
@@ -161,34 +149,18 @@ public class PrivateAccount extends Account {
 			X509Certificate cert = null;
 			try {
 				cert = certGen.generate(keys.getPrivate(), "BC");
-			} catch (InvalidKeyException e) {
-				throw new RuntimeException(e);
-			} catch (IllegalStateException e) {
-				throw new RuntimeException(e);
-			} catch (NoSuchProviderException e) {
-				throw new RuntimeException(e);
-			} catch (SignatureException e) {
+			} catch (InvalidKeyException | IllegalStateException | NoSuchProviderException | SignatureException e) {
 				throw new RuntimeException(e);
 			}
 
 			Certificate[] certs = { cert };
 
-			System.out.println("4");
-			ks.setKeyEntry(keyId + Config.ACCOUNT_ALIAS_PRIVATE,
-					keys.getPrivate(), password, certs);
-			System.out.println("5");
-			ks.store(new FileOutputStream(Config.getKeyStore()), password);
-			System.out.println("6");
-		} catch (NoSuchAlgorithmException e) {
+			ks.setKeyEntry(keyId + Config.ACCOUNT_ALIAS_PRIVATE, keys.getPrivate(), password, certs);
+			ks.store(new FileOutputStream(keyStoreFile), password);
+		} catch (NoSuchAlgorithmException | CertificateException | KeyStoreException e) {
 			throw new RuntimeException(e);
-		} catch (CertificateException e) {
-			throw new RuntimeException(e);
-		} catch (FileNotFoundException e) {
-			throw new KeyException("Cannot write KeyStore to store the key", e);
 		} catch (IOException e) {
 			throw new KeyException("Cannot write KeyStore to store the key", e);
-		} catch (KeyStoreException e) {
-			throw new RuntimeException(e);
 		}
 	}
 }
