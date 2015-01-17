@@ -1,7 +1,11 @@
 package vaov.client;
 
-import vaov.client.vote.KeyException;
-import vaov.client.vote.PrivateAccount;
+import vaov.client.account.Account;
+import vaov.client.account.PrivateAccount;
+import vaov.client.message.writers.MessageWriterDebugImpl;
+import vaov.client.util.IllegalFormatException;
+import vaov.client.util.KeyException;
+import vaov.client.util.VerificationException;
 
 public abstract class AccountHandler {
 
@@ -15,15 +19,17 @@ public abstract class AccountHandler {
 	 * @return the new Account
 	 * @throws KeyException
 	 */
-	public static PrivateAccount createNewAccount(String keyID, char[] pass) throws KeyException {
+	public static PrivateAccount createNewAccount(String keyID, char[] pass)
+			throws KeyException {
 		PrivateAccount acc = new PrivateAccount();
 		acc.store(keyID, pass);
-		for (int i = 0; i < pass.length; i++ )
+		for (int i = 0; i < pass.length; i++)
 			pass[i] = 'a';
 		return acc;
 	}
 
-	public static PrivateAccount getAccount(String keyId, char[] pass) throws KeyException {
+	public static PrivateAccount getAccount(String keyId, char[] pass)
+			throws KeyException {
 		PrivateAccount pa = new PrivateAccount(keyId, pass);
 		Util.overwriteChar(pass);
 		return pa;
@@ -36,7 +42,8 @@ public abstract class AccountHandler {
 	 * @param pass
 	 * @return
 	 */
-	public static PrivateAccount registerAccount(String keyID, char[] pass, char[] privateKey, char[] publicKey) {
+	public static PrivateAccount registerAccount(String keyID, char[] pass,
+			char[] privateKey, char[] publicKey) {
 		// TODO
 		try {
 			PrivateAccount acc = new PrivateAccount();
@@ -49,6 +56,20 @@ public abstract class AccountHandler {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * publishes the public key, i.e. registers the Account.
+	 * 
+	 * @throws VerificationException
+	 * @throws KeyException
+	 * @throws IllegalFormatException
+	 */
+	public void publish(Account account) throws IllegalFormatException,
+			KeyException, VerificationException {
+		// TODO jan 17.01.2015 replace with useful MessageWriter
+		MessageWriterDebugImpl messageWriter = new MessageWriterDebugImpl();
+		new MessageHandler(messageWriter).sendNewAccount(account);
 	}
 
 }

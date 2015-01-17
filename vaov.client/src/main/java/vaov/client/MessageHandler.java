@@ -4,17 +4,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.PublicKey;
 
-import vaov.client.vote.Account;
-import vaov.client.vote.IllegalFormatException;
-import vaov.client.vote.KeyException;
-import vaov.client.vote.Message;
-import vaov.client.vote.MessageContentTO;
-import vaov.client.vote.MessageToUserContentTO;
-import vaov.client.vote.NewAccountContentTO;
-import vaov.client.vote.NickChangeContentTO;
-import vaov.client.vote.VerificationException;
-import vaov.client.vote.VoteContentTO;
-import vaov.client.writers.MessageWriter;
+import vaov.client.account.Account;
+import vaov.client.message.Message;
+import vaov.client.message.to.MessageContentTO;
+import vaov.client.message.to.MessageToUserContentTO;
+import vaov.client.message.to.NewAccountContentTO;
+import vaov.client.message.to.NickChangeContentTO;
+import vaov.client.message.to.Vote;
+import vaov.client.message.to.VoteContentTO;
+import vaov.client.message.writers.MessageWriter;
+import vaov.client.util.IllegalFormatException;
+import vaov.client.util.KeyException;
+import vaov.client.util.VerificationException;
 
 public class MessageHandler {
 

@@ -2,9 +2,9 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
-import vaov.client.vote.Helper;
-import vaov.client.vote.KeyException;
-import vaov.client.vote.PrivateAccount;
+import vaov.client.account.PrivateAccount;
+import vaov.client.util.Helper;
+import vaov.client.util.KeyException;
 
 public class TestKeyStore {
 

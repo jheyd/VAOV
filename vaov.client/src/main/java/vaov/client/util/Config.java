@@ -1,4 +1,4 @@
-package vaov.client.vote;
+package vaov.client.util;
 
 import java.io.File;
 import java.io.FileInputStream;

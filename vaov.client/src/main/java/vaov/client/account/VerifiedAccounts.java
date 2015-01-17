@@ -1,4 +1,4 @@
-package vaov.client.vote;
+package vaov.client.account;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -11,6 +11,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 
 import org.apache.commons.codec.binary.Base64;
+
+import vaov.client.util.Config;
+import vaov.client.util.Helper;
+import vaov.client.util.IllegalFormatException;
+import vaov.client.util.VerificationException;
 
 /**
  * This class manages the verified accounts.

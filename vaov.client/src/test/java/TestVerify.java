@@ -8,11 +8,11 @@ import java.io.IOException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import vaov.client.vote.Account;
-import vaov.client.vote.IllegalFormatException;
-import vaov.client.vote.KeyException;
-import vaov.client.vote.Message;
-import vaov.client.vote.VerificationException;
+import vaov.client.account.Account;
+import vaov.client.message.Message;
+import vaov.client.util.IllegalFormatException;
+import vaov.client.util.KeyException;
+import vaov.client.util.VerificationException;
 
 public class TestVerify {
 

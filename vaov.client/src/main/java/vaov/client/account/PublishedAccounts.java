@@ -1,10 +1,15 @@
-package vaov.client.vote;
+package vaov.client.account;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.PublicKey;
 import java.util.HashMap;
+
+import vaov.client.util.Config;
+import vaov.client.util.Helper;
+import vaov.client.util.IllegalFormatException;
+import vaov.client.util.KeyException;
 
 /**
  * This class manages the list of published accounts.

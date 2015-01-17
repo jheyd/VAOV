@@ -1,8 +1,17 @@
-package vaov.client.vote;
+package vaov.client.message;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+
+import vaov.client.account.Account;
+import vaov.client.account.PrivateAccount;
+import vaov.client.message.to.MessageContentTO;
+import vaov.client.message.to.MessageTO;
+import vaov.client.util.Helper;
+import vaov.client.util.IllegalFormatException;
+import vaov.client.util.KeyException;
+import vaov.client.util.VerificationException;
 
 /**
  * A signed message that is used to communicate with any kind of service. Every

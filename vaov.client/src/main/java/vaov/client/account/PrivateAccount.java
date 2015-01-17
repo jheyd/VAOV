@@ -1,4 +1,4 @@
-package vaov.client.vote;
+package vaov.client.account;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,8 +26,9 @@ import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 
-import vaov.client.MessageHandler;
-import vaov.client.writers.MessageWriterDebugImpl;
+import vaov.client.message.Message;
+import vaov.client.util.Config;
+import vaov.client.util.KeyException;
 
 public class PrivateAccount extends Account {
 
@@ -88,20 +89,6 @@ public class PrivateAccount extends Account {
 	 */
 	public PrivateKey getPrivateKey() {
 		return keys.getPrivate();
-	}
-
-	/**
-	 * publishes the public key, i.e. registers the Account.
-	 * 
-	 * @throws VerificationException
-	 * @throws KeyException
-	 * @throws IllegalFormatException
-	 */
-	public void publish() throws IllegalFormatException, KeyException,
-			VerificationException {
-		// TODO jan 17.01.2015 replace with useful MessageWriter
-		MessageWriterDebugImpl messageWriter = new MessageWriterDebugImpl();
-		new MessageHandler(messageWriter).sendNewAccount(this);
 	}
 
 	/**

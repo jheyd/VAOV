@@ -1,7 +1,9 @@
-package vaov.client;
+package vaov.client.message.to;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import vaov.client.JSONConstructable;
 
 /**
  * 

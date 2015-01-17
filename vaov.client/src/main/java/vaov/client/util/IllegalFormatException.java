@@ -1,4 +1,4 @@
-package vaov.client.vote;
+package vaov.client.util;
 
 /**
  * This Exception is thrown if something failed while reading some message/file.

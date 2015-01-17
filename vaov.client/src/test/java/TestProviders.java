@@ -3,7 +3,7 @@ import java.security.Security;
 
 import org.junit.Test;
 
-import vaov.client.vote.Config;
+import vaov.client.util.Config;
 
 public class TestProviders {
 

@@ -1,4 +1,4 @@
-package vaov.client.vote;
+package vaov.client.util;
 
 /**
  * This Exception is thrown if a Key is not of the correct type, or if the key

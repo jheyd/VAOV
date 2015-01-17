@@ -2,11 +2,12 @@ package vaov.client;
 
 import java.text.ParseException;
 
-import vaov.client.vote.IllegalFormatException;
-import vaov.client.vote.KeyException;
-import vaov.client.vote.PrivateAccount;
-import vaov.client.vote.VerificationException;
-import vaov.client.writers.MessageWriterDebugImpl;
+import vaov.client.account.PrivateAccount;
+import vaov.client.message.to.Vote;
+import vaov.client.message.writers.MessageWriterDebugImpl;
+import vaov.client.util.IllegalFormatException;
+import vaov.client.util.KeyException;
+import vaov.client.util.VerificationException;
 
 public abstract class Control {
 

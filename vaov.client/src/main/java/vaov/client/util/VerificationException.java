@@ -1,4 +1,4 @@
-package vaov.client.vote;
+package vaov.client.util;
 
 /**
  * This exception is thrown, if a message failed to verify.

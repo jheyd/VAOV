@@ -3,8 +3,8 @@ package vaov.client;
 import java.io.PrintWriter;
 import java.text.ParseException;
 
-import vaov.client.vote.KeyException;
-import vaov.client.vote.PrivateAccount;
+import vaov.client.account.PrivateAccount;
+import vaov.client.util.KeyException;
 
 /**
  * API for the Client

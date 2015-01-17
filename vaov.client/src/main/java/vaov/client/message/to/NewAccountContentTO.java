@@ -1,4 +1,4 @@
-package vaov.client.vote;
+package vaov.client.message.to;
 
 public class NewAccountContentTO extends MessageContentTO {
 

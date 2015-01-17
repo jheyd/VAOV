@@ -1,4 +1,4 @@
-package vaov.client.vote;
+package vaov.client.account;
 
 import gnu.jpdf.BoundingBox;
 import gnu.jpdf.PDFJob;
@@ -17,6 +17,9 @@ import java.io.OutputStream;
 import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
+
+import vaov.client.util.Helper;
+import vaov.client.util.KeyException;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;

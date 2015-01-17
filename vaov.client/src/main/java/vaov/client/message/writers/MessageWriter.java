@@ -1,4 +1,4 @@
-package vaov.client.writers;
+package vaov.client.message.writers;
 
 import java.io.Writer;
 

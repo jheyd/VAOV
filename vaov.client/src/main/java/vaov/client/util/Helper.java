@@ -1,4 +1,4 @@
-package vaov.client.vote;
+package vaov.client.util;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,6 +32,13 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.commons.codec.binary.Base64;
 
+import vaov.client.message.to.MessageContentTO;
+import vaov.client.message.to.MessageTO;
+import vaov.client.message.to.MessageToUserContentTO;
+import vaov.client.message.to.NewAccountContentTO;
+import vaov.client.message.to.NickChangeContentTO;
+import vaov.client.message.to.VoteContentTO;
+
 /**
  * This class is the main work horse. It contains methods that compute hashes or
  * transform keys to Strings etc.
@@ -55,7 +62,7 @@ public class Helper {
 		return computeDigest(marshalledMessageContent);
 	}
 
-	static String computeDigest(String marshalledMessageContent) {
+	public static String computeDigest(String marshalledMessageContent) {
 		// make sure message ends with a new line
 		if (!marshalledMessageContent.endsWith("\n"))
 			marshalledMessageContent = marshalledMessageContent + "\n";

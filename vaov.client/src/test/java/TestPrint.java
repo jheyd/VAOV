@@ -7,8 +7,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import vaov.client.vote.Account;
-import vaov.client.vote.KeyException;
+import vaov.client.account.Account;
+import vaov.client.util.KeyException;
 
 public class TestPrint {
 

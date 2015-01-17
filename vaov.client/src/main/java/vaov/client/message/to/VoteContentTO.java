@@ -1,6 +1,5 @@
-package vaov.client.vote;
+package vaov.client.message.to;
 
-import vaov.client.Vote;
 
 public class VoteContentTO extends MessageContentTO {
 
