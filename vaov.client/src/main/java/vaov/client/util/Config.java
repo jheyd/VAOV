@@ -111,4 +111,8 @@ public class Config {
 					"It seems you f***ed up your installation", e);
 		}
 	}
+
+	public static char[] getPublicKeyPassword() {
+		return "password".toCharArray();
+	}
 }

@@ -1,11 +1,16 @@
 package vaov.client.account;
 
 import java.security.PublicKey;
-import java.util.HashMap;
-import java.util.Map;
 
+import vaov.client.service.ServiceFactory;
+import vaov.client.util.Config;
+import vaov.client.util.Helper;
 import vaov.client.util.IllegalFormatException;
 import vaov.client.util.KeyException;
+import vaov.client.util.KeystoreService;
+import vaov.remote.account.to.AccountTO;
+import vaov.remote.account.to.PublicKeyTO;
+import vaov.remote.services.VaovAccountService;
 
 /**
  * This class manages the list of published accounts.
@@ -17,33 +22,8 @@ import vaov.client.util.KeyException;
  * 
  */
 public class PublishedAccounts {
-	private Map<String, Account> accounts;
 
-	private static final PublishedAccounts INSTANCE = createPublishedAccounts();
-
-	private static PublishedAccounts createPublishedAccounts() {
-		return new PublishedAccounts();
-	}
-
-	public static PublishedAccounts getInstance() {
-		return INSTANCE;
-	}
-
-	/**
-	 * Loads list of published accounts from a file (possibly fetched from the
-	 * internet). The file has to have entries of the form: <br>
-	 * Hash: <hash of RSA key 1> <br>
-	 * Modulus: <modulus of the RSA key 1> <br>
-	 * Exponent: <public exponent of the RSA key 1> <br>
-	 * Hash: <hash of RSA key 2> <br>
-	 * Modulus: <modulus of the RSA key 2> <br>
-	 * Exponent: <public exponent of the RSA key 2> <br>
-	 * Extra lines are not allowed
-	 * 
-	 * @throws IllegalFormatException
-	 */
-	private PublishedAccounts() {
-		accounts = new HashMap<>();
+	public PublishedAccounts() {
 	}
 
 	/**
@@ -52,14 +32,26 @@ public class PublishedAccounts {
 	 * @param hash
 	 * @return
 	 * @throws KeyException
+	 * @throws IllegalFormatException
 	 */
 	public PublicKey getKey(String hash) throws KeyException {
 		if (!hasKey(hash)) {
-			// TODO jan 17.01.2015 replace new Account()
-			// with WebService call
-			accounts.put(hash, new Account());
+			getAccountFromServer(hash);
 		}
-		return accounts.get(hash).getPublicKey();
+		return KeystoreService.loadKeyPair(hash, Config.getPublicKeyPassword())
+				.getPublic();
+	}
+
+	private void getAccountFromServer(String hash) throws KeyException {
+		VaovAccountService accountService = ServiceFactory.getAccountService();
+		AccountTO accountTO = accountService.getAccount(hash);
+		if (!hash.equals(accountTO.getHash()))
+			throw new KeyException("Hash from server does not match");
+		PublicKeyTO publicKeyTO = accountTO.getPublicKey();
+		PublicKey publicKey = Helper.readPublicKey(publicKeyTO.getModulus(),
+				publicKeyTO.getExponent());
+		KeystoreService.storePublicKey(hash, publicKey,
+				Config.getPublicKeyPassword());
 	}
 
 	/**
@@ -68,7 +60,8 @@ public class PublishedAccounts {
 	 * @param hash
 	 * @return
 	 */
-	public boolean hasKey(String hash) {
-		return accounts.containsKey(hash);
+	private boolean hasKey(String hash) {
+		return KeystoreService.loadPublicKey(hash,
+				Config.getPublicKeyPassword()).isPresent();
 	}
 }

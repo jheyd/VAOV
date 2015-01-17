@@ -1,13 +1,9 @@
 package vaov.client.account;
 
-import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 
 import vaov.client.message.Message;
 import vaov.client.util.KeyException;
@@ -39,17 +35,8 @@ public class PrivateAccount extends Account {
 	 * @throws KeyException
 	 */
 	public PrivateAccount(String keyId, char[] password) throws KeyException {
-		try {
-			keys = KeystoreService.loadKeyPair(keyId, password);
-			init(keys.getPublic());
-		} catch (NoSuchAlgorithmException | CertificateException
-				| KeyStoreException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new KeyException("Cannot open KeyStore", e);
-		} catch (UnrecoverableKeyException e) {
-			throw new KeyException("Cannot read Key from KeyStore", e);
-		}
+		keys = KeystoreService.loadKeyPair(keyId, password);
+		init(keys.getPublic());
 	}
 
 	/**
@@ -69,13 +56,6 @@ public class PrivateAccount extends Account {
 	 * @throws KeyException
 	 */
 	public void store(String keyId, char[] password) throws KeyException {
-		try {
-			KeystoreService.storeKey(keyId, password, keys);
-		} catch (NoSuchAlgorithmException | CertificateException
-				| KeyStoreException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new KeyException("Cannot write KeyStore to store the key", e);
-		}
+		KeystoreService.storeKeyPair(keyId, password, keys);
 	}
 }

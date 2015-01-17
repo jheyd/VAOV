@@ -24,7 +24,6 @@ public class TestVerify {
 	public void testCorrectKey() throws KeyException {
 		Account a = new Account(
 				"i9YMFc+vWTpO3B5hxwsg80UvHX6sGUKdhyly7RQOfg230UZfaVfN6fqHMtfb3bxydpRUEuQvgKgW450FwzrSww==");
-		assertTrue(a.isPublished());
 		assertFalse(a.isVerified());
 	}
 

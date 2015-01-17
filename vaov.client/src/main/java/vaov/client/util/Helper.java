@@ -69,39 +69,28 @@ public class Helper {
 	 * @throws IllegalFormatException
 	 *             if something is not in the format as expected
 	 */
-	public static PublicKey readPublicKey(String modulus, String exponent)
-			throws IllegalFormatException {
+	public static PublicKey readPublicKey(String modulus, String exponent) {
 		RSAPublicKeySpec spec;
+		byte[] enc_modulus = Base64.decodeBase64(modulus);
+		byte[] enc_exponent = Base64.decodeBase64(exponent);
+		BigInteger int_modulus = new BigInteger(enc_modulus);
+		BigInteger int_exponent = new BigInteger(enc_exponent);
+		if (int_modulus.compareTo(BigInteger.ZERO) <= 0)
+			throw new IllegalFormatException("Modulus must be positive");
+		if (int_exponent.compareTo(BigInteger.ZERO) <= 0)
+			throw new IllegalFormatException("Exponent must be positive");
+		spec = new RSAPublicKeySpec(int_modulus, int_exponent);
+		PublicKey pk;
 		try {
-			byte[] enc_modulus = Base64.decodeBase64(modulus);
-			byte[] enc_exponent = Base64.decodeBase64(exponent);
-			BigInteger int_modulus = new BigInteger(enc_modulus);
-			BigInteger int_exponent = new BigInteger(enc_exponent);
-			if (int_modulus.compareTo(BigInteger.ZERO) <= 0)
-				throw new IllegalFormatException("Modulus must be positive");
-			if (int_exponent.compareTo(BigInteger.ZERO) <= 0)
-				throw new IllegalFormatException("Exponent must be positive");
-			spec = new RSAPublicKeySpec(int_modulus, int_exponent);
-		} catch (RuntimeException e1) {
-			throw new IllegalFormatException("Failed to parse public key");
-		}
-
-		KeyFactory fact;
-		try {
-			fact = KeyFactory.getInstance("RSA", Config.getProvider()); // TODO:
-																		// specify
-																		// security
-																		// provider
+			// TODO: specify security provider
+			KeyFactory fact = KeyFactory.getInstance("RSA",
+					Config.getProvider());
+			pk = fact.generatePublic(spec);
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(
 					"No security provider for RSA algorithm", e);
-		}
-
-		PublicKey pk;
-		try {
-			pk = fact.generatePublic(spec);
 		} catch (InvalidKeySpecException e) {
-			throw new IllegalFormatException("Unable to generate public key");
+			throw new IllegalFormatException("Unable to generate public key", e);
 		}
 
 		return pk;

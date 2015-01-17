@@ -7,7 +7,7 @@ package vaov.client.util;
  * @author arne
  * 
  */
-public class KeyException extends Exception {
+public class KeyException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	public KeyException(String message) {

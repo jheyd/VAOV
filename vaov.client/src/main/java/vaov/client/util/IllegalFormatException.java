@@ -6,7 +6,7 @@ package vaov.client.util;
  * @author arne
  * 
  */
-public class IllegalFormatException extends Exception {
+public class IllegalFormatException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	public IllegalFormatException(String message) {

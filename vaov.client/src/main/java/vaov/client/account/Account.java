@@ -62,10 +62,15 @@ public class Account {
 	 */
 	public Account(String hash) throws KeyException {
 		this.hash = hash;
-		PublishedAccounts pa = PublishedAccounts.getInstance();
+		PublishedAccounts pa = new PublishedAccounts();
 		publicKey = pa.getKey(hash);
 		// check if this is the correct public key
 		Helper.verifyKey(publicKey, hash);
+	}
+
+	public Account(String hash, PublicKey publicKey) {
+		this.hash = hash;
+		this.publicKey = publicKey;
 	}
 
 	/**
@@ -97,31 +102,6 @@ public class Account {
 	protected void init(PublicKey pk) throws KeyException {
 		publicKey = pk;
 		hash = HashComputer.computeHash(publicKey);
-	}
-
-	/**
-	 * checks if the public key of this account has been published on the
-	 * official Account list.
-	 * 
-	 * @return true if it has been published
-	 */
-	public boolean isPublished() {
-		PublishedAccounts pa = PublishedAccounts.getInstance();
-		if (!pa.hasKey(hash))
-			return false;
-		// check if this is the correct public key
-		String test;
-		try {
-			PublicKey pk = pa.getKey(hash);
-			if (!pk.equals(publicKey))
-				return false;
-			test = HashComputer.computeHash(publicKey);
-		} catch (KeyException e) {
-			throw new RuntimeException(e);
-		}
-		if (!test.equals(hash))
-			return (false);
-		return true;
 	}
 
 	/**
@@ -262,7 +242,7 @@ public class Account {
 		QRCodeWriter qw = new QRCodeWriter();
 		BitMatrix bm;
 		try {
-			Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
+			Map<EncodeHintType, Object> hints = new HashMap<>();
 			hints.put(EncodeHintType.CHARACTER_SET, "UTF-8"); // shouldn't
 																// actually
 																// matter since
