@@ -5,7 +5,6 @@ import static java.lang.String.valueOf;
 import java.text.ParseException;
 
 import vaov.client.account.PrivateAccount;
-import vaov.client.message.writers.MessageWriterDebugImpl;
 import vaov.client.util.IllegalFormatException;
 import vaov.client.util.KeyException;
 import vaov.client.util.VerificationException;
@@ -73,8 +72,6 @@ public abstract class Control {
 		}
 	}
 
-	private static final MessageWriterDebugImpl MW = new MessageWriterDebugImpl();
-
-	private static final MessageHandler MH = new MessageHandler(MW);
+	private static final MessageHandler MH = new MessageHandler();
 
 }

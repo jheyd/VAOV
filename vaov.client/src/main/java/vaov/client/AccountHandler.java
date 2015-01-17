@@ -2,7 +2,6 @@ package vaov.client;
 
 import vaov.client.account.Account;
 import vaov.client.account.PrivateAccount;
-import vaov.client.message.writers.MessageWriterDebugImpl;
 import vaov.client.util.IllegalFormatException;
 import vaov.client.util.KeyException;
 import vaov.client.util.VerificationException;
@@ -67,9 +66,7 @@ public abstract class AccountHandler {
 	 */
 	public void publish(Account account) throws IllegalFormatException,
 			KeyException, VerificationException {
-		// TODO jan 17.01.2015 replace with useful MessageWriter
-		MessageWriterDebugImpl messageWriter = new MessageWriterDebugImpl();
-		new MessageHandler(messageWriter).sendNewAccount(account);
+		new MessageHandler().sendNewAccount(account);
 	}
 
 }

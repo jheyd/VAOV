@@ -48,6 +48,12 @@
 			<artifactId>jpdf</artifactId>
 			<version>1.7</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>de.piratenpartei.id</groupId>
+			<artifactId>vaov.remote</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>

@@ -1,4 +1,4 @@
-package vaov.client.message.to;
+package vaov.remote.message.to;
 
 public class NickChangeContentTO extends MessageContentTO {
 

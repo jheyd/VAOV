@@ -1,30 +1,20 @@
 package vaov.client;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.security.PublicKey;
 
 import vaov.client.account.Account;
 import vaov.client.message.Message;
-import vaov.client.message.to.MessageContentTO;
-import vaov.client.message.to.MessageToUserContentTO;
-import vaov.client.message.to.NewAccountContentTO;
-import vaov.client.message.to.NickChangeContentTO;
-import vaov.client.message.to.VoteContentTO;
-import vaov.client.message.writers.MessageWriter;
 import vaov.client.util.IllegalFormatException;
 import vaov.client.util.KeyException;
 import vaov.client.util.VerificationException;
+import vaov.remote.message.to.MessageContentTO;
+import vaov.remote.message.to.MessageToUserContentTO;
+import vaov.remote.message.to.NewAccountContentTO;
+import vaov.remote.message.to.NickChangeContentTO;
+import vaov.remote.message.to.VoteContentTO;
 
 public class MessageHandler {
-
-	// TODO replace JSON shit with JAXB
-
-	public MessageWriter mw_output;
-
-	public MessageHandler(MessageWriter m) {
-		mw_output = m;
-	}
 
 	/**
 	 * Send the a Message to the Server
@@ -40,12 +30,9 @@ public class MessageHandler {
 	 */
 	private boolean sendMessage(MessageContentTO messageContent, Account author)
 			throws IllegalFormatException, KeyException, VerificationException {
-		PrintWriter pw_output = new PrintWriter(mw_output);
 		Message m = new Message(author);
 		m.setMessage(messageContent);
-		m.send(pw_output);
-		pw_output.flush();
-		return mw_output.wasLastMessageSentSuccessfully();
+		return m.send();
 	}
 
 	/**

@@ -32,12 +32,12 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.commons.codec.binary.Base64;
 
-import vaov.client.message.to.MessageContentTO;
-import vaov.client.message.to.MessageTO;
-import vaov.client.message.to.MessageToUserContentTO;
-import vaov.client.message.to.NewAccountContentTO;
-import vaov.client.message.to.NickChangeContentTO;
-import vaov.client.message.to.VoteContentTO;
+import vaov.remote.message.to.MessageContentTO;
+import vaov.remote.message.to.MessageTO;
+import vaov.remote.message.to.MessageToUserContentTO;
+import vaov.remote.message.to.NewAccountContentTO;
+import vaov.remote.message.to.NickChangeContentTO;
+import vaov.remote.message.to.VoteContentTO;
 
 /**
  * This class is the main work horse. It contains methods that compute hashes or

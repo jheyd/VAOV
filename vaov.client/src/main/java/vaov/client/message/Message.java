@@ -2,16 +2,17 @@ package vaov.client.message;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 
 import vaov.client.account.Account;
 import vaov.client.account.PrivateAccount;
-import vaov.client.message.to.MessageContentTO;
-import vaov.client.message.to.MessageTO;
+import vaov.client.service.ServiceFactory;
 import vaov.client.util.Helper;
 import vaov.client.util.IllegalFormatException;
 import vaov.client.util.KeyException;
 import vaov.client.util.VerificationException;
+import vaov.remote.message.to.MessageContentTO;
+import vaov.remote.message.to.MessageTO;
+import vaov.remote.services.VaovMessageService;
 
 /**
  * A signed message that is used to communicate with any kind of service. Every
@@ -96,14 +97,14 @@ public class Message {
 	 * Sends the message. To be precise, writes the content of the message to a
 	 * PrintWriter which is then responsible for sending the message to its
 	 * destination. Make sure that the PrintWriter is writing in UTF8!
+	 * 
+	 * @return
 	 *
-	 * @param ps
-	 *            the PrintWriter to write the message to.
 	 * @throws KeyException
 	 *             if the author has not a private key, i.e. if the author is
 	 *             not a {@link PrivateAccount}
 	 */
-	public void send(PrintWriter ps) throws KeyException {
+	public boolean send() throws KeyException {
 		if (!(author instanceof PrivateAccount))
 			throw new KeyException("You cannot sign other peoples messages!");
 		PrivateAccount privateauthor = (PrivateAccount) author;
@@ -117,11 +118,11 @@ public class Message {
 		messageTO.setDigest(digest);
 		messageTO.setSignature(signature);
 		MessageContentTO messageContentTO = new MessageContentTO();
-		// TODO: fill MessageContentTO with message
 		messageTO.setContent(messageContentTO);
 
-		ps.print(Helper.marshalMessageTO(messageTO));
+		VaovMessageService messageService = ServiceFactory.getMessageService();
 
+		return messageService.send(messageTO);
 	}
 
 	/**
