@@ -2,17 +2,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-
-import org.junit.Ignore;
 import org.junit.Test;
 
 import vaov.client.account.Account;
-import vaov.client.message.Message;
-import vaov.client.util.IllegalFormatException;
 import vaov.client.util.KeyException;
-import vaov.client.util.VerificationException;
 
 public class TestVerify {
 
@@ -35,11 +28,4 @@ public class TestVerify {
 		assertFalse(a.isVerified());
 	}
 
-	@Test
-	@Ignore
-	// TODO jan 17.01.2015 Beispielfile erstellen
-	public void testMessage() throws KeyException, IllegalFormatException,
-			IOException, VerificationException {
-		new Message(new FileInputStream("test_files/message"));
-	}
 }

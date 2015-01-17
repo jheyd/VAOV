@@ -18,6 +18,7 @@ import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
 
+import vaov.client.util.HashComputer;
 import vaov.client.util.Helper;
 import vaov.client.util.KeyException;
 
@@ -95,7 +96,7 @@ public class Account {
 	 */
 	protected void init(PublicKey pk) throws KeyException {
 		publicKey = pk;
-		hash = Helper.computeHash(publicKey);
+		hash = HashComputer.computeHash(publicKey);
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class Account {
 			PublicKey pk = pa.getKey(hash);
 			if (!pk.equals(publicKey))
 				return false;
-			test = Helper.computeHash(publicKey);
+			test = HashComputer.computeHash(publicKey);
 		} catch (KeyException e) {
 			throw new RuntimeException(e);
 		}

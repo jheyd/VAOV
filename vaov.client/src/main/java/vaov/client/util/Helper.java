@@ -1,23 +1,11 @@
 package vaov.client.util;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.cert.CertificateException;
-import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
@@ -26,18 +14,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import org.apache.commons.codec.binary.Base64;
-
-import vaov.remote.message.to.MessageContentTO;
-import vaov.remote.message.to.MessageTO;
-import vaov.remote.message.to.MessageToUserContentTO;
-import vaov.remote.message.to.NewAccountContentTO;
-import vaov.remote.message.to.NickChangeContentTO;
-import vaov.remote.message.to.VoteContentTO;
 
 /**
  * This class is the main work horse. It contains methods that compute hashes or
@@ -49,171 +27,6 @@ import vaov.remote.message.to.VoteContentTO;
  *
  */
 public class Helper {
-
-	/**
-	 * Hashes the specified text and returns the computed digest
-	 *
-	 * @param messageContent
-	 *            the text to hash
-	 * @return the computed hash (digest)
-	 */
-	public static String computeDigest(MessageContentTO messageContent) {
-		String marshalledMessageContent = marshalMessageContentTO(messageContent);
-		return computeDigest(marshalledMessageContent);
-	}
-
-	public static String computeDigest(String marshalledMessageContent) {
-		// make sure message ends with a new line
-		if (!marshalledMessageContent.endsWith("\n"))
-			marshalledMessageContent = marshalledMessageContent + "\n";
-		MessageDigest d;
-		try {
-			d = MessageDigest.getInstance(Config.HASH_ALGORITHM,
-					Config.getProvider());
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
-		byte[] val;
-		try {
-			val = d.digest(marshalledMessageContent.getBytes(Config.CHARSET));
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
-		String encoded = Base64.encodeBase64String(val);
-		return encoded;
-	}
-
-	private static String marshalMessageContentTO(MessageContentTO message) {
-		String result;
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(
-					MessageContentTO.class, MessageToUserContentTO.class,
-					NickChangeContentTO.class, VoteContentTO.class,
-					NewAccountContentTO.class);
-			StringWriter stringWriter = new StringWriter();
-			Marshaller marshaller = jaxbContext.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
-					Boolean.TRUE);
-			marshaller.marshal(message, stringWriter);
-			result = stringWriter.toString();
-		} catch (JAXBException e) {
-			throw new RuntimeException(e);
-		}
-		return result;
-
-	}
-
-	/**
-	 * Computes the Hash of the specified key.
-	 *
-	 * @param pk
-	 *            the key for which to compute the hash.
-	 * @return the computed hash
-	 * @throws KeyException
-	 *             if the Key is not a RSA key
-	 */
-	public static String computeHash(PublicKey pk) throws KeyException {
-		if (!(pk instanceof RSAPublicKey))
-			throw new KeyException("Key is not a RSAPublicKey");
-		RSAPublicKey pub = (RSAPublicKey) pk;
-
-		// setup MessageDigest algorithm to compute the hash
-		MessageDigest d;
-		try {
-			d = MessageDigest.getInstance(Config.HASH_ALGORITHM,
-					Config.getProvider());
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
-		d.update(pub.getModulus().toByteArray());
-		byte[] val = d.digest(pub.getPublicExponent().toByteArray());
-
-		String encoded = Base64.encodeBase64String(val);
-		return encoded;
-	}
-
-	/**
-	 * Encrypts a given string with the specified private key.
-	 *
-	 * @param digest
-	 *            the text to encrypt
-	 * @param pk
-	 *            the private key to use
-	 * @return the encoded string.
-	 * @throws KeyException
-	 */
-	public static String computeSignature(String digest, PrivateKey pk)
-			throws KeyException {
-		if (!(pk instanceof RSAPrivateKey))
-			throw new KeyException("Key is not a RSAPrivateKey");
-		byte[] val;
-		try {
-			Cipher c = Cipher.getInstance(Config.SIGNATURE_ALGORITHM,
-					Config.getProvider());
-			c.init(Cipher.ENCRYPT_MODE, pk);
-			val = c.doFinal(digest.getBytes(Config.CHARSET));
-		} catch (InvalidKeyException e) {
-			throw new KeyException("Key is not a valid Key", e);
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		} catch (NoSuchPaddingException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalBlockSizeException e) {
-			throw new RuntimeException(e);
-		} catch (BadPaddingException e) {
-			throw new RuntimeException(e);
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
-		String encoded = Base64.encodeBase64String(val);
-		return encoded;
-	}
-
-	/**
-	 * Creates a new empty Keystore. If a keystore already existed, the old
-	 * keystore is overwritten.
-	 *
-	 * @param password
-	 *            the password with which to protect the keystore.
-	 * @throws KeyException
-	 */
-	public static void initKeyStore(char[] password) throws KeyException {
-		try {
-			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(),
-					Config.getProvider());
-			ks.load(null, null); // initialized default KeyStore
-			ks.store(new FileOutputStream(Config.getKeyStore()), password);
-		} catch (KeyStoreException e) {
-			throw new RuntimeException(e);
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		} catch (CertificateException e) {
-			throw new RuntimeException(e);
-		} catch (FileNotFoundException e) {
-			throw new KeyException("Cannot create KeyStore", e);
-		} catch (IOException e) {
-			throw new KeyException("Cannot create KeyStore", e);
-		}
-	}
-
-	public static String marshalMessageTO(MessageTO messageTO) {
-		String result;
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(MessageTO.class,
-					MessageContentTO.class, MessageToUserContentTO.class,
-					NickChangeContentTO.class, VoteContentTO.class,
-					NewAccountContentTO.class);
-			StringWriter stringWriter = new StringWriter();
-			Marshaller marshaller = jaxbContext.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
-					Boolean.TRUE);
-			marshaller.marshal(messageTO, stringWriter);
-			result = stringWriter.toString();
-		} catch (JAXBException e) {
-			throw new RuntimeException(e);
-		}
-		return result;
-	}
 
 	/**
 	 * Reads a line of a input file. The line must have the format:
@@ -294,30 +107,6 @@ public class Helper {
 		return pk;
 	}
 
-	public static MessageTO unmarshalMessageTO(InputStream inputStream) {
-		MessageTO result;
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(MessageTO.class);
-			result = (MessageTO) jaxbContext.createUnmarshaller().unmarshal(
-					inputStream);
-		} catch (JAXBException e) {
-			throw new RuntimeException(e);
-		}
-		return result;
-	}
-
-	public static MessageTO unmarshalMessageTO(String string) {
-		MessageTO result;
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(MessageTO.class);
-			result = (MessageTO) jaxbContext.createUnmarshaller().unmarshal(
-					new StringReader(string));
-		} catch (JAXBException e) {
-			throw new RuntimeException(e);
-		}
-		return result;
-	}
-
 	/**
 	 * Checks, if the given hash is really the hash of the specified key.
 	 *
@@ -329,7 +118,7 @@ public class Helper {
 	 *             if the hash doesn't match to the key.
 	 */
 	public static void verifyKey(PublicKey pk, String hash) throws KeyException {
-		String encoded = computeHash(pk);
+		String encoded = HashComputer.computeHash(pk);
 		if (!encoded.equals(hash))
 			throw new KeyException("Key does not match to hash: " + hash);
 	}

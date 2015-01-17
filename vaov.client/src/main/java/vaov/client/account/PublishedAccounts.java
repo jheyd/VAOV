@@ -122,14 +122,6 @@ public class PublishedAccounts {
 							+ e.getMessage(), e);
 				}
 
-			String computed_digest = Helper.computeDigest(listText.toString());
-			if (!digest.equals(computed_digest)) {
-				// TODO: comment the following line in as soon as we have a
-				// proper server.
-				// throw new
-				// IllegalFormatException("Digest does not match to list. Maybe the list got manipulated?");
-			}
-
 		} catch (IOException e) {
 			throw new IOException("[Line " + line + "] Failed to read", e);
 		}

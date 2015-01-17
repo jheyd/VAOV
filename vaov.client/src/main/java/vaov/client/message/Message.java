@@ -1,14 +1,15 @@
 package vaov.client.message;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import vaov.client.account.Account;
 import vaov.client.account.PrivateAccount;
 import vaov.client.service.ServiceFactory;
+import vaov.client.util.DigestComputer;
 import vaov.client.util.Helper;
 import vaov.client.util.IllegalFormatException;
 import vaov.client.util.KeyException;
+import vaov.client.util.MessageTOFactory;
 import vaov.client.util.VerificationException;
 import vaov.remote.message.to.MessageContentTO;
 import vaov.remote.message.to.MessageTO;
@@ -45,9 +46,9 @@ public class Message {
 	/**
 	 * Loads a message from a given input stream. Use this for received
 	 * messages.
+	 * 
+	 * @param messageTO
 	 *
-	 * @param in
-	 *            to load the message
 	 * @throws IOException
 	 *             if the stream could not be read properly.
 	 * @throws KeyException
@@ -57,14 +58,13 @@ public class Message {
 	 * @throws VerificationException
 	 *             if the signature of the message could not be validated.
 	 */
-	public Message(InputStream in) throws IOException, IllegalFormatException,
-			KeyException, VerificationException {
-		MessageTO messageTO = Helper.unmarshalMessageTO(in);
+	public Message(MessageTO messageTO) throws IOException,
+			IllegalFormatException, KeyException, VerificationException {
 
 		author = new Account(messageTO.getAuthor());
 		message = messageTO.getContent();
 
-		String computed_digest = Helper.computeDigest(message);
+		String computed_digest = DigestComputer.computeDigest(message);
 		if (!computed_digest.equals(messageTO.getDigest()))
 			throw new VerificationException(
 					"Digest does not match to message. Message may be manipulated!");
@@ -109,16 +109,8 @@ public class Message {
 			throw new KeyException("You cannot sign other peoples messages!");
 		PrivateAccount privateauthor = (PrivateAccount) author;
 
-		String digest = Helper.computeDigest(message);
-		String signature = Helper.computeSignature(digest,
-				privateauthor.getPrivateKey());
-
-		MessageTO messageTO = new MessageTO();
-		messageTO.setAuthor(Helper.computeHash(author.getPublicKey()));
-		messageTO.setDigest(digest);
-		messageTO.setSignature(signature);
-		MessageContentTO messageContentTO = new MessageContentTO();
-		messageTO.setContent(messageContentTO);
+		MessageTO messageTO = MessageTOFactory.createMessageTO(privateauthor,
+				message);
 
 		VaovMessageService messageService = ServiceFactory.getMessageService();
 
