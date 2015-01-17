@@ -1,4 +1,4 @@
-package vaov.client.reduced.client;
+package vaov.client;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

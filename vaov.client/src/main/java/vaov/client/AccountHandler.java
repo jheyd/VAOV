@@ -1,4 +1,4 @@
-package vaov.client.reduced.client;
+package vaov.client;
 
 import vaov.client.vote.KeyException;
 import vaov.client.vote.PrivateAccount;

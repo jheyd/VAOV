@@ -1,4 +1,4 @@
-package vaov.client.reduced.client;
+package vaov.client;
 
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;

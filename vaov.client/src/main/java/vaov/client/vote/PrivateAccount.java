@@ -26,8 +26,8 @@ import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 
-import vaov.client.reduced.client.MessageHandler;
-import vaov.client.reduced.client.writers.MessageWriterDebugImpl;
+import vaov.client.MessageHandler;
+import vaov.client.writers.MessageWriterDebugImpl;
 
 public class PrivateAccount extends Account {
 

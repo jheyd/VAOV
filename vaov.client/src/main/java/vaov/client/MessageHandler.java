@@ -1,10 +1,9 @@
-package vaov.client.reduced.client;
+package vaov.client;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.PublicKey;
 
-import vaov.client.reduced.client.writers.MessageWriter;
 import vaov.client.vote.Account;
 import vaov.client.vote.IllegalFormatException;
 import vaov.client.vote.KeyException;
@@ -15,6 +14,7 @@ import vaov.client.vote.NewAccountContentTO;
 import vaov.client.vote.NickChangeContentTO;
 import vaov.client.vote.VerificationException;
 import vaov.client.vote.VoteContentTO;
+import vaov.client.writers.MessageWriter;
 
 public class MessageHandler {
 
