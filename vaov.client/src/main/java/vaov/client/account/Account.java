@@ -2,29 +2,24 @@ package vaov.client.account;
 
 import java.security.PublicKey;
 
-import vaov.client.util.HashComputer;
+import vaov.remote.services.KeyId;
 
 public class Account {
 
 	private PublicKey publicKey;
 
-	private String hash;
+	private KeyId keyId;
 
-	public Account(PublicKey publicKey) {
-		this(HashComputer.computeHash(publicKey), publicKey);
-	}
-
-	public Account(String hash, PublicKey publicKey) {
-		this.hash = hash;
+	public Account(KeyId keyId, PublicKey publicKey) {
+		this.keyId = keyId;
 		this.publicKey = publicKey;
-	}
-
-	public String getHash() {
-		return hash;
 	}
 
 	public PublicKey getPublicKey() {
 		return publicKey;
 	}
 
+	public KeyId getKeyId() {
+		return keyId;
+	}
 }

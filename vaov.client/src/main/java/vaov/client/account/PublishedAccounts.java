@@ -10,6 +10,7 @@ import vaov.client.util.KeystoreService;
 import vaov.client.util.PublicKeyConverter;
 import vaov.remote.account.to.AccountTO;
 import vaov.remote.account.to.PublicKeyTO;
+import vaov.remote.services.KeyId;
 import vaov.remote.services.VaovAccountService;
 
 /**
@@ -29,38 +30,35 @@ public class PublishedAccounts {
 	/**
 	 * Loads Key from Database
 	 * 
-	 * @param hash
+	 * @param keyId
 	 * @return
 	 * @throws KeyException
 	 * @throws IllegalFormatException
 	 */
-	public PublicKey getKey(String hash) throws KeyException {
-		if (!hasKey(hash)) {
-			getAccountFromServer(hash);
+	public PublicKey getKey(KeyId keyId) throws KeyException {
+		if (!hasKey(keyId)) {
+			getAccountFromServer(keyId);
 		}
-		return KeystoreService.loadKeyPair(hash, Config.getPublicKeyPassword())
-				.getPublic();
+		return KeystoreService.loadKeyPair(keyId, Config.getPublicKeyPassword()).getPublic();
 	}
 
-	private void getAccountFromServer(String hash) throws KeyException {
+	private void getAccountFromServer(KeyId keyId) throws KeyException {
 		VaovAccountService accountService = ServiceFactory.getAccountService();
-		AccountTO accountTO = accountService.getAccount(hash);
-		if (!hash.equals(accountTO.getHash()))
+		AccountTO accountTO = accountService.getAccount(keyId);
+		if (!keyId.equals(accountTO.getHash()))
 			throw new KeyException("Hash from server does not match");
 		PublicKeyTO publicKeyTO = accountTO.getPublicKey();
-		PublicKey publicKey = PublicKeyConverter.readPublicKey(publicKeyTO.getModulus(),
-				publicKeyTO.getExponent());
-		KeystoreService.storePublicKey(hash, publicKey,
-				Config.getPublicKeyPassword());
+		PublicKey publicKey = PublicKeyConverter.readPublicKey(publicKeyTO.getModulus(), publicKeyTO.getExponent());
+		KeystoreService.storePublicKey(keyId, publicKey, Config.getPublicKeyPassword());
 	}
 
 	/**
 	 * checks if the database has a valid entry for the hash
 	 * 
-	 * @param hash
+	 * @param keyId
 	 * @return
 	 */
-	private boolean hasKey(String hash) {
-		return KeystoreService.loadPublicKey(hash).isPresent();
+	private boolean hasKey(KeyId keyId) {
+		return KeystoreService.loadPublicKey(keyId).isPresent();
 	}
 }

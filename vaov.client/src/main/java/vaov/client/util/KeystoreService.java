@@ -27,34 +27,31 @@ import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 
+import vaov.remote.services.KeyId;
+
 public class KeystoreService {
 
-	public static KeyPair loadKeyPair(String keyId, char[] password) {
+	public static KeyPair loadKeyPair(KeyId keyId, char[] password) {
 		Optional<PublicKey> publicKey = loadPublicKey(keyId);
-		PrivateKey privateKey = (PrivateKey) loadKey(keyId
-				+ Config.ACCOUNT_ALIAS_PRIVATE, password);
+		PrivateKey privateKey = (PrivateKey) loadKey(keyId.getPrivateAlias(), password);
 		if (!publicKey.isPresent() || privateKey == null)
-			throw new KeyException("Key with id \"" + keyId
-					+ "\" does not exist");
+			throw new KeyException("Key with id \"" + keyId + "\" does not exist");
 
 		return new KeyPair(publicKey.get(), privateKey);
 	}
 
-	public static Optional<PublicKey> loadPublicKey(String keyId) {
-		return Optional.ofNullable((PublicKey) loadKey(keyId
-				+ Config.ACCOUNT_ALIAS_PUBLIC, Config.getPublicKeyPassword()));
+	public static Optional<PublicKey> loadPublicKey(KeyId keyId) {
+		return Optional.ofNullable((PublicKey) loadKey(keyId.getPublicAlias(), Config.getPublicKeyPassword()));
 	}
 
-	private static Key loadKey(String keyId, char[] password) {
+	private static Key loadKey(String alias, char[] password) {
 		Key key;
 		try {
-			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(),
-					Config.getProvider());
+			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
 			ks.load(new FileInputStream(Config.getKeyStore()), password);
-			key = ks.getKey(keyId, password);
-		} catch (KeyStoreException | NoSuchAlgorithmException
-				| CertificateException | IOException
-				| UnrecoverableKeyException e) {
+			key = ks.getKey(alias, password);
+		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
+		| UnrecoverableKeyException e) {
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e);
 		}
@@ -62,46 +59,38 @@ public class KeystoreService {
 		return key;
 	}
 
-	public static void storeKeyPair(String keyId, char[] password, KeyPair keys) {
+	public static void storeKeyPair(KeyId keyId, char[] password, KeyPair keys) {
 		storePublicKey(keyId, keys.getPublic(), password);
-		storeKey(keyId + Config.ACCOUNT_ALIAS_PRIVATE, keys.getPrivate(),
-				password, getCerts(keys));
+		storeKey(keyId.getPrivateAlias(), keys.getPrivate(), password, getCerts(keys));
 	}
 
-	public static void storePublicKey(String keyId, PublicKey key,
-			char[] password) {
-		storeKey(keyId + Config.ACCOUNT_ALIAS_PUBLIC, key, password, null);
+	public static void storePublicKey(KeyId keyId, PublicKey key, char[] password) {
+		storeKey(keyId.getPublicAlias(), key, password, null);
 	}
 
-	private static void storeKey(String keyId, Key key, char[] password,
-			Certificate[] certs) {
+	private static void storeKey(String alias, Key key, char[] password, Certificate[] certs) {
 		try {
-			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(),
-					Config.getProvider());
+			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
 			File keyStoreFile = Config.getKeyStore();
 			if (keyStoreFile.exists())
 				if (keyStoreFile.isFile())
 					ks.load(new FileInputStream(keyStoreFile), password);
 				else
-					throw new RuntimeException(
-							"a directory with the name of the keystore exists");
+					throw new RuntimeException("a directory with the name of the keystore exists");
 			else
 				ks.load(null, null);
-			ks.setKeyEntry(keyId, key, password, certs);
+			ks.setKeyEntry(alias, key, password, certs);
 
 			ks.store(new FileOutputStream(keyStoreFile), password);
-		} catch (KeyStoreException | NoSuchAlgorithmException
-				| CertificateException | IOException e) {
+		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e);
 		}
 	}
 
 	private static Certificate[] getCerts(KeyPair keys) {
-		/*
-		 * We need a stupid certificate to store the key, so just create a
-		 * self-signed one.
-		 */
+		/* We need a stupid certificate to store the key, so just create a
+		 * self-signed one. */
 		Date startDate = Date.valueOf("2000-01-01");
 		Date expiryDate = Date.valueOf("3000-01-01");
 		BigInteger serialNumber = new BigInteger("42");
@@ -122,9 +111,8 @@ public class KeystoreService {
 		X509Certificate cert;
 		try {
 			cert = certGen.generate(keys.getPrivate(), "BC");
-		} catch (InvalidKeyException | IllegalStateException
-				| NoSuchProviderException | SignatureException
-				| CertificateEncodingException | NoSuchAlgorithmException e) {
+		} catch (InvalidKeyException | IllegalStateException | NoSuchProviderException | SignatureException
+		| CertificateEncodingException | NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
 

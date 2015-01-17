@@ -1,30 +1,32 @@
 package vaov.client;
 
+import java.security.KeyPair;
+
 import vaov.client.account.PrivateAccount;
 import vaov.client.util.Helper;
-import vaov.client.util.KeyException;
 import vaov.client.util.KeystoreService;
+import vaov.remote.services.KeyId;
 
 public abstract class AccountHandler {
 
 	/**
 	 * Generate a new Account and store it in the KeyStore
 	 */
-	public static PrivateAccount createNewAccount(String keyID, char[] pass) {
+	public static PrivateAccount createNewAccount(char[] pass) {
 		PrivateAccount account = getNewPrivateAccount();
-		KeystoreService.storeKeyPair(keyID, pass, account.getKeyPair());
+		KeystoreService.storeKeyPair(account.getKeyId(), pass, account.getKeyPair());
 		Util.overwriteCharArray(pass);
 		return account;
 	}
 
 	private static PrivateAccount getNewPrivateAccount() {
-		return new PrivateAccount(Helper.generateKeyPair());
+		KeyPair keyPair = Helper.generateKeyPair();
+		KeyId keyId = Helper.generateKeyId(keyPair);
+		return new PrivateAccount(keyId, keyPair);
 	}
 
-	public static PrivateAccount getAccount(String keyId, char[] pass)
-			throws KeyException {
-		PrivateAccount account = new PrivateAccount(
-				KeystoreService.loadKeyPair(keyId, pass));
+	public static PrivateAccount getAccount(KeyId keyId, char[] pass) {
+		PrivateAccount account = new PrivateAccount(keyId, KeystoreService.loadKeyPair(keyId, pass));
 		Util.overwriteCharArray(pass);
 		return account;
 	}

@@ -30,21 +30,15 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  */
 public class Config {
 
-	/*
-	 * Fixed Parameters that must not be modified, since else compatibility,
-	 * safety, security and privacy may be compromised.
-	 */
+	/* Fixed Parameters that must not be modified, since else compatibility,
+	 * safety, security and privacy may be compromised. */
 	public static final String HASH_ALGORITHM = "SHA-512";
 	public static final String SIGNATURE_ALGORITHM = "RSA/NONE/PKCS1Padding";
 	public static final String CHARSET = "UTF8";
 
-	/*
-	 * KeyStore specific settings. These are only local, so changes are not
-	 * fatal.
-	 */
+	/* KeyStore specific settings. These are only local, so changes are not
+	 * fatal. */
 	public static final String KEYSTORE_TYPE = "BKS";
-	public static final String ACCOUNT_ALIAS_PRIVATE = "_privatekey";
-	public static final String ACCOUNT_ALIAS_PUBLIC = "_publickey";
 
 	private static final Provider provider = new BouncyCastleProvider();
 
@@ -91,11 +85,9 @@ public class Config {
 		try {
 			config.load(new FileInputStream(configFile));
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(
-					"It seems you f***ed up your installation", e);
+			throw new RuntimeException("It seems you f***ed up your installation", e);
 		} catch (IOException e) {
-			throw new RuntimeException(
-					"It seems you f***ed up your installation", e);
+			throw new RuntimeException("It seems you f***ed up your installation", e);
 		}
 		Security.addProvider(getProvider());
 	}
@@ -108,11 +100,9 @@ public class Config {
 		config.setProperty(key, value);
 		try {
 			FileOutputStream out = new FileOutputStream(configFile);
-			config.store(out, "Configuration updated on " + new Date()
-					+ " by user");
+			config.store(out, "Configuration updated on " + new Date() + " by user");
 		} catch (IOException e) {
-			throw new RuntimeException(
-					"It seems you f***ed up your installation", e);
+			throw new RuntimeException("It seems you f***ed up your installation", e);
 		}
 	}
 

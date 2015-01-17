@@ -17,5 +17,5 @@ public interface VaovAccountService {
 	Collection<AccountTO> getPublishedAccounts();
 
 	@WebMethod
-	AccountTO getAccount(String hash);
+	AccountTO getAccount(KeyId keyId);
 }

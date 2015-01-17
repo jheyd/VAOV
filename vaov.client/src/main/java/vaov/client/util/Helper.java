@@ -5,6 +5,8 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 
+import vaov.remote.services.KeyId;
+
 /**
  * This class is the main work horse. It contains methods that compute hashes or
  * transform keys to Strings etc.
@@ -70,6 +72,10 @@ public class Helper {
 		kpg.initialize(4096);
 		KeyPair generateKeyPair = kpg.generateKeyPair();
 		return generateKeyPair;
+	}
+
+	public static KeyId generateKeyId(KeyPair keyPair) {
+		return new KeyId(HashComputer.computeHash(keyPair.getPublic()));
 	}
 
 }

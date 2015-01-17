@@ -19,8 +19,8 @@ public class MessageHandler {
 		return MessageService.send(messageContent, author);
 	}
 
-	public void sendMessageToUser(String username, String message, PrivateAccount author) {
-		MessageToUserContentTO content = new MessageToUserContentTO(username, message);
+	public void sendMessageToUser(String alias, String message, PrivateAccount author) {
+		MessageToUserContentTO content = new MessageToUserContentTO(alias, message);
 		sendMessage(content, author);
 	}
 

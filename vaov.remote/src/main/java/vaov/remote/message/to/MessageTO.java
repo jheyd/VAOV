@@ -2,10 +2,12 @@ package vaov.remote.message.to;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import vaov.remote.services.KeyId;
+
 @XmlRootElement
 public class MessageTO {
 
-	private String author;
+	private KeyId author;
 
 	private String digest;
 
@@ -16,7 +18,7 @@ public class MessageTO {
 	public MessageTO() {
 	}
 
-	public MessageTO(String author, String digest, String signature, MessageContentTO content) {
+	public MessageTO(KeyId author, String digest, String signature, MessageContentTO content) {
 		super();
 		this.author = author;
 		this.digest = digest;
@@ -24,7 +26,7 @@ public class MessageTO {
 		this.content = content;
 	}
 
-	public String getAuthor() {
+	public KeyId getAuthor() {
 		return author;
 	}
 
@@ -40,7 +42,7 @@ public class MessageTO {
 		return signature;
 	}
 
-	public void setAuthor(String author) {
+	public void setAuthor(KeyId author) {
 		this.author = author;
 	}
 

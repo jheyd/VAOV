@@ -61,13 +61,13 @@ public class Client {
 	 * Get PrivateAccount associated with a username form the KeyStore, asking
 	 * for the password on the command line.
 	 *
-	 * @param username
+	 * @param alias
 	 * @return
 	 * @throws KeyException
 	 */
-	public PrivateAccount askAcc(String username) throws KeyException {
-		char[] pass = Util.askCharArray("password for " + username + ": ");
-		PrivateAccount acc = Control.getAccount(username, pass);
+	public PrivateAccount askAcc(String alias) throws KeyException {
+		char[] pass = Util.askCharArray("password for " + alias + ": ");
+		PrivateAccount acc = Control.getAccount(alias, pass);
 		if (pass != null)
 			for (int i = 0; i < pass.length; i++ )
 				pass[i] = 'a'; // overwrite password in memory
@@ -118,10 +118,10 @@ public class Client {
 				if (args.length != 1)
 					printHelpText(args[0]);
 				else {
-					String username = Util.askString("Enter username for the Account: ");
 					char[] pass = Util.askCharArray("Enter password for the Account: ");
 					try {
-						Control.newAccount(username, pass);
+						String alias = Control.newAccount(pass);
+						outputWriter.println("Created new account: " + alias);
 					} catch (KeyException e) {
 						outputWriter.println("KeyException in function \"newAccount\": " + e.getMessage());
 						e.printStackTrace();
