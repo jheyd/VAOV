@@ -3,7 +3,6 @@ package vaov.client;
 import java.text.ParseException;
 
 import vaov.client.account.PrivateAccount;
-import vaov.client.message.to.VoteTO;
 import vaov.client.message.writers.MessageWriterDebugImpl;
 import vaov.client.util.IllegalFormatException;
 import vaov.client.util.KeyException;
@@ -11,7 +10,8 @@ import vaov.client.util.VerificationException;
 
 public abstract class Control {
 
-	public static PrivateAccount getAccount(String username, char[] pass) throws KeyException {
+	public static PrivateAccount getAccount(String username, char[] pass)
+			throws KeyException {
 		return AccountHandler.getAccount(username, pass);
 	}
 
@@ -23,37 +23,43 @@ public abstract class Control {
 		}
 	}
 
-	public static void newAccount(String username, char[] pass) throws KeyException {
+	public static void newAccount(String username, char[] pass)
+			throws KeyException {
 		AccountHandler.createNewAccount(username, pass);
 	}
 
-	public static boolean[] parseVoteString(String voteString) throws ParseException {
+	public static boolean[] parseVoteString(String voteString)
+			throws ParseException {
 		boolean[] votes = new boolean[voteString.length()];
 		String yesSymbols = "yYjJtT1";
 		String noSymbols = "nNfF0";
-		for (int i = 0; i < voteString.length(); i++ ) {
+		for (int i = 0; i < voteString.length(); i++) {
 			String singleVoteString = String.valueOf(voteString.charAt(i));
 			if (yesSymbols.contains(singleVoteString))
 				votes[i] = true;
 			else if (noSymbols.contains(singleVoteString))
 				votes[i] = false;
 			else
-				throw new ParseException("voteString contains invalid characters.", i);
+				throw new ParseException(
+						"voteString contains invalid characters.", i);
 		}
 		return votes;
 	}
 
-	public static void registerAccount(char[] pass, char[] privateKey, char[] publicKey) {
+	public static void registerAccount(char[] pass, char[] privateKey,
+			char[] publicKey) {
 		// TODO
 	}
 
-	public static void vote(PrivateAccount acc, String targetID, String voteString) throws ParseException {
-		vote(acc, new VoteTO(parseVoteString(voteString), targetID));
+	public static void vote(PrivateAccount acc, String targetID,
+			String voteString) throws ParseException {
+		vote(acc, parseVoteString(voteString), targetID);
 	}
 
-	public static void vote(PrivateAccount acc, VoteTO vote) throws ParseException {
+	public static void vote(PrivateAccount acc, boolean[] votes, String target)
+			throws ParseException {
 		try {
-			MH.sendVote(vote, acc);
+			MH.sendVote(votes, target, acc);
 		} catch (IllegalFormatException | KeyException | VerificationException e) {
 			throw new RuntimeException(e);
 		}

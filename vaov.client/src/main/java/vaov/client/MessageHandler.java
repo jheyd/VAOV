@@ -10,7 +10,6 @@ import vaov.client.message.to.MessageContentTO;
 import vaov.client.message.to.MessageToUserContentTO;
 import vaov.client.message.to.NewAccountContentTO;
 import vaov.client.message.to.NickChangeContentTO;
-import vaov.client.message.to.VoteTO;
 import vaov.client.message.to.VoteContentTO;
 import vaov.client.message.writers.MessageWriter;
 import vaov.client.util.IllegalFormatException;
@@ -109,20 +108,23 @@ public class MessageHandler {
 
 	/**
 	 * Send a vote message to the Server
-	 *
-	 * @param vote
-	 *            the Vote to send
+	 * 
+	 * @param votes
+	 * @param target
 	 * @param author
 	 *            the Account to sign the Message with
+	 * @param vote
+	 *            the Vote to send
+	 *
 	 * @throws IOException
 	 * @throws IllegalFormatException
 	 * @throws KeyException
 	 * @throws VerificationException
 	 */
-	public void sendVote(VoteTO vote, Account author)
+	public void sendVote(boolean[] votes, String target, Account author)
 			throws IllegalFormatException, KeyException, VerificationException {
-		VoteContentTO content = new VoteContentTO(vote);
-		sendMessage(content, author);
+		MessageContentTO vote = new VoteContentTO(votes, target);
+		sendMessage(vote, author);
 	}
 
 }
