@@ -3,6 +3,9 @@ package vaov.client.vote;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -23,28 +26,39 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import org.apache.commons.codec.binary.Base64;
 
 /**
  * This class is the main work horse. It contains methods that compute hashes or
  * transform keys to Strings etc.
- * 
+ *
  * All methods are static. Hence, this class needs not be instantiated.
- * 
+ *
  * @author arne
- * 
+ *
  */
 public class Helper {
 
 	/**
 	 * Hashes the specified text and returns the computed digest
-	 * 
-	 * @param text
+	 *
+	 * @param messageContent
 	 *            the text to hash
 	 * @return the computed hash (digest)
 	 */
-	public static String computeDigest(String text) {
+	public static String computeDigest(MessageContentTO messageContent) {
+		String marshalledMessageContent = marshalMessageContentTO(messageContent);
+		return computeDigest(marshalledMessageContent);
+	}
+
+	static String computeDigest(String marshalledMessageContent) {
+		// make sure message ends with a new line
+		if (!marshalledMessageContent.endsWith("\n"))
+			marshalledMessageContent = marshalledMessageContent + "\n";
 		MessageDigest d;
 		try {
 			d = MessageDigest.getInstance(Config.HASH_ALGORITHM,
@@ -54,7 +68,7 @@ public class Helper {
 		}
 		byte[] val;
 		try {
-			val = d.digest(text.getBytes(Config.CHARSET));
+			val = d.digest(marshalledMessageContent.getBytes(Config.CHARSET));
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
@@ -62,9 +76,29 @@ public class Helper {
 		return encoded;
 	}
 
+	private static String marshalMessageContentTO(MessageContentTO message) {
+		String result;
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(
+					MessageContentTO.class, MessageToUserContentTO.class,
+					NickChangeContentTO.class, VoteContentTO.class,
+					NewAccountContentTO.class);
+			StringWriter stringWriter = new StringWriter();
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+					Boolean.TRUE);
+			marshaller.marshal(message, stringWriter);
+			result = stringWriter.toString();
+		} catch (JAXBException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+
+	}
+
 	/**
 	 * Computes the Hash of the specified key.
-	 * 
+	 *
 	 * @param pk
 	 *            the key for which to compute the hash.
 	 * @return the computed hash
@@ -93,7 +127,7 @@ public class Helper {
 
 	/**
 	 * Encrypts a given string with the specified private key.
-	 * 
+	 *
 	 * @param digest
 	 *            the text to encrypt
 	 * @param pk
@@ -131,7 +165,7 @@ public class Helper {
 	/**
 	 * Creates a new empty Keystore. If a keystore already existed, the old
 	 * keystore is overwritten.
-	 * 
+	 *
 	 * @param password
 	 *            the password with which to protect the keystore.
 	 * @throws KeyException
@@ -155,13 +189,32 @@ public class Helper {
 		}
 	}
 
+	public static String marshalMessageTO(MessageTO messageTO) {
+		String result;
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(MessageTO.class,
+					MessageContentTO.class, MessageToUserContentTO.class,
+					NickChangeContentTO.class, VoteContentTO.class,
+					NewAccountContentTO.class);
+			StringWriter stringWriter = new StringWriter();
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+					Boolean.TRUE);
+			marshaller.marshal(messageTO, stringWriter);
+			result = stringWriter.toString();
+		} catch (JAXBException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+	}
+
 	/**
 	 * Reads a line of a input file. The line must have the format:
 	 * <code>[identifier]:[value]</code> The identifier must not contain any
 	 * colons. The value must not contain any colons. If it does not have this
 	 * format, an IllegalFormatException is thrown. Whitespace around value is
 	 * trimmed away.
-	 * 
+	 *
 	 * @param identifier
 	 *            the identifier with which the line has to start
 	 * @param text
@@ -187,7 +240,7 @@ public class Helper {
 	 * Creates a public key from modulus and exponent given as strings in Base64
 	 * encoding. For precise description on the format of the strings see the
 	 * protocol documentation. A RSA key is created.
-	 * 
+	 *
 	 * @param modulus
 	 *            the modulus of the RSA key.
 	 * @param exponent
@@ -234,9 +287,33 @@ public class Helper {
 		return pk;
 	}
 
+	public static MessageTO unmarshalMessageTO(InputStream inputStream) {
+		MessageTO result;
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(MessageTO.class);
+			result = (MessageTO) jaxbContext.createUnmarshaller().unmarshal(
+					inputStream);
+		} catch (JAXBException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+	}
+
+	public static MessageTO unmarshalMessageTO(String string) {
+		MessageTO result;
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(MessageTO.class);
+			result = (MessageTO) jaxbContext.createUnmarshaller().unmarshal(
+					new StringReader(string));
+		} catch (JAXBException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+	}
+
 	/**
 	 * Checks, if the given hash is really the hash of the specified key.
-	 * 
+	 *
 	 * @param pk
 	 *            the key to verify
 	 * @param hash
@@ -253,7 +330,7 @@ public class Helper {
 	/**
 	 * Verifies a signature. Decodes <code>signature</code> using the specified
 	 * public key and checks if the result equals <code>digest</code>.
-	 * 
+	 *
 	 * @param digest
 	 *            the digest to verify against
 	 * @param signature
@@ -296,7 +373,7 @@ public class Helper {
 	 * inverse operation of {@link #readPublicKey(String, String)}. It first
 	 * writes a line "Modulus: &lt;modulus&gt;" and then writes a line
 	 * "Exponent: &lt;exponent&gt;".
-	 * 
+	 *
 	 * @param builder
 	 *            the builder to write the result into
 	 * @param pk

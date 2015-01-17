@@ -26,6 +26,9 @@ import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 
+import vaov.client.reduced.client.MessageHandler;
+import vaov.client.reduced.client.writers.MessageWriterDebugImpl;
+
 public class PrivateAccount extends Account {
 
 	KeyPair keys;
@@ -53,17 +56,22 @@ public class PrivateAccount extends Account {
 	 */
 	public PrivateAccount(String keyId, char[] password) throws KeyException {
 		try {
-			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
+			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(),
+					Config.getProvider());
 			ks.load(new FileInputStream(Config.getKeyStore()), password);
-			PublicKey publicKey = (PublicKey) ks.getKey(keyId + Config.ACCOUNT_ALIAS_PUBLIC, password);
-			PrivateKey privateKey = (PrivateKey) ks.getKey(keyId + Config.ACCOUNT_ALIAS_PRIVATE, password);
+			PublicKey publicKey = (PublicKey) ks.getKey(keyId
+					+ Config.ACCOUNT_ALIAS_PUBLIC, password);
+			PrivateKey privateKey = (PrivateKey) ks.getKey(keyId
+					+ Config.ACCOUNT_ALIAS_PRIVATE, password);
 
 			if (publicKey == null || privateKey == null)
-				throw new KeyException("Key with id \"" + keyId + "\" does not exist");
+				throw new KeyException("Key with id \"" + keyId
+						+ "\" does not exist");
 
 			keys = new KeyPair(publicKey, privateKey);
 			init(keys.getPublic());
-		} catch (NoSuchAlgorithmException | CertificateException | KeyStoreException e) {
+		} catch (NoSuchAlgorithmException | CertificateException
+				| KeyStoreException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {
 			throw new KeyException("Cannot open KeyStore", e);
@@ -84,23 +92,16 @@ public class PrivateAccount extends Account {
 
 	/**
 	 * publishes the public key, i.e. registers the Account.
+	 * 
+	 * @throws VerificationException
+	 * @throws KeyException
+	 * @throws IllegalFormatException
 	 */
-	public void publish() throws KeyException, IOException {
-		Message m = new Message(this);
-		StringBuilder builder = new StringBuilder();
-		builder.append("Publish Account\n");
-		builder.append("Hash: ");
-		builder.append(Helper.computeHash(getPublicKey()));
-		builder.append("\n");
-		Helper.writePublicKey(builder, getPublicKey());
-		m.setMessage(builder.toString());
-
-		/* URLConnection conn = Config.publishAccount.openConnection();
-		 * OutputStream out = conn.getOutputStream(); PrintWriter pw = new
-		 * PrintWriter(new OutputStreamWriter(out, Config.CHARSET)); m.send(pw); */
-		PrintWriter pw = new PrintWriter(System.out);
-		m.send(pw); // dirty hack for testing
-		pw.flush();
+	public void publish() throws IllegalFormatException, KeyException,
+			VerificationException {
+		// TODO jan 17.01.2015 replace with useful MessageWriter
+		MessageWriterDebugImpl messageWriter = new MessageWriterDebugImpl();
+		new MessageHandler(messageWriter).sendNewAccount(this);
 	}
 
 	/**
@@ -111,19 +112,24 @@ public class PrivateAccount extends Account {
 	 */
 	public void store(String keyId, char[] password) throws KeyException {
 		try {
-			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
+			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(),
+					Config.getProvider());
 			File keyStoreFile = Config.getKeyStore();
 			if (keyStoreFile.exists())
 				if (keyStoreFile.isFile())
 					ks.load(new FileInputStream(keyStoreFile), password);
 				else
-					throw new RuntimeException("a directory with the name of the keystore exists");
+					throw new RuntimeException(
+							"a directory with the name of the keystore exists");
 			else
 				ks.load(null, null);
-			ks.setKeyEntry(keyId + Config.ACCOUNT_ALIAS_PUBLIC, keys.getPublic(), password, null);
+			ks.setKeyEntry(keyId + Config.ACCOUNT_ALIAS_PUBLIC,
+					keys.getPublic(), password, null);
 
-			/* We need a stupid certificate to store the key, so just create a
-			 * self-signed one. */
+			/*
+			 * We need a stupid certificate to store the key, so just create a
+			 * self-signed one.
+			 */
 			Date startDate = Date.valueOf("2000-01-01"); // time from which
 															// certificate is
 															// valid
@@ -149,15 +155,18 @@ public class PrivateAccount extends Account {
 			X509Certificate cert = null;
 			try {
 				cert = certGen.generate(keys.getPrivate(), "BC");
-			} catch (InvalidKeyException | IllegalStateException | NoSuchProviderException | SignatureException e) {
+			} catch (InvalidKeyException | IllegalStateException
+					| NoSuchProviderException | SignatureException e) {
 				throw new RuntimeException(e);
 			}
 
 			Certificate[] certs = { cert };
 
-			ks.setKeyEntry(keyId + Config.ACCOUNT_ALIAS_PRIVATE, keys.getPrivate(), password, certs);
+			ks.setKeyEntry(keyId + Config.ACCOUNT_ALIAS_PRIVATE,
+					keys.getPrivate(), password, certs);
 			ks.store(new FileOutputStream(keyStoreFile), password);
-		} catch (NoSuchAlgorithmException | CertificateException | KeyStoreException e) {
+		} catch (NoSuchAlgorithmException | CertificateException
+				| KeyStoreException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {
 			throw new KeyException("Cannot write KeyStore to store the key", e);
