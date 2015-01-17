@@ -4,10 +4,10 @@ import java.security.PublicKey;
 
 import vaov.client.service.ServiceFactory;
 import vaov.client.util.Config;
-import vaov.client.util.Helper;
 import vaov.client.util.IllegalFormatException;
 import vaov.client.util.KeyException;
 import vaov.client.util.KeystoreService;
+import vaov.client.util.PublicKeyConverter;
 import vaov.remote.account.to.AccountTO;
 import vaov.remote.account.to.PublicKeyTO;
 import vaov.remote.services.VaovAccountService;
@@ -48,7 +48,7 @@ public class PublishedAccounts {
 		if (!hash.equals(accountTO.getHash()))
 			throw new KeyException("Hash from server does not match");
 		PublicKeyTO publicKeyTO = accountTO.getPublicKey();
-		PublicKey publicKey = Helper.readPublicKey(publicKeyTO.getModulus(),
+		PublicKey publicKey = PublicKeyConverter.readPublicKey(publicKeyTO.getModulus(),
 				publicKeyTO.getExponent());
 		KeystoreService.storePublicKey(hash, publicKey,
 				Config.getPublicKeyPassword());
