@@ -1,9 +1,11 @@
 package vaov.client.message;
 
 import java.io.IOException;
+import java.security.PublicKey;
 
 import vaov.client.account.Account;
 import vaov.client.account.PrivateAccount;
+import vaov.client.account.PublishedAccounts;
 import vaov.client.service.ServiceFactory;
 import vaov.client.util.DigestComputer;
 import vaov.client.util.Helper;
@@ -61,7 +63,9 @@ public class Message {
 	public Message(MessageTO messageTO) throws IOException,
 			IllegalFormatException, KeyException, VerificationException {
 
-		author = new Account(messageTO.getAuthor());
+		PublicKey publicKey = new PublishedAccounts().getKey(messageTO
+				.getAuthor());
+		author = new Account(publicKey);
 		message = messageTO.getContent();
 
 		String computed_digest = DigestComputer.computeDigest(message);

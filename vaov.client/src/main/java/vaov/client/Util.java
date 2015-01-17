@@ -165,7 +165,7 @@ public class Util {
 	 * @param c
 	 *            the Array to overwrite
 	 */
-	public static void overwriteChar(char[] c) {
+	public static void overwriteCharArray(char[] c) {
 		for (int i = 0; i < c.length; i++)
 			c[i] = 'a';
 	}

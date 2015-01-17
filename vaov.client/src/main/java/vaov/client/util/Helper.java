@@ -2,6 +2,8 @@ package vaov.client.util;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
@@ -107,6 +109,18 @@ public class Helper {
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static KeyPair generateKeyPair() {
+		KeyPairGenerator kpg;
+		try {
+			kpg = KeyPairGenerator.getInstance("RSA");
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+		kpg.initialize(4096);
+		KeyPair generateKeyPair = kpg.generateKeyPair();
+		return generateKeyPair;
 	}
 
 }

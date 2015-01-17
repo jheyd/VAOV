@@ -61,7 +61,6 @@ public class PublishedAccounts {
 	 * @return
 	 */
 	private boolean hasKey(String hash) {
-		return KeystoreService.loadPublicKey(hash,
-				Config.getPublicKeyPassword()).isPresent();
+		return KeystoreService.loadPublicKey(hash).isPresent();
 	}
 }

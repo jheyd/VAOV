@@ -30,7 +30,7 @@ import org.bouncycastle.x509.X509V1CertificateGenerator;
 public class KeystoreService {
 
 	public static KeyPair loadKeyPair(String keyId, char[] password) {
-		Optional<PublicKey> publicKey = loadPublicKey(keyId, password);
+		Optional<PublicKey> publicKey = loadPublicKey(keyId);
 		PrivateKey privateKey = (PrivateKey) loadKey(keyId
 				+ Config.ACCOUNT_ALIAS_PRIVATE, password);
 		if (!publicKey.isPresent() || privateKey == null)
@@ -40,10 +40,9 @@ public class KeystoreService {
 		return new KeyPair(publicKey.get(), privateKey);
 	}
 
-	public static Optional<PublicKey> loadPublicKey(String keyId,
-			char[] password) {
+	public static Optional<PublicKey> loadPublicKey(String keyId) {
 		return Optional.ofNullable((PublicKey) loadKey(keyId
-				+ Config.ACCOUNT_ALIAS_PUBLIC, password));
+				+ Config.ACCOUNT_ALIAS_PUBLIC, Config.getPublicKeyPassword()));
 	}
 
 	private static Key loadKey(String keyId, char[] password) {
