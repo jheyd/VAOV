@@ -3,7 +3,7 @@ package vaov.client;
 import java.text.ParseException;
 
 import vaov.client.account.PrivateAccount;
-import vaov.client.message.to.Vote;
+import vaov.client.message.to.VoteTO;
 import vaov.client.message.writers.MessageWriterDebugImpl;
 import vaov.client.util.IllegalFormatException;
 import vaov.client.util.KeyException;
@@ -48,10 +48,10 @@ public abstract class Control {
 	}
 
 	public static void vote(PrivateAccount acc, String targetID, String voteString) throws ParseException {
-		vote(acc, new Vote(parseVoteString(voteString), targetID));
+		vote(acc, new VoteTO(parseVoteString(voteString), targetID));
 	}
 
-	public static void vote(PrivateAccount acc, Vote vote) throws ParseException {
+	public static void vote(PrivateAccount acc, VoteTO vote) throws ParseException {
 		try {
 			MH.sendVote(vote, acc);
 		} catch (IllegalFormatException | KeyException | VerificationException e) {

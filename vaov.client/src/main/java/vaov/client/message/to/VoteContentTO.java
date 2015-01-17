@@ -3,13 +3,13 @@ package vaov.client.message.to;
 
 public class VoteContentTO extends MessageContentTO {
 
-	private Vote vote;
+	private VoteTO vote;
 
-	public VoteContentTO(Vote vote) {
+	public VoteContentTO(VoteTO vote) {
 		this.vote = vote;
 	}
 
-	public Vote getVote() {
+	public VoteTO getVote() {
 		return vote;
 	}
 
