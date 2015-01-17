@@ -7,10 +7,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -109,6 +113,15 @@ public class Config {
 		} catch (IOException e) {
 			throw new RuntimeException(
 					"It seems you f***ed up your installation", e);
+		}
+	}
+
+	public static Cipher getCipher() {
+		try {
+			return Cipher.getInstance(SIGNATURE_ALGORITHM, getProvider());
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+			// TODO Auto-generated catch block
+			throw new RuntimeException(e);
 		}
 	}
 

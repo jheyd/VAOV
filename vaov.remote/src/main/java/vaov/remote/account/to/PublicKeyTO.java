@@ -2,14 +2,20 @@ package vaov.remote.account.to;
 
 public class PublicKeyTO {
 
+	private String modulus;
+	private String exponent;
+
+	public PublicKeyTO(String modulus, String exponent) {
+		this.modulus = modulus;
+		this.exponent = exponent;
+	}
+
 	public String getModulus() {
-		// TODO Auto-generated method stub
-		return null;
+		return modulus;
 	}
 
 	public String getExponent() {
-		// TODO Auto-generated method stub
-		return null;
+		return exponent;
 	}
 
 }

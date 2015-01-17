@@ -1,19 +1,9 @@
 package vaov.client.util;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.interfaces.RSAPublicKey;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * This class is the main work horse. It contains methods that compute hashes or
@@ -68,47 +58,6 @@ public class Helper {
 		String encoded = HashComputer.computeHash(pk);
 		if (!encoded.equals(hash))
 			throw new KeyException("Key does not match to hash: " + hash);
-	}
-
-	/**
-	 * Verifies a signature. Decodes <code>signature</code> using the specified
-	 * public key and checks if the result equals <code>digest</code>.
-	 *
-	 * @param digest
-	 *            the digest to verify against
-	 * @param signature
-	 *            the signature string to decode
-	 * @param pk
-	 *            the public key for decoding
-	 * @return true iff verified.
-	 * @throws KeyException
-	 *             if the given key is not a RSA-key
-	 */
-	public static boolean verifySignature(String digest, String signature,
-			PublicKey pk) throws KeyException {
-		if (!(pk instanceof RSAPublicKey))
-			throw new KeyException("Key is not a RSAPublicKey");
-		byte[] val;
-		try {
-			Cipher c = Cipher.getInstance(Config.SIGNATURE_ALGORITHM,
-					Config.getProvider());
-			c.init(Cipher.DECRYPT_MODE, pk);
-			byte[] decoded = Base64.decodeBase64(signature);
-			val = c.doFinal(decoded);
-			return digest.equals(new String(val, Config.CHARSET));
-		} catch (InvalidKeyException e) {
-			throw new KeyException("Key is not a valid Key", e);
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		} catch (NoSuchPaddingException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalBlockSizeException e) {
-			throw new RuntimeException(e);
-		} catch (BadPaddingException e) {
-			throw new RuntimeException(e);
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	public static KeyPair generateKeyPair() {

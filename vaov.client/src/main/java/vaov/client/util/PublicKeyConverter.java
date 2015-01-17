@@ -9,6 +9,8 @@ import java.security.spec.RSAPublicKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
+import vaov.remote.account.to.PublicKeyTO;
+
 public class PublicKeyConverter {
 
 	/**
@@ -38,17 +40,22 @@ public class PublicKeyConverter {
 		PublicKey pk;
 		try {
 			// TODO: specify security provider
-			KeyFactory fact = KeyFactory.getInstance("RSA",
-					Config.getProvider());
+			KeyFactory fact = KeyFactory.getInstance("RSA", Config.getProvider());
 			pk = fact.generatePublic(spec);
 		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(
-					"No security provider for RSA algorithm", e);
+			throw new RuntimeException("No security provider for RSA algorithm", e);
 		} catch (InvalidKeySpecException e) {
 			throw new IllegalFormatException("Unable to generate public key", e);
 		}
-	
+
 		return pk;
+	}
+
+	public static PublicKeyTO writePublicKey(PublicKey pk) {
+		String[] lines = pk.toString().split("\n");
+		String modulus = lines[1].split(" ")[3];
+		String exponent = lines[2].split(" ")[4];
+		return new PublicKeyTO(modulus, exponent);
 	}
 
 }

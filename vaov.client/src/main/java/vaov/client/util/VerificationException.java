@@ -6,7 +6,7 @@ package vaov.client.util;
  * @author arne
  * 
  */
-public class VerificationException extends Exception {
+public class VerificationException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
