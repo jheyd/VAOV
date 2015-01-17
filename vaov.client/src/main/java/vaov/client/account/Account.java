@@ -105,16 +105,6 @@ public class Account {
 	}
 
 	/**
-	 * checks if the hash of the publick key has been published on the official
-	 * list of legitimized keys.
-	 * 
-	 * @return
-	 */
-	public boolean isVerified() {
-		return VerifiedAccounts.getInstance().hasEntry(hash);
-	}
-
-	/**
 	 * Prints the pdf that should be but into the ballot box.
 	 * 
 	 * @param out
