@@ -1,13 +1,9 @@
 package vaov.client.account;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.security.PublicKey;
 import java.util.HashMap;
+import java.util.Map;
 
-import vaov.client.util.Config;
-import vaov.client.util.Helper;
 import vaov.client.util.IllegalFormatException;
 import vaov.client.util.KeyException;
 
@@ -21,18 +17,12 @@ import vaov.client.util.KeyException;
  * 
  */
 public class PublishedAccounts {
-	private HashMap<String, PublicKey> accounts;
+	private Map<String, Account> accounts;
 
 	private static final PublishedAccounts INSTANCE = createPublishedAccounts();
 
 	private static PublishedAccounts createPublishedAccounts() {
-		try {
-			return new PublishedAccounts();
-		} catch (IllegalFormatException ex) {
-			throw new RuntimeException(ex);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		return new PublishedAccounts();
 	}
 
 	public static PublishedAccounts getInstance() {
@@ -52,79 +42,8 @@ public class PublishedAccounts {
 	 * 
 	 * @throws IllegalFormatException
 	 */
-	private PublishedAccounts() throws IllegalFormatException, IOException {
-		accounts = new HashMap<String, PublicKey>();
-		int line = 1;
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(Config
-					.getPublishedAccounts().openStream(), Config.CHARSET));
-			String buffer = br.readLine();
-			String server_hash = Helper.read("Account-Server", buffer);
-			line++;
-			buffer = br.readLine();
-			String server_modulus = Helper.read("Modulus", buffer);
-			line++;
-			buffer = br.readLine();
-			String server_exponent = Helper.read("Exponent", buffer);
-			line++;
-			buffer = br.readLine();
-			String digest = Helper.read("Digest", buffer);
-			line++;
-			buffer = br.readLine();
-			String signature = Helper.read("Signature", buffer);
-			line++;
-
-			PublicKey server_key = Helper.readPublicKey(server_modulus,
-					server_exponent);
-			if (!server_hash.equals(Config.getAccountServer()))
-				throw new IllegalFormatException(
-						"Presented hash of the Account-Server does not match to the internally stored hash of the server");
-			try {
-				Helper.verifyKey(server_key, server_hash);
-			} catch (KeyException e1) {
-				throw new IllegalFormatException(
-						"Key of the Account-Server does not match to the hash of the server");
-			}
-			try {
-				Helper.verifySignature(digest, signature, server_key);
-			} catch (KeyException e1) {
-				throw new IllegalFormatException(
-						"Signature of the registered accounts list does not decode to digest!");
-			}
-
-			StringBuilder listText = new StringBuilder();
-
-			while ((buffer = br.readLine()) != null)
-				try {
-					listText.append(buffer + "\n");
-					String hash = Helper.read("Hash", buffer);
-					line++;
-					buffer = br.readLine();
-					listText.append(buffer + "\n");
-					if (buffer == null)
-						throw new IllegalFormatException("[Line " + line
-								+ "] Expected \"Modulus:\"");
-					String modulus = Helper.read("Modulus", buffer);
-					line++;
-					buffer = br.readLine();
-					listText.append(buffer + "\n");
-					if (buffer == null)
-						throw new IllegalFormatException("[Line " + line
-								+ "] Expected \"Exponent:\"");
-					String exponent = Helper.read("Exponent", buffer);
-					PublicKey pk = Helper.readPublicKey(modulus, exponent);
-					// Helper.verifyKey(pk, hash); //we do this later, may
-					// reject complete list
-					accounts.put(hash, pk);
-					line++;
-				} catch (IllegalFormatException e) {
-					throw new IllegalFormatException("[Line " + line + "] "
-							+ e.getMessage(), e);
-				}
-
-		} catch (IOException e) {
-			throw new IOException("[Line " + line + "] Failed to read", e);
-		}
+	private PublishedAccounts() {
+		accounts = new HashMap<>();
 	}
 
 	/**
@@ -135,10 +54,12 @@ public class PublishedAccounts {
 	 * @throws KeyException
 	 */
 	public PublicKey getKey(String hash) throws KeyException {
-		PublicKey pk = accounts.get(hash);
-		if (pk == null)
-			throw new KeyException("Key is not published: " + hash);
-		return pk;
+		if (!hasKey(hash)) {
+			// TODO jan 17.01.2015 replace new Account()
+			// with WebService call
+			accounts.put(hash, new Account());
+		}
+		return accounts.get(hash).getPublicKey();
 	}
 
 	/**

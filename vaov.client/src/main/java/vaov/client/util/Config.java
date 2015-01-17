@@ -51,10 +51,6 @@ public class Config {
 
 	private static final Config INSTANCE = new Config();
 
-	public static String getAccountServer() {
-		return INSTANCE.get("accountServer"); // TODO: THIS IS NOT SAFE!
-	}
-
 	public static File getKeyStore() {
 		return new File(INSTANCE.get("keystore"));
 	}
@@ -69,36 +65,6 @@ public class Config {
 
 	public static Provider getProvider() {
 		return provider;
-	}
-
-	/*
-	 * public static final URL publishedAccounts = loadPublishedAccountsURL();
-	 * public static final URL verifiedAccounts = loadVerifiedAccountsURL();
-	 * public static final URL publishAccount = loadPublishAccountURL();
-	 * 
-	 * public static final String legitimateChecksum =
-	 * "8+2i9WyfduELKgVS99wgkCtdl5Asjjq7+4v2ghJsiou9Z7SPv83kCvNES+wOBRZAuFh2stAYLJct5Sw7PKEfpw=="
-	 * ;
-	 * 
-	 * public static final String accountServer =
-	 * "hpO/rM/QjX07fGibrUbGtqr7+OcRFda5jaCn2xLpqdt4WmUYphmS/P4ON3GNofjh8fWpOKe+nxDD/zgDC3X6rQ=="
-	 * ;
-	 */
-
-	public static URL getPublishAccount() {
-		try {
-			return new URL(INSTANCE.get("publish"));
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public static URL getPublishedAccounts() {
-		try {
-			return new URL(INSTANCE.get("published"));
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	public static URL getVerifiedAccounts() {
