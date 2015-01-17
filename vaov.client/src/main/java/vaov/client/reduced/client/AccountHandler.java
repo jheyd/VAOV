@@ -1,6 +1,5 @@
 package vaov.client.reduced.client;
 
-import vaov.client.frontend.control.Util;
 import vaov.client.vote.KeyException;
 import vaov.client.vote.PrivateAccount;
 

@@ -1,6 +1,7 @@
 import org.junit.Test;
 
-import vaov.client.frontend.control.MessageHandler;
+import vaov.client.reduced.client.MessageHandler;
+import vaov.client.reduced.client.writers.MessageWriterDebugImpl;
 import vaov.client.vote.PrivateAccount;
 
 @Deprecated
@@ -11,7 +12,8 @@ public class TestMessenger {
 		PrivateAccount pa;
 		try {
 			pa = new PrivateAccount();
-			MessageHandler.sendMessageToUser("troll", "Hallo, ich kenn dich nicht", pa);
+			new MessageHandler(new MessageWriterDebugImpl()).sendMessageToUser(
+					"troll", "Hallo, ich kenn dich nicht", pa);
 			System.out.println("successful");
 		} catch (Exception e) {
 			e.printStackTrace();

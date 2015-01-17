@@ -3,7 +3,6 @@ package vaov.client.reduced.client;
 import java.io.PrintWriter;
 import java.text.ParseException;
 
-import vaov.client.frontend.control.Util;
 import vaov.client.vote.KeyException;
 import vaov.client.vote.PrivateAccount;
 
