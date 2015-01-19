@@ -47,9 +47,9 @@ public class KeystoreService {
 
 	private static Key loadKey(String alias, char[] password) {
 		Key key;
-		try {
+		try (FileInputStream fileInputStream = new FileInputStream(Config.getKeyStore())) {
 			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
-			ks.load(new FileInputStream(Config.getKeyStore()), password);
+			ks.load(fileInputStream, password);
 			key = ks.getKey(alias, password);
 		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException
 		| UnrecoverableKeyException e) {
@@ -70,12 +70,13 @@ public class KeystoreService {
 	}
 
 	private static void storeKey(String alias, Key key, char[] password, Certificate[] certs) {
-		try {
+		try (FileInputStream fileInputStream = new FileInputStream(Config.getKeyStore());
+		FileOutputStream fileOutputStream = new FileOutputStream(Config.getKeyStore());) {
 			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
 			File keyStoreFile = Config.getKeyStore();
 			if (keyStoreFile.exists()) {
 				if (keyStoreFile.isFile()) {
-					ks.load(new FileInputStream(keyStoreFile), password);
+					ks.load(fileInputStream, password);
 				} else {
 					throw new RuntimeException("a directory with the name of the keystore exists");
 				}
@@ -84,7 +85,7 @@ public class KeystoreService {
 			}
 			ks.setKeyEntry(alias, key, password, certs);
 
-			ks.store(new FileOutputStream(keyStoreFile), password);
+			ks.store(fileOutputStream, password);
 		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e);
