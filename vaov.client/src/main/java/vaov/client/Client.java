@@ -25,7 +25,7 @@ public class Client {
 		} else {
 			boolean cont = true;
 			while (cont) {
-				cont = cli.execute(Util.askString("#: ").split(" "));
+				cont = cli.execute(AskUtils.askString("#: ").split(" "));
 			}
 		}
 	}
@@ -71,7 +71,7 @@ public class Client {
 	 * @throws KeyException
 	 */
 	public PrivateAccount askAcc(String alias) throws KeyException {
-		char[] pass = Util.askCharArray("password for " + alias + ": ");
+		char[] pass = AskUtils.askCharArray("password for " + alias + ": ");
 		PrivateAccount acc = Control.getAccount(alias, pass);
 		if (pass != null) {
 			for (int i = 0; i < pass.length; i++ ) {
@@ -127,7 +127,7 @@ public class Client {
 				if (args.length != 1) {
 					printHelpText(args[0]);
 				} else {
-					char[] pass = Util.askCharArray("Enter password for the Account: ");
+					char[] pass = AskUtils.askCharArray("Enter password for the Account: ");
 					try {
 						String alias = Control.newAccount(pass);
 						outputWriter.println("Created new account: " + alias);
