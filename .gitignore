@@ -3,3 +3,8 @@ third_party
 .project
 .classpath
 logging.properties
+*.prefs
+/vaov.client/keystore
+/vaov.client/.gitignore
+/vaov.remote/.gitignore
+/vaov.server/.gitignore
