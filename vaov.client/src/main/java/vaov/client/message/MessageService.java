@@ -13,7 +13,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import vaov.client.account.Account;
 import vaov.client.account.PrivateAccount;
-import vaov.client.account.PublishedAccounts;
+import vaov.client.account.PublishedAccountsService;
 import vaov.client.service.ServiceFactory;
 import vaov.client.util.Config;
 import vaov.client.util.DigestComputer;
@@ -38,7 +38,7 @@ import vaov.remote.services.VaovMessageService;
 public class MessageService {
 
 	public static boolean verifyMessage(MessageTO message) {
-		PublicKey publicKey = new PublishedAccounts().getKey(message.getAuthor());
+		PublicKey publicKey = PublishedAccountsService.getKey(message.getAuthor());
 		MessageContentTO content = message.getContent();
 
 		String computed_digest = DigestComputer.computeDigest(content);
