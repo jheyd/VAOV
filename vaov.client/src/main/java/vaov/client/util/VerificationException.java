@@ -2,9 +2,9 @@ package vaov.client.util;
 
 /**
  * This exception is thrown, if a message failed to verify.
- * 
+ *
  * @author arne
- * 
+ *
  */
 public class VerificationException extends RuntimeException {
 

@@ -32,10 +32,12 @@ public class PublicKeyConverter {
 		byte[] enc_exponent = Base64.decodeBase64(exponent);
 		BigInteger int_modulus = new BigInteger(enc_modulus);
 		BigInteger int_exponent = new BigInteger(enc_exponent);
-		if (int_modulus.compareTo(BigInteger.ZERO) <= 0)
+		if (int_modulus.compareTo(BigInteger.ZERO) <= 0) {
 			throw new IllegalFormatException("Modulus must be positive");
-		if (int_exponent.compareTo(BigInteger.ZERO) <= 0)
+		}
+		if (int_exponent.compareTo(BigInteger.ZERO) <= 0) {
 			throw new IllegalFormatException("Exponent must be positive");
+		}
 		spec = new RSAPublicKeySpec(int_modulus, int_exponent);
 		PublicKey pk;
 		try {

@@ -42,8 +42,9 @@ public class MessageService {
 		MessageContentTO content = message.getContent();
 
 		String computed_digest = DigestComputer.computeDigest(content);
-		if (!computed_digest.equals(message.getDigest()))
+		if (!computed_digest.equals(message.getDigest())) {
 			throw new VerificationException("Digest does not match to message. Message may be manipulated!");
+		}
 		return verifySignature(message.getDigest(), message.getSignature(), publicKey);
 	}
 
@@ -56,8 +57,9 @@ public class MessageService {
 	}
 
 	private static boolean verifySignature(String digest, String signature, PublicKey pk) {
-		if (!(pk instanceof RSAPublicKey))
+		if (!(pk instanceof RSAPublicKey)) {
 			throw new KeyException("Key is not a RSAPublicKey");
+		}
 		try {
 			Cipher cipher = Config.getCipher();
 			cipher.init(Cipher.DECRYPT_MODE, pk);

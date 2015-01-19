@@ -12,12 +12,12 @@ public class DigestComputer {
 
 	private static String computeDigest(String marshalledMessageContent) {
 		// make sure message ends with a new line
-		if (!marshalledMessageContent.endsWith("\n"))
+		if (!marshalledMessageContent.endsWith("\n")) {
 			marshalledMessageContent = marshalledMessageContent + "\n";
+		}
 		MessageDigest d;
 		try {
-			d = MessageDigest.getInstance(Config.HASH_ALGORITHM,
-					Config.getProvider());
+			d = MessageDigest.getInstance(Config.HASH_ALGORITHM, Config.getProvider());
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
@@ -38,8 +38,7 @@ public class DigestComputer {
 	 * @return the computed hash (digest)
 	 */
 	public static String computeDigest(MessageContentTO messageContent) {
-		String marshalledMessageContent = MessageTOFactory
-				.marshalMessageContentTO(messageContent);
+		String marshalledMessageContent = MessageTOFactory.marshalMessageContentTO(messageContent);
 		return computeDigest(marshalledMessageContent);
 	}
 

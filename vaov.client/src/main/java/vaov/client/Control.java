@@ -41,10 +41,12 @@ public abstract class Control {
 
 	private static boolean parseVote(String voteString, int index) throws ParseException {
 		String singleVoteString = valueOf(voteString.charAt(index));
-		if (YES_SYMBOLS.contains(singleVoteString))
+		if (YES_SYMBOLS.contains(singleVoteString)) {
 			return true;
-		if (NO_SYMBOLS.contains(singleVoteString))
+		}
+		if (NO_SYMBOLS.contains(singleVoteString)) {
 			return false;
+		}
 
 		throw new ParseException("voteString contains invalid characters.", index);
 	}

@@ -32,17 +32,17 @@ public class Helper {
 	 * @return the value part of the line (the text following the colon)
 	 * @throws IllegalFormatException
 	 */
-	public static String read(String identifier, String text)
-			throws IllegalFormatException {
-		if (identifier.contains(":"))
-			throw new IllegalArgumentException(
-					"Identifier must contain no colon!");
-		if (!text.startsWith(identifier + ":"))
+	public static String read(String identifier, String text) throws IllegalFormatException {
+		if (identifier.contains(":")) {
+			throw new IllegalArgumentException("Identifier must contain no colon!");
+		}
+		if (!text.startsWith(identifier + ":")) {
 			throw new IllegalFormatException("Expected \"" + identifier + ":\"");
+		}
 		String[] textSplit = text.split(":");
-		if (textSplit.length != 2)
-			throw new IllegalFormatException("String after \"" + identifier
-					+ ":\" must contain no \":\"");
+		if (textSplit.length != 2) {
+			throw new IllegalFormatException("String after \"" + identifier + ":\" must contain no \":\"");
+		}
 		return textSplit[1].trim();
 	}
 
@@ -58,8 +58,9 @@ public class Helper {
 	 */
 	public static void verifyKey(PublicKey pk, String hash) throws KeyException {
 		String encoded = HashComputer.computeHash(pk);
-		if (!encoded.equals(hash))
+		if (!encoded.equals(hash)) {
 			throw new KeyException("Key does not match to hash: " + hash);
+		}
 	}
 
 	public static KeyPair generateKeyPair() {

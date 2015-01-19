@@ -19,21 +19,21 @@ public class HashComputer {
 	 *             if the Key is not a RSA key
 	 */
 	public static String computeHash(PublicKey pk) throws KeyException {
-		if (!(pk instanceof RSAPublicKey))
+		if (!(pk instanceof RSAPublicKey)) {
 			throw new KeyException("Key is not a RSAPublicKey");
+		}
 		RSAPublicKey pub = (RSAPublicKey) pk;
-	
+
 		// setup MessageDigest algorithm to compute the hash
 		MessageDigest d;
 		try {
-			d = MessageDigest.getInstance(Config.HASH_ALGORITHM,
-					Config.getProvider());
+			d = MessageDigest.getInstance(Config.HASH_ALGORITHM, Config.getProvider());
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
 		d.update(pub.getModulus().toByteArray());
 		byte[] val = d.digest(pub.getPublicExponent().toByteArray());
-	
+
 		return Base64.encodeBase64String(val);
 	}
 

@@ -19,8 +19,11 @@ public class ServiceFactory {
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e);
 		}
-		QName qname = new QName("http://ws.mkyong.com/",
-				"HelloWorldImplService"); // TODO jan 17.01.2015 fix URL
+		QName qname = new QName("http://ws.mkyong.com/", "HelloWorldImplService"); // TODO
+																					// jan
+																					// 17.01.2015
+																					// fix
+																					// URL
 
 		Service service = Service.create(url, qname);
 
@@ -36,8 +39,11 @@ public class ServiceFactory {
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e);
 		}
-		QName qname = new QName("http://ws.mkyong.com/",
-				"HelloWorldImplService"); // TODO jan 17.01.2015 fix URL
+		QName qname = new QName("http://ws.mkyong.com/", "HelloWorldImplService"); // TODO
+																					// jan
+																					// 17.01.2015
+																					// fix
+																					// URL
 
 		Service service = Service.create(url, qname);
 

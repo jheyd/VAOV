@@ -55,8 +55,9 @@ public class MessageTOFactory {
 	 * @throws KeyException
 	 */
 	private static String computeSignature(String digest, PrivateKey pk) throws KeyException {
-		if (!(pk instanceof RSAPrivateKey))
+		if (!(pk instanceof RSAPrivateKey)) {
 			throw new KeyException("Key is not a RSAPrivateKey");
+		}
 		byte[] val;
 		try {
 			Cipher c = Cipher.getInstance(Config.SIGNATURE_ALGORITHM, Config.getProvider());

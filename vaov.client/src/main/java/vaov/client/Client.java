@@ -17,35 +17,40 @@ public class Client {
 	public static void main(String[] args) {
 		Client cli = new Client();
 		cli.setOutput(new PrintWriter(System.out));
-		if (debugCommand.length > 0)
+		if (debugCommand.length > 0) {
 			args = debugCommand;
-		if (args.length > 0)
+		}
+		if (args.length > 0) {
 			cli.execute(args);
-		else {
+		} else {
 			boolean cont = true;
-			while (cont)
+			while (cont) {
 				cont = cli.execute(Util.askString("#: ").split(" "));
+			}
 		}
 	}
 
 	public static final String[] debugCommand = {};
 
 	private static String[] HELPTEXTS = { "message <from> <to> <text>", "vote <from> <targetID> <vote>", "newAccount",
-			"registerAccount <key>", "exit" };
+		"registerAccount <key>", "exit" };
 
 	private PrintWriter outputWriter = new PrintWriter(System.out);
 
 	private void printHelpText(String string) {
 		System.out.println("usage: ");
-		for (String helpText : HELPTEXTS)
-			if (helpText.startsWith(string))
+		for (String helpText : HELPTEXTS) {
+			if (helpText.startsWith(string)) {
 				System.out.println(helpText);
+			}
+		}
 	}
 
 	private void printHelpTexts() {
 		System.out.println("usage: ");
-		for (String helpText : HELPTEXTS)
+		for (String helpText : HELPTEXTS) {
 			System.out.println(helpText);
+		}
 
 	}
 
@@ -68,9 +73,11 @@ public class Client {
 	public PrivateAccount askAcc(String alias) throws KeyException {
 		char[] pass = Util.askCharArray("password for " + alias + ": ");
 		PrivateAccount acc = Control.getAccount(alias, pass);
-		if (pass != null)
-			for (int i = 0; i < pass.length; i++ )
+		if (pass != null) {
+			for (int i = 0; i < pass.length; i++ ) {
 				pass[i] = 'a'; // overwrite password in memory
+			}
+		}
 		return acc;
 	}
 
@@ -90,20 +97,21 @@ public class Client {
 		} else {
 			switch (args[0]) {
 			case "message": // message
-				if (args.length != 4)
+				if (args.length != 4) {
 					printHelpText(args[0]);
-				else
+				} else {
 					try {
 						Control.message(askAcc(args[1]), args[2], args[3]);
 					} catch (KeyException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+				}
 				break;
 			case "vote": // vote
-				if (args.length != 4)
+				if (args.length != 4) {
 					printHelpText(args[0]);
-				else
+				} else {
 					try {
 						Control.vote(askAcc(args[1]), args[2], args[3]);
 					} catch (ParseException e) {
@@ -113,11 +121,12 @@ public class Client {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+				}
 				break;
 			case "newAccount": // newAccount
-				if (args.length != 1)
+				if (args.length != 1) {
 					printHelpText(args[0]);
-				else {
+				} else {
 					char[] pass = Util.askCharArray("Enter password for the Account: ");
 					try {
 						String alias = Control.newAccount(pass);

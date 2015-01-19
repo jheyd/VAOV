@@ -34,8 +34,9 @@ public class KeystoreService {
 	public static KeyPair loadKeyPair(KeyId keyId, char[] password) {
 		Optional<PublicKey> publicKey = loadPublicKey(keyId);
 		PrivateKey privateKey = (PrivateKey) loadKey(keyId.getPrivateAlias(), password);
-		if (!publicKey.isPresent() || privateKey == null)
+		if (!publicKey.isPresent() || privateKey == null) {
 			throw new KeyException("Key with id \"" + keyId + "\" does not exist");
+		}
 
 		return new KeyPair(publicKey.get(), privateKey);
 	}
@@ -72,13 +73,15 @@ public class KeystoreService {
 		try {
 			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
 			File keyStoreFile = Config.getKeyStore();
-			if (keyStoreFile.exists())
-				if (keyStoreFile.isFile())
+			if (keyStoreFile.exists()) {
+				if (keyStoreFile.isFile()) {
 					ks.load(new FileInputStream(keyStoreFile), password);
-				else
+				} else {
 					throw new RuntimeException("a directory with the name of the keystore exists");
-			else
+				}
+			} else {
 				ks.load(null, null);
+			}
 			ks.setKeyEntry(alias, key, password, certs);
 
 			ks.store(new FileOutputStream(keyStoreFile), password);

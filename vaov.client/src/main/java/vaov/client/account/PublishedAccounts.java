@@ -15,12 +15,12 @@ import vaov.remote.services.VaovAccountService;
 
 /**
  * This class manages the list of published accounts.
- * 
+ *
  * Currently this list is loaded statically. This should be changed in the
  * future.
- * 
+ *
  * @author arne
- * 
+ *
  */
 public class PublishedAccounts {
 
@@ -29,7 +29,7 @@ public class PublishedAccounts {
 
 	/**
 	 * Loads Key from Database
-	 * 
+	 *
 	 * @param keyId
 	 * @return
 	 * @throws KeyException
@@ -45,8 +45,9 @@ public class PublishedAccounts {
 	private void getAccountFromServer(KeyId keyId) throws KeyException {
 		VaovAccountService accountService = ServiceFactory.getAccountService();
 		AccountTO accountTO = accountService.getAccount(keyId);
-		if (!keyId.equals(accountTO.getHash()))
+		if (!keyId.equals(accountTO.getHash())) {
 			throw new KeyException("Hash from server does not match");
+		}
 		PublicKeyTO publicKeyTO = accountTO.getPublicKey();
 		PublicKey publicKey = PublicKeyConverter.readPublicKey(publicKeyTO.getModulus(), publicKeyTO.getExponent());
 		KeystoreService.storePublicKey(keyId, publicKey, Config.getPublicKeyPassword());
@@ -54,7 +55,7 @@ public class PublishedAccounts {
 
 	/**
 	 * checks if the database has a valid entry for the hash
-	 * 
+	 *
 	 * @param keyId
 	 * @return
 	 */

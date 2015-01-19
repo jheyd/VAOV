@@ -21,12 +21,12 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 /**
  * Config stores all those configuration parameters that are somehow chosen
  * arbitrarily.
- * 
+ *
  * Currently, this file is a mess, since it also contains information that
  * should be configurable, like the URLs of resource files.
- * 
+ *
  * @author arne
- * 
+ *
  */
 public class Config {
 
