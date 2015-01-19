@@ -21,7 +21,7 @@ public abstract class Control {
 
 	public static void message(PrivateAccount acc, String target, String message) {
 		try {
-			MH.sendMessageToUser(target, message, acc);
+			MessageHandler.sendMessageToUser(target, message, acc);
 		} catch (IllegalFormatException | KeyException | VerificationException e) {
 			throw new RuntimeException(e);
 		}
@@ -55,12 +55,10 @@ public abstract class Control {
 
 	public static void vote(PrivateAccount acc, boolean[] votes, String target) {
 		try {
-			MH.sendVote(votes, target, acc);
+			MessageHandler.sendVote(votes, target, acc);
 		} catch (IllegalFormatException | KeyException | VerificationException e) {
 			throw new RuntimeException(e);
 		}
 	}
-
-	private static final MessageHandler MH = new MessageHandler();
 
 }

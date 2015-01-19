@@ -13,18 +13,18 @@ import vaov.remote.message.to.NewAccountContentTO;
 import vaov.remote.message.to.NickChangeContentTO;
 import vaov.remote.message.to.VoteContentTO;
 
-public class MessageHandler {
+public abstract class MessageHandler {
 
-	private boolean sendMessage(MessageContentTO messageContent, PrivateAccount author) {
+	private static boolean sendMessage(MessageContentTO messageContent, PrivateAccount author) {
 		return MessageService.send(messageContent, author);
 	}
 
-	public void sendMessageToUser(String alias, String message, PrivateAccount author) {
+	public static void sendMessageToUser(String alias, String message, PrivateAccount author) {
 		MessageToUserContentTO content = new MessageToUserContentTO(alias, message);
 		sendMessage(content, author);
 	}
 
-	public void sendNewAccount(Account newAccount, PrivateAccount author) {
+	public static void sendNewAccount(Account newAccount, PrivateAccount author) {
 		PublicKey pk = newAccount.getPublicKey();
 		PublicKeyTO publicKeyTO = PublicKeyConverter.writePublicKey(pk);
 
@@ -32,12 +32,12 @@ public class MessageHandler {
 		sendMessage(content, author);
 	}
 
-	public void sendNickchange(String newNick, PrivateAccount author) {
+	public static void sendNickchange(String newNick, PrivateAccount author) {
 		NickChangeContentTO content = new NickChangeContentTO(newNick);
 		sendMessage(content, author);
 	}
 
-	public void sendVote(boolean[] votes, String target, PrivateAccount author) {
+	public static void sendVote(boolean[] votes, String target, PrivateAccount author) {
 		MessageContentTO vote = new VoteContentTO(votes, target);
 		sendMessage(vote, author);
 	}
