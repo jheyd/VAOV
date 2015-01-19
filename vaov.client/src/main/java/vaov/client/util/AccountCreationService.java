@@ -3,22 +3,27 @@ package vaov.client.util;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
 
 import vaov.remote.services.KeyId;
 
 public class AccountCreationService {
 
+	private static final String ALGORITHM = "RSA"; //$NON-NLS-1$
+	private static final int KEY_SIZE = 4096;
+
 	public static KeyPair generateKeyPair() {
+		return getKeyPairGenerator().generateKeyPair();
+	}
+
+	private static KeyPairGenerator getKeyPairGenerator() {
 		KeyPairGenerator kpg;
 		try {
-			kpg = KeyPairGenerator.getInstance("RSA");
+			kpg = KeyPairGenerator.getInstance(ALGORITHM);
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
-		kpg.initialize(4096);
-		KeyPair generateKeyPair = kpg.generateKeyPair();
-		return generateKeyPair;
+		kpg.initialize(KEY_SIZE);
+		return kpg;
 	}
 
 	public static KeyId generateKeyId(KeyPair keyPair) {
