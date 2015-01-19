@@ -3,7 +3,7 @@ package vaov.client;
 import java.security.KeyPair;
 
 import vaov.client.account.PrivateAccount;
-import vaov.client.util.Helper;
+import vaov.client.util.AccountCreationService;
 import vaov.client.util.KeystoreService;
 import vaov.remote.services.KeyId;
 
@@ -20,8 +20,8 @@ public abstract class AccountHandler {
 	}
 
 	private static PrivateAccount getNewPrivateAccount() {
-		KeyPair keyPair = Helper.generateKeyPair();
-		KeyId keyId = Helper.generateKeyId(keyPair);
+		KeyPair keyPair = AccountCreationService.generateKeyPair();
+		KeyId keyId = AccountCreationService.generateKeyId(keyPair);
 		return new PrivateAccount(keyId, keyPair);
 	}
 
