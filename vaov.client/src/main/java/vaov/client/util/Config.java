@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.Security;
@@ -30,10 +28,37 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  */
 public class Config {
 
+	public static Cipher getCipher() {
+		try {
+			return Cipher.getInstance(SIGNATURE_ALGORITHM, getProvider());
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+			// TODO Auto-generated catch block
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static File getKeyStore() {
+		return new File(INSTANCE.get("keystore"));
+	}
+
+	public static String getKeyStoreType() {
+		return KEYSTORE_TYPE;
+	}
+
+	public static Provider getProvider() {
+		return provider;
+	}
+
+	public static char[] getPublicKeyPassword() {
+		return "password".toCharArray();
+	}
+
 	/* Fixed Parameters that must not be modified, since else compatibility,
 	 * safety, security and privacy may be compromised. */
 	public static final String HASH_ALGORITHM = "SHA-512";
+
 	public static final String SIGNATURE_ALGORITHM = "RSA/NONE/PKCS1Padding";
+
 	public static final String CHARSET = "UTF8";
 
 	/* KeyStore specific settings. These are only local, so changes are not
@@ -48,30 +73,6 @@ public class Config {
 	private static final String configFile = "./config";
 
 	private static final Config INSTANCE = new Config();
-
-	public static File getKeyStore() {
-		return new File(INSTANCE.get("keystore"));
-	}
-
-	public static String getKeyStoreType() {
-		return KEYSTORE_TYPE;
-	}
-
-	public static String getLegitimateChecksum() {
-		return INSTANCE.get("legitimateChecksum"); // TODO: THIS IS NOT SAFE!
-	}
-
-	public static Provider getProvider() {
-		return provider;
-	}
-
-	public static URL getVerifiedAccounts() {
-		try {
-			return new URL(INSTANCE.get("verified"));
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
-	}
 
 	/**
 	 * All indivdual configuration settings are stored in config. Every change
@@ -104,18 +105,5 @@ public class Config {
 		} catch (IOException e) {
 			throw new RuntimeException("It seems you f***ed up your installation", e);
 		}
-	}
-
-	public static Cipher getCipher() {
-		try {
-			return Cipher.getInstance(SIGNATURE_ALGORITHM, getProvider());
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			throw new RuntimeException(e);
-		}
-	}
-
-	public static char[] getPublicKeyPassword() {
-		return "password".toCharArray();
 	}
 }
