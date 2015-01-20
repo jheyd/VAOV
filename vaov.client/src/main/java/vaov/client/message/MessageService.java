@@ -16,7 +16,7 @@ import vaov.client.account.PrivateAccount;
 import vaov.client.account.PublishedAccountsService;
 import vaov.client.service.ServiceFactory;
 import vaov.client.util.Config;
-import vaov.client.util.DigestComputer;
+import vaov.client.util.HashComputer;
 import vaov.client.util.KeyException;
 import vaov.client.util.MessageTOFactory;
 import vaov.client.util.VerificationException;
@@ -41,7 +41,7 @@ public class MessageService {
 		PublicKey publicKey = PublishedAccountsService.getKey(message.getAuthor());
 		MessageContentTO content = message.getContent();
 
-		String computed_digest = DigestComputer.computeDigest(content);
+		String computed_digest = HashComputer.computeHash(content);
 		if (!computed_digest.equals(message.getDigest())) {
 			throw new VerificationException("Digest does not match to message. Message may be manipulated!");
 		}

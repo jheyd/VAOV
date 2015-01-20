@@ -82,7 +82,7 @@ public class MessageTOFactory {
 
 	public static MessageTO createMessageTO(PrivateAccount privateauthor, MessageContentTO messageContent)
 	throws KeyException {
-		String digest = DigestComputer.computeDigest(messageContent);
+		String digest = HashComputer.computeHash(messageContent);
 		String signature = computeSignature(digest, privateauthor.getPrivateKey());
 
 		MessageTO messageTO = new MessageTO();
