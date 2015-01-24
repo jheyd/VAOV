@@ -14,9 +14,9 @@ public class Util {
 	 * @throws KeyException
 	 */
 	public static PrivateAccount askAcc(String alias) throws KeyException {
-		char[] pass = AskUtils.askCharArray("password for " + alias + ": ");
-		PrivateAccount acc = Control.getAccount(alias, pass);
-		Util.overwriteCharArray(pass);
+		Password password = AskUtils.askPassword("password for " + alias + ": ");
+		PrivateAccount acc = Control.getAccount(alias, password);
+		password.overwrite();
 		return acc;
 	}
 
@@ -27,7 +27,7 @@ public class Util {
 	 *            the Array to overwrite
 	 */
 	public static void overwriteCharArray(char[] c) {
-		for (int i = 0; i < c.length; i++) {
+		for (int i = 0; i < c.length; i++ ) {
 			c[i] = 0;
 		}
 	}

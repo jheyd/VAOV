@@ -11,6 +11,8 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import vaov.client.Password;
+
 /**
  * Config stores all those configuration parameters that are somehow chosen
  * arbitrarily.
@@ -47,8 +49,8 @@ public class Config {
 		return PROVIDER;
 	}
 
-	public static char[] getPublicKeyPassword() {
-		return "password".toCharArray();
+	public static Password getPublicKeyPassword() {
+		return new Password("123456".toCharArray());
 	}
 
 	/* Fixed Parameters that must not be modified, since else compatibility,

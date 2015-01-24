@@ -1,5 +1,7 @@
 package vaov.client;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.List;
 
 public class AskUtils {
@@ -27,14 +29,22 @@ public class AskUtils {
 	 */
 	public static char[] askCharArray(String question) {
 		System.out.println(question);
-		java.io.BufferedReader systemInReader = new java.io.BufferedReader(new java.io.InputStreamReader(System.in));
 		char[] buf = new char[256];
-		try {
+		try (BufferedReader systemInReader = new java.io.BufferedReader(new java.io.InputStreamReader(System.in))) {
 			systemInReader.read(buf);
-		} catch (Exception e) {
-			throw new RuntimeException("read error: " + e.getMessage());
+			if (systemInReader.ready()) {
+				System.out.println("input too long (max 256 characters)");
+				Util.overwriteCharArray(buf);
+				return askCharArray(question);
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 		return buf;
+	}
+
+	public static Password askPassword(String question) {
+		return new Password(askCharArray(question));
 	}
 
 	/**
