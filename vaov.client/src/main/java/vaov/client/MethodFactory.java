@@ -26,7 +26,6 @@ public class MethodFactory {
 			char[] pass = AskUtils.askCharArray("Enter password for the Account: ");
 			String alias = Control.newAccount(pass);
 			outputWriter.println("Created new account: " + alias);
-			outputWriter.flush();
 			return MethodResponse.success();
 		};
 		return new MethodWithoutSubMethods("newAccount", function);

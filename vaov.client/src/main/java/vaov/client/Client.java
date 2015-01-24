@@ -19,7 +19,7 @@ public class Client {
 		client.execute(args);
 	}
 
-	private PrintWriter outputWriter = new PrintWriter(System.out);
+	private PrintWriter outputWriter = new PrintWriter(System.out, true);
 
 	private CommandExecuter commandExecuter;
 
