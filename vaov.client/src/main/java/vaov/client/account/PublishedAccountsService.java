@@ -32,7 +32,7 @@ public abstract class PublishedAccountsService {
 		}
 		PublicKeyTO publicKeyTO = accountTO.getPublicKey();
 		PublicKey publicKey = PublicKeyConverter.readPublicKey(publicKeyTO.getModulus(), publicKeyTO.getExponent());
-		KeystoreService.storePublicKey(keyId, publicKey, Config.getPublicKeyPassword());
+		KeystoreService.storePublicKey(keyId, publicKey);
 	}
 
 	/**

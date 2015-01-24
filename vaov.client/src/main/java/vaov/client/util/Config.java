@@ -35,6 +35,10 @@ public class Config {
 		return USER_KEYS_FILE;
 	}
 
+	public static File getPublicKeysFile() {
+		return PUBLIC_KEYS_FILE;
+	}
+
 	public static String getKeyStoreType() {
 		return KEYSTORE_TYPE;
 	}
@@ -65,10 +69,11 @@ public class Config {
 
 	private static final File DATA_DIR = new File(USER_HOME, ".vaov");
 
+	private static final File PUBLIC_KEYS_FILE = new File(DATA_DIR, "public");
+
 	private static final File USER_KEYS_FILE = new File(DATA_DIR, "user");
 
 	static {
-
 		Security.addProvider(getProvider());
 	}
 

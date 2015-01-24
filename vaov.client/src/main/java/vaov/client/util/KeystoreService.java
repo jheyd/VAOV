@@ -32,8 +32,9 @@ import vaov.remote.services.KeyId;
 public class KeystoreService {
 
 	public static KeyPair loadKeyPair(KeyId keyId, char[] password) {
-		Optional<PublicKey> publicKey = loadPublicKey(keyId);
-		PrivateKey privateKey = (PrivateKey) loadKey(keyId.getPrivateAlias(), password);
+		Optional<PublicKey> publicKey = Optional.ofNullable((PublicKey) loadKey(keyId.getPublicAlias(),
+		Config.getPublicKeyPassword(), Config.getKeyStore()));
+		PrivateKey privateKey = (PrivateKey) loadKey(keyId.getPrivateAlias(), password, Config.getKeyStore());
 		if (!publicKey.isPresent() || privateKey == null) {
 			throw new KeyException("Key with id \"" + keyId + "\" does not exist");
 		}
@@ -42,12 +43,13 @@ public class KeystoreService {
 	}
 
 	public static Optional<PublicKey> loadPublicKey(KeyId keyId) {
-		return Optional.ofNullable((PublicKey) loadKey(keyId.getPublicAlias(), Config.getPublicKeyPassword()));
+		return Optional.ofNullable((PublicKey) loadKey(keyId.getPublicAlias(), Config.getPublicKeyPassword(),
+		Config.getPublicKeysFile()));
 	}
 
-	private static Key loadKey(String alias, char[] password) {
+	private static Key loadKey(String alias, char[] password, File keyStoreFile) {
 		Key key;
-		try (FileInputStream fileInputStream = new FileInputStream(Config.getKeyStore())) {
+		try (FileInputStream fileInputStream = new FileInputStream(keyStoreFile)) {
 			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
 			ks.load(fileInputStream, password);
 			key = ks.getKey(alias, password);
@@ -61,31 +63,39 @@ public class KeystoreService {
 	}
 
 	public static void storeKeyPair(KeyId keyId, char[] password, KeyPair keys) {
-		storePublicKey(keyId, keys.getPublic(), password);
-		storeKey(keyId.getPrivateAlias(), keys.getPrivate(), password, getCerts(keys));
+		storeKey(keyId.getPublicAlias(), keys.getPublic(), password, Config.getKeyStore(), null);
+		storeKey(keyId.getPrivateAlias(), keys.getPrivate(), password, Config.getKeyStore(), getCerts(keys));
 	}
 
-	public static void storePublicKey(KeyId keyId, PublicKey key, char[] password) {
-		storeKey(keyId.getPublicAlias(), key, password, null);
+	public static void storePublicKey(KeyId keyId, PublicKey key) {
+		storeKey(keyId.getPublicAlias(), key, Config.getPublicKeyPassword(), Config.getPublicKeysFile(), null);
 	}
 
-	private static void storeKey(String alias, Key key, char[] password, Certificate[] certs) {
-		try (FileInputStream fileInputStream = new FileInputStream(Config.getKeyStore());
-		FileOutputStream fileOutputStream = new FileOutputStream(Config.getKeyStore());) {
+	private static void storeKey(String alias, Key key, char[] password, File keyStoreFile, Certificate[] certs) {
+		try {
 			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
-			File keyStoreFile = Config.getKeyStore();
 			if (keyStoreFile.exists()) {
 				if (keyStoreFile.isFile()) {
-					ks.load(fileInputStream, password);
+					try (FileInputStream fileInputStream = new FileInputStream(Config.getKeyStore());) {
+						ks.load(fileInputStream, password);
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
 				} else {
 					throw new RuntimeException("a directory with the name of the keystore exists");
 				}
 			} else {
 				ks.load(null, null);
+				keyStoreFile.getParentFile().mkdirs();
+				keyStoreFile.createNewFile();
 			}
 			ks.setKeyEntry(alias, key, password, certs);
 
-			ks.store(fileOutputStream, password);
+			try (FileOutputStream fileOutputStream = new FileOutputStream(Config.getKeyStore());) {
+				ks.store(fileOutputStream, password);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e);
