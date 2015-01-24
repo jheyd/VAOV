@@ -12,10 +12,10 @@ public abstract class AccountHandler {
 	/**
 	 * Generate a new Account and store it in the KeyStore
 	 */
-	public static PrivateAccount createNewAccount(char[] pass) {
+	public static PrivateAccount createNewAccount(Password pass) {
 		PrivateAccount account = getNewPrivateAccount();
 		KeystoreService.storeKeyPair(account.getKeyId(), pass, account.getKeyPair());
-		Util.overwriteCharArray(pass);
+		pass.overwrite();
 		return account;
 	}
 
@@ -25,9 +25,9 @@ public abstract class AccountHandler {
 		return new PrivateAccount(keyId, keyPair);
 	}
 
-	public static PrivateAccount getAccount(KeyId keyId, char[] pass) {
-		PrivateAccount account = new PrivateAccount(keyId, KeystoreService.loadKeyPair(keyId, pass));
-		Util.overwriteCharArray(pass);
+	public static PrivateAccount getAccount(KeyId keyId, Password password) {
+		PrivateAccount account = new PrivateAccount(keyId, KeystoreService.loadKeyPair(keyId, password));
+		password.overwrite();
 		return account;
 	}
 

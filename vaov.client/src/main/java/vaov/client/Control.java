@@ -15,8 +15,8 @@ public abstract class Control {
 	private static final String NO_SYMBOLS = "nNfF0";
 	private static final String YES_SYMBOLS = "yYjJtT1";
 
-	public static PrivateAccount getAccount(String alias, char[] pass) throws KeyException {
-		return AccountHandler.getAccount(new KeyId(alias), pass);
+	public static PrivateAccount getAccount(String alias, Password password) throws KeyException {
+		return AccountHandler.getAccount(new KeyId(alias), password);
 	}
 
 	public static void message(PrivateAccount acc, String target, String message) {
@@ -27,7 +27,7 @@ public abstract class Control {
 		}
 	}
 
-	public static String newAccount(char[] pass) throws KeyException {
+	public static String newAccount(Password pass) throws KeyException {
 		return AccountHandler.createNewAccount(pass).getAlias();
 	}
 

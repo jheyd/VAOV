@@ -23,7 +23,7 @@ public class MethodFactory {
 
 	public static Method createNewAccountMethod(PrintWriter outputWriter) {
 		Function<MethodParameters, MethodResponse> function = params -> {
-			char[] pass = AskUtils.askCharArray("Enter password for the Account: ");
+			Password pass = AskUtils.askPassword("Enter password for the Account: ");
 			String alias = Control.newAccount(pass);
 			outputWriter.println("Created new account: " + alias);
 			return MethodResponse.success();
