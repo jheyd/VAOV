@@ -1,6 +1,5 @@
 package vaov.client.util;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -15,11 +14,7 @@ public class HashComputer {
 	private static String computeHash(String messageContent) {
 		// make sure message ends with a new line TODO test why???
 		String s = messageContent + "\n";
-		try {
-			return computeHash(s.getBytes(Config.CHARSET));
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
+		return computeHash(s.getBytes(Config.CHARSET));
 
 	}
 

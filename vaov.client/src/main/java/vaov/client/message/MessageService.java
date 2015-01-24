@@ -1,6 +1,5 @@
 package vaov.client.message;
 
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
@@ -65,7 +64,7 @@ public class MessageService {
 			cipher.init(Cipher.DECRYPT_MODE, pk);
 			byte[] val = cipher.doFinal(Base64.decodeBase64(signature));
 			return digest.equals(new String(val, Config.CHARSET));
-		} catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException e) {
+		} catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			throw new RuntimeException(e);
 		}
 	}

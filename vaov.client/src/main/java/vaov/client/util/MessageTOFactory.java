@@ -1,7 +1,6 @@
 package vaov.client.util;
 
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -72,8 +71,6 @@ public class MessageTOFactory {
 		} catch (IllegalBlockSizeException e) {
 			throw new RuntimeException(e);
 		} catch (BadPaddingException e) {
-			throw new RuntimeException(e);
-		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
 		String encoded = Base64.encodeBase64String(val);
