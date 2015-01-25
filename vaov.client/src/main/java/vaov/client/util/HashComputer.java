@@ -11,27 +11,6 @@ import vaov.remote.message.to.MessageContentTO;
 
 public class HashComputer {
 
-	private static String computeHash(String messageContent) {
-		// make sure message ends with a new line TODO test why???
-		String s = messageContent + "\n";
-		return computeHash(s.getBytes(Config.CHARSET));
-
-	}
-
-	private static String computeHash(byte[]... input) {
-		MessageDigest messageDigest;
-		try {
-			messageDigest = MessageDigest.getInstance(Config.HASH_ALGORITHM, Config.getProvider());
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
-		for (byte[] singleInput : input) {
-			messageDigest.update(singleInput);
-		}
-		byte[] val = messageDigest.digest();
-		return Base64.encodeBase64String(val);
-	}
-
 	/**
 	 * Hashes the specified text and returns the computed digest
 	 *
@@ -63,6 +42,27 @@ public class HashComputer {
 		byte[] input2 = pub.getPublicExponent().toByteArray();
 
 		return computeHash(input1, input2);
+	}
+
+	private static String computeHash(byte[]... input) {
+		MessageDigest messageDigest;
+		try {
+			messageDigest = MessageDigest.getInstance(Config.getHashAlgorithm(), Config.getProvider());
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+		for (byte[] singleInput : input) {
+			messageDigest.update(singleInput);
+		}
+		byte[] val = messageDigest.digest();
+		return Base64.encodeBase64String(val);
+	}
+
+	private static String computeHash(String messageContent) {
+		// make sure message ends with a new line TODO test why???
+		String s = messageContent + "\n";
+		return computeHash(s.getBytes(Config.getCharset()));
+
 	}
 
 }

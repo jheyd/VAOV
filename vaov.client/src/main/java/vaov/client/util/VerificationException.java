@@ -14,7 +14,4 @@ public class VerificationException extends RuntimeException {
 		super(message);
 	}
 
-	public VerificationException(String message, Throwable cause) {
-		super(message, cause);
-	}
 }

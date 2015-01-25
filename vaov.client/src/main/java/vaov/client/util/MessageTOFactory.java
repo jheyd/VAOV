@@ -26,6 +26,19 @@ import vaov.remote.message.to.VoteContentTO;
 
 public class MessageTOFactory {
 
+	public static MessageTO createMessageTO(PrivateAccount privateauthor, MessageContentTO messageContent)
+	throws KeyException {
+		String digest = HashComputer.computeHash(messageContent);
+		String signature = computeSignature(digest, privateauthor.getPrivateKey());
+
+		MessageTO messageTO = new MessageTO();
+		messageTO.setAuthor(privateauthor.getKeyId());
+		messageTO.setDigest(digest);
+		messageTO.setSignature(signature);
+		messageTO.setContent(messageContent);
+		return messageTO;
+	}
+
 	static String marshalMessageContentTO(MessageContentTO message) {
 		String result;
 		try {
@@ -59,9 +72,9 @@ public class MessageTOFactory {
 		}
 		byte[] val;
 		try {
-			Cipher c = Cipher.getInstance(Config.SIGNATURE_ALGORITHM, Config.getProvider());
+			Cipher c = Cipher.getInstance(Config.getSignatureAlgorithm(), Config.getProvider());
 			c.init(Cipher.ENCRYPT_MODE, pk);
-			val = c.doFinal(digest.getBytes(Config.CHARSET));
+			val = c.doFinal(digest.getBytes(Config.getCharset()));
 		} catch (InvalidKeyException e) {
 			throw new KeyException("Key is not a valid Key", e);
 		} catch (NoSuchAlgorithmException e) {
@@ -75,19 +88,6 @@ public class MessageTOFactory {
 		}
 		String encoded = Base64.encodeBase64String(val);
 		return encoded;
-	}
-
-	public static MessageTO createMessageTO(PrivateAccount privateauthor, MessageContentTO messageContent)
-	throws KeyException {
-		String digest = HashComputer.computeHash(messageContent);
-		String signature = computeSignature(digest, privateauthor.getPrivateKey());
-
-		MessageTO messageTO = new MessageTO();
-		messageTO.setAuthor(privateauthor.getKeyId());
-		messageTO.setDigest(digest);
-		messageTO.setSignature(signature);
-		messageTO.setContent(messageContent);
-		return messageTO;
 	}
 
 }

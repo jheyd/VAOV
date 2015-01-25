@@ -8,11 +8,15 @@ import vaov.remote.services.KeyId;
 
 public class PrivateAccount extends Account {
 
-	PrivateKey privateKey;
+	private PrivateKey privateKey;
 
 	public PrivateAccount(KeyId keyId, KeyPair keyPair) throws KeyException {
 		super(keyId, keyPair.getPublic());
 		this.privateKey = keyPair.getPrivate();
+	}
+
+	public String getAlias() {
+		return getKeyId().getAlias();
 	}
 
 	public KeyPair getKeyPair() {
@@ -21,10 +25,6 @@ public class PrivateAccount extends Account {
 
 	public PrivateKey getPrivateKey() {
 		return privateKey;
-	}
-
-	public String getAlias() {
-		return getKeyId().getAlias();
 	}
 
 }

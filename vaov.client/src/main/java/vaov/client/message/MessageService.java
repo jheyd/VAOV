@@ -36,6 +36,14 @@ import vaov.remote.services.VaovMessageService;
  */
 public class MessageService {
 
+	public static boolean send(MessageContentTO messageContent, PrivateAccount author) {
+		MessageTO messageTO = MessageTOFactory.createMessageTO(author, messageContent);
+
+		VaovMessageService messageService = ServiceFactory.getMessageService();
+
+		return messageService.send(messageTO);
+	}
+
 	public static boolean verifyMessage(MessageTO message) {
 		PublicKey publicKey = PublishedAccountsService.getKey(message.getAuthor());
 		MessageContentTO content = message.getContent();
@@ -47,14 +55,6 @@ public class MessageService {
 		return verifySignature(message.getDigest(), message.getSignature(), publicKey);
 	}
 
-	public static boolean send(MessageContentTO messageContent, PrivateAccount author) {
-		MessageTO messageTO = MessageTOFactory.createMessageTO(author, messageContent);
-
-		VaovMessageService messageService = ServiceFactory.getMessageService();
-
-		return messageService.send(messageTO);
-	}
-
 	private static boolean verifySignature(String digest, String signature, PublicKey pk) {
 		if (!(pk instanceof RSAPublicKey)) {
 			throw new KeyException("Key is not a RSAPublicKey");
@@ -63,7 +63,7 @@ public class MessageService {
 			Cipher cipher = Config.getCipher();
 			cipher.init(Cipher.DECRYPT_MODE, pk);
 			byte[] val = cipher.doFinal(Base64.decodeBase64(signature));
-			return digest.equals(new String(val, Config.CHARSET));
+			return digest.equals(new String(val, Config.getCharset()));
 		} catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			throw new RuntimeException(e);
 		}

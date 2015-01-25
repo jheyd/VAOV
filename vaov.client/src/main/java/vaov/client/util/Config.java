@@ -25,6 +25,10 @@ import vaov.client.Password;
  */
 public class Config {
 
+	public static Charset getCharset() {
+		return CHARSET;
+	}
+
 	public static Cipher getCipher() {
 		try {
 			return Cipher.getInstance(SIGNATURE_ALGORITHM, getProvider());
@@ -33,12 +37,12 @@ public class Config {
 		}
 	}
 
-	public static File getKeyStore() {
-		return USER_KEYS_FILE;
+	public static String getHashAlgorithm() {
+		return HASH_ALGORITHM;
 	}
 
-	public static File getPublicKeysFile() {
-		return PUBLIC_KEYS_FILE;
+	public static File getKeyStore() {
+		return USER_KEYS_FILE;
 	}
 
 	public static String getKeyStoreType() {
@@ -53,19 +57,27 @@ public class Config {
 		return new Password("123456".toCharArray());
 	}
 
+	public static File getPublicKeysFile() {
+		return PUBLIC_KEYS_FILE;
+	}
+
+	public static String getSignatureAlgorithm() {
+		return SIGNATURE_ALGORITHM;
+	}
+
 	/* Fixed Parameters that must not be modified, since else compatibility,
 	 * safety, security and privacy may be compromised. */
-	public static final String HASH_ALGORITHM = "SHA-512";
+	private static final String HASH_ALGORITHM = "SHA-512";
 
-	public static final String SIGNATURE_ALGORITHM = "RSA/NONE/PKCS1Padding";
+	private static final String SIGNATURE_ALGORITHM = "RSA/NONE/PKCS1Padding";
 
-	public static final Charset CHARSET = Charset.forName("UTF8");
+	private static final Charset CHARSET = Charset.forName("UTF8");
 
 	/* KeyStore specific settings. These are only local, so changes are not
 	 * fatal. */
-	public static final String KEYSTORE_TYPE = "BKS";
+	private static final String KEYSTORE_TYPE = "BKS";
 
-	public static final Provider PROVIDER = new BouncyCastleProvider();
+	private static final Provider PROVIDER = new BouncyCastleProvider();
 
 	private static final File USER_HOME = new File(System.getProperty("user.home"));
 
