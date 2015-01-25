@@ -2,6 +2,7 @@ package vaov.client;
 
 import vaov.client.account.PrivateAccount;
 import vaov.client.util.KeyException;
+import de.janheyd.javalibs.ask.AskUtils;
 
 public class Util {
 
@@ -14,10 +15,16 @@ public class Util {
 	 * @throws KeyException
 	 */
 	public static PrivateAccount askAcc(String alias) throws KeyException {
-		Password password = AskUtils.askPassword("password for " + alias + ": ");
+		Password password = Util.askPassword("password for " + alias + ": ");
 		PrivateAccount acc = Control.getAccount(alias, password);
 		password.overwrite();
 		return acc;
+	}
+
+	public static Password askPassword(String question) {
+		char[] buf = new char[256];
+		AskUtils.askCharArray(question, buf);
+		return new Password(buf);
 	}
 
 	/**
