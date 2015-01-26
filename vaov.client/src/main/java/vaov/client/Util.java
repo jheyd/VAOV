@@ -1,5 +1,7 @@
 package vaov.client;
 
+import java.util.Optional;
+
 import vaov.client.account.PrivateAccount;
 import vaov.client.util.KeyException;
 import de.janheyd.javalibs.ask.AskUtils;
@@ -14,9 +16,9 @@ public class Util {
 	 * @return
 	 * @throws KeyException
 	 */
-	public static PrivateAccount askAcc(String alias) throws KeyException {
+	public static Optional<PrivateAccount> askAcc(String alias) throws KeyException {
 		Password password = Util.askPassword("password for " + alias + ": ");
-		PrivateAccount acc = Control.getAccount(alias, password);
+		Optional<PrivateAccount> acc = Control.getAccount(alias, password);
 		password.overwrite();
 		return acc;
 	}

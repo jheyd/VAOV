@@ -3,6 +3,7 @@ package vaov.client.message;
 import java.security.InvalidKeyException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Optional;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -18,7 +19,6 @@ import vaov.client.util.Config;
 import vaov.client.util.HashComputer;
 import vaov.client.util.KeyException;
 import vaov.client.util.MessageTOFactory;
-import vaov.client.util.VerificationException;
 import vaov.remote.message.to.MessageContentTO;
 import vaov.remote.message.to.MessageTO;
 import vaov.remote.services.VaovMessageService;
@@ -45,12 +45,18 @@ public class MessageService {
 	}
 
 	public static boolean verifyMessage(MessageTO message) {
-		PublicKey publicKey = PublishedAccountsService.getKey(message.getAuthor());
+		Optional<PublicKey> optional = PublishedAccountsService.getKey(message.getAuthor());
+		if (!optional.isPresent()) {
+			return false;
+		}
+		PublicKey publicKey = optional.get();
 		MessageContentTO content = message.getContent();
 
 		String computed_digest = HashComputer.computeHash(content);
 		if (!computed_digest.equals(message.getDigest())) {
-			throw new VerificationException("Digest does not match to message. Message may be manipulated!");
+			// throw new
+			// VerificationException("Digest does not match to message. Message may be manipulated!");
+			return false;
 		}
 		return verifySignature(message.getDigest(), message.getSignature(), publicKey);
 	}

@@ -2,8 +2,10 @@ package vaov.client;
 
 import java.io.PrintWriter;
 import java.text.ParseException;
+import java.util.Optional;
 import java.util.function.Function;
 
+import vaov.client.account.PrivateAccount;
 import de.janheyd.javalibs.method.Method;
 import de.janheyd.javalibs.method.MethodParameters;
 import de.janheyd.javalibs.method.MethodResponse;
@@ -13,8 +15,11 @@ public class MethodFactory {
 
 	public static MethodWithoutSubMethods createMessageMethod() {
 		Function<MethodParameters, MethodResponse> function = parameters -> {
-			Control.message(Util.askAcc(parameters.getParameter(0)), parameters.getParameter(1),
-			parameters.getParameter(2));
+			Optional<PrivateAccount> askAcc = Util.askAcc(parameters.getParameter(0));
+			if (!askAcc.isPresent()) {
+				return MethodResponse.error("Account not found");
+			}
+			Control.message(askAcc.get(), parameters.getParameter(1), parameters.getParameter(2));
 			return MethodResponse.success();
 		};
 
@@ -39,8 +44,11 @@ public class MethodFactory {
 	public static Method createVoteMethod() {
 		Function<MethodParameters, MethodResponse> function = parameters -> {
 			try {
-				Control.vote(Util.askAcc(parameters.getParameter(0)), parameters.getParameter(1),
-				parameters.getParameter(2));
+				Optional<PrivateAccount> askAcc = Util.askAcc(parameters.getParameter(0));
+				if (!askAcc.isPresent()) {
+					return MethodResponse.error("Account not found");
+				}
+				Control.vote(askAcc.get(), parameters.getParameter(1), parameters.getParameter(2));
 				return MethodResponse.success();
 			} catch (ParseException e) {
 				return MethodResponse.error(e.getMessage());

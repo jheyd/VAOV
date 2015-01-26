@@ -32,15 +32,14 @@ import vaov.remote.services.KeyId;
 
 public class KeystoreService {
 
-	public static KeyPair loadKeyPair(KeyId keyId, Password password) {
+	public static Optional<KeyPair> loadKeyPair(KeyId keyId, Password password) {
 		Optional<PublicKey> publicKey = Optional.ofNullable((PublicKey) loadKey(keyId.getPublicAlias(), password,
 		Config.getKeyStore()));
 		PrivateKey privateKey = (PrivateKey) loadKey(keyId.getPrivateAlias(), password, Config.getKeyStore());
 		if (!publicKey.isPresent() || privateKey == null) {
-			throw new KeyException("Key with id \"" + keyId + "\" does not exist");
+			return Optional.empty();
 		}
-
-		return new KeyPair(publicKey.get(), privateKey);
+		return Optional.of(new KeyPair(publicKey.get(), privateKey));
 	}
 
 	public static Optional<PublicKey> loadPublicKey(KeyId keyId) {

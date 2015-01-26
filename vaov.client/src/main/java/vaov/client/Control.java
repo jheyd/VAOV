@@ -1,6 +1,7 @@
 package vaov.client;
 
 import java.text.ParseException;
+import java.util.Optional;
 
 import vaov.client.account.PrivateAccount;
 import vaov.client.util.IllegalFormatException;
@@ -10,7 +11,7 @@ import vaov.remote.services.KeyId;
 
 public abstract class Control {
 
-	public static PrivateAccount getAccount(String alias, Password password) throws KeyException {
+	public static Optional<PrivateAccount> getAccount(String alias, Password password) throws KeyException {
 		return AccountHandler.getAccount(new KeyId(alias), password);
 	}
 

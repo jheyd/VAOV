@@ -1,9 +1,9 @@
 package vaov.client.account;
 
 import java.security.PublicKey;
+import java.util.Optional;
 
 import vaov.client.service.ServiceFactory;
-import vaov.client.util.Config;
 import vaov.client.util.KeyException;
 import vaov.client.util.KeystoreService;
 import vaov.client.util.PublicKeyConverter;
@@ -17,11 +17,11 @@ public abstract class PublishedAccountsService {
 	/**
 	 * Loads Key from Database
 	 */
-	public static PublicKey getKey(KeyId keyId) throws KeyException {
+	public static Optional<PublicKey> getKey(KeyId keyId) throws KeyException {
 		if (!hasKey(keyId)) {
 			getAccountFromServer(keyId);
 		}
-		return KeystoreService.loadKeyPair(keyId, Config.getPublicKeyPassword()).getPublic();
+		return KeystoreService.loadPublicKey(keyId);
 	}
 
 	private static void getAccountFromServer(KeyId keyId) throws KeyException {

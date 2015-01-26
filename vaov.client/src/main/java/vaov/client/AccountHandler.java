@@ -1,6 +1,7 @@
 package vaov.client;
 
 import java.security.KeyPair;
+import java.util.Optional;
 
 import vaov.client.account.PrivateAccount;
 import vaov.client.util.AccountCreationService;
@@ -19,10 +20,14 @@ public abstract class AccountHandler {
 		return account;
 	}
 
-	public static PrivateAccount getAccount(KeyId keyId, Password password) {
-		PrivateAccount account = new PrivateAccount(keyId, KeystoreService.loadKeyPair(keyId, password));
+	public static Optional<PrivateAccount> getAccount(KeyId keyId, Password password) {
+		Optional<KeyPair> optional = KeystoreService.loadKeyPair(keyId, password);
+		if (!optional.isPresent()) {
+			return Optional.empty();
+		}
+		PrivateAccount account = new PrivateAccount(keyId, optional.get());
 		password.overwrite();
-		return account;
+		return Optional.of(account);
 	}
 
 	private static PrivateAccount getNewPrivateAccount() {
