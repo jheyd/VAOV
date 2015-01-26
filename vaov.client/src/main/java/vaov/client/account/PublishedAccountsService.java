@@ -27,7 +27,7 @@ public abstract class PublishedAccountsService {
 	private static void getAccountFromServer(KeyId keyId) throws KeyException {
 		VaovAccountService accountService = ServiceFactory.getAccountService();
 		AccountTO accountTO = accountService.getAccount(keyId);
-		if (!keyId.equals(accountTO.getHash())) {
+		if (!keyId.equals(new KeyId(accountTO.getHash()))) {
 			throw new KeyException("Hash from server does not match");
 		}
 		PublicKeyTO publicKeyTO = accountTO.getPublicKey();
