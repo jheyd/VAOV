@@ -13,15 +13,15 @@ import de.janheyd.javalibs.method.Method;
  */
 public class Client {
 
+	private PrintWriter outputWriter = new PrintWriter(System.out, true);
+
+	private CommandExecuter commandExecuter;
+
 	public static void main(String[] args) {
 		Client client = new Client();
 		client.setOutput(new PrintWriter(System.out));
 		client.execute(args);
 	}
-
-	private PrintWriter outputWriter = new PrintWriter(System.out, true);
-
-	private CommandExecuter commandExecuter;
 
 	public Client() {
 		Method messageMethod = MethodFactory.createMessageMethod();

@@ -15,11 +15,11 @@ public class Account {
 		this.publicKey = publicKey;
 	}
 
-	public PublicKey getPublicKey() {
-		return publicKey;
-	}
-
 	public KeyId getKeyId() {
 		return keyId;
+	}
+
+	public PublicKey getPublicKey() {
+		return publicKey;
 	}
 }

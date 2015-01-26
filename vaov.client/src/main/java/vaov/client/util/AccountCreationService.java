@@ -11,6 +11,10 @@ public class AccountCreationService {
 	private static final String ALGORITHM = "RSA"; //$NON-NLS-1$
 	private static final int KEY_SIZE = 4096;
 
+	public static KeyId generateKeyId(KeyPair keyPair) {
+		return new KeyId(HashComputer.computeHash(keyPair.getPublic()));
+	}
+
 	public static KeyPair generateKeyPair() {
 		return getKeyPairGenerator().generateKeyPair();
 	}
@@ -24,10 +28,6 @@ public class AccountCreationService {
 		}
 		kpg.initialize(KEY_SIZE);
 		return kpg;
-	}
-
-	public static KeyId generateKeyId(KeyPair keyPair) {
-		return new KeyId(HashComputer.computeHash(keyPair.getPublic()));
 	}
 
 }

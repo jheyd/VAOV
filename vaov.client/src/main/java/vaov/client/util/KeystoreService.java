@@ -48,6 +48,46 @@ public class KeystoreService {
 		Config.getPublicKeysFile()));
 	}
 
+	public static void storeKeyPair(KeyId keyId, Password password, KeyPair keys) {
+		storeKey(keyId.getPublicAlias(), keys.getPublic(), password, Config.getKeyStore(), null);
+		storeKey(keyId.getPrivateAlias(), keys.getPrivate(), password, Config.getKeyStore(), getCerts(keys));
+	}
+
+	public static void storePublicKey(KeyId keyId, PublicKey key) {
+		storeKey(keyId.getPublicAlias(), key, Config.getPublicKeyPassword(), Config.getPublicKeysFile(), null);
+	}
+
+	private static Certificate[] getCerts(KeyPair keys) {
+		/* We need a stupid certificate to store the key, so just create a
+		 * self-signed one. */
+		Date startDate = Date.valueOf("2000-01-01");
+		Date expiryDate = Date.valueOf("3000-01-01");
+		BigInteger serialNumber = new BigInteger("42");
+
+		// method is deprecated, for production use, we may need to include
+		// the CertificateBuilder of the full bouncy-castle lib
+		X509V1CertificateGenerator certGen = new X509V1CertificateGenerator();
+		X500Principal dnName = new X500Principal("CN=Stupid CA Certificate");
+
+		certGen.setSerialNumber(serialNumber);
+		certGen.setIssuerDN(dnName);
+		certGen.setNotBefore(startDate);
+		certGen.setNotAfter(expiryDate);
+		certGen.setSubjectDN(dnName); // note: same as issuer
+		certGen.setPublicKey(keys.getPublic());
+		certGen.setSignatureAlgorithm("MD2withRSA");
+
+		X509Certificate cert;
+		try {
+			cert = certGen.generate(keys.getPrivate(), "BC");
+		} catch (InvalidKeyException | IllegalStateException | NoSuchProviderException | SignatureException
+		| CertificateEncodingException | NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+
+		return new Certificate[] { cert };
+	}
+
 	private static Key loadKey(String alias, Password password, File keyStoreFile) {
 		Key key;
 		try (FileInputStream fileInputStream = new FileInputStream(keyStoreFile)) {
@@ -62,15 +102,6 @@ public class KeystoreService {
 		}
 
 		return key;
-	}
-
-	public static void storeKeyPair(KeyId keyId, Password password, KeyPair keys) {
-		storeKey(keyId.getPublicAlias(), keys.getPublic(), password, Config.getKeyStore(), null);
-		storeKey(keyId.getPrivateAlias(), keys.getPrivate(), password, Config.getKeyStore(), getCerts(keys));
-	}
-
-	public static void storePublicKey(KeyId keyId, PublicKey key) {
-		storeKey(keyId.getPublicAlias(), key, Config.getPublicKeyPassword(), Config.getPublicKeysFile(), null);
 	}
 
 	private static void storeKey(String alias, Key key, Password password, File keyStoreFile, Certificate[] certs) {
@@ -103,37 +134,6 @@ public class KeystoreService {
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e);
 		}
-	}
-
-	private static Certificate[] getCerts(KeyPair keys) {
-		/* We need a stupid certificate to store the key, so just create a
-		 * self-signed one. */
-		Date startDate = Date.valueOf("2000-01-01");
-		Date expiryDate = Date.valueOf("3000-01-01");
-		BigInteger serialNumber = new BigInteger("42");
-
-		// method is deprecated, for production use, we may need to include
-		// the CertificateBuilder of the full bouncy-castle lib
-		X509V1CertificateGenerator certGen = new X509V1CertificateGenerator();
-		X500Principal dnName = new X500Principal("CN=Stupid CA Certificate");
-
-		certGen.setSerialNumber(serialNumber);
-		certGen.setIssuerDN(dnName);
-		certGen.setNotBefore(startDate);
-		certGen.setNotAfter(expiryDate);
-		certGen.setSubjectDN(dnName); // note: same as issuer
-		certGen.setPublicKey(keys.getPublic());
-		certGen.setSignatureAlgorithm("MD2withRSA");
-
-		X509Certificate cert;
-		try {
-			cert = certGen.generate(keys.getPrivate(), "BC");
-		} catch (InvalidKeyException | IllegalStateException | NoSuchProviderException | SignatureException
-		| CertificateEncodingException | NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
-
-		return new Certificate[] { cert };
 	}
 
 }

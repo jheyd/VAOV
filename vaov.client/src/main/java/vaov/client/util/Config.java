@@ -25,6 +25,32 @@ import vaov.client.Password;
  */
 public class Config {
 
+	/* Fixed Parameters that must not be modified, since else compatibility,
+	 * safety, security and privacy may be compromised. */
+	private static final String HASH_ALGORITHM = "SHA-512";
+
+	private static final String SIGNATURE_ALGORITHM = "RSA/NONE/PKCS1Padding";
+
+	private static final Charset CHARSET = Charset.forName("UTF8");
+
+	/* KeyStore specific settings. These are only local, so changes are not
+	 * fatal. */
+	private static final String KEYSTORE_TYPE = "BKS";
+
+	private static final Provider PROVIDER = new BouncyCastleProvider();
+
+	private static final File USER_HOME = new File(System.getProperty("user.home"));
+
+	private static final File DATA_DIR = new File(USER_HOME, ".vaov");
+
+	private static final File PUBLIC_KEYS_FILE = new File(DATA_DIR, "public");
+
+	private static final File USER_KEYS_FILE = new File(DATA_DIR, "user");
+
+	static {
+		Security.addProvider(getProvider());
+	}
+
 	public static Charset getCharset() {
 		return CHARSET;
 	}
@@ -63,32 +89,6 @@ public class Config {
 
 	public static String getSignatureAlgorithm() {
 		return SIGNATURE_ALGORITHM;
-	}
-
-	/* Fixed Parameters that must not be modified, since else compatibility,
-	 * safety, security and privacy may be compromised. */
-	private static final String HASH_ALGORITHM = "SHA-512";
-
-	private static final String SIGNATURE_ALGORITHM = "RSA/NONE/PKCS1Padding";
-
-	private static final Charset CHARSET = Charset.forName("UTF8");
-
-	/* KeyStore specific settings. These are only local, so changes are not
-	 * fatal. */
-	private static final String KEYSTORE_TYPE = "BKS";
-
-	private static final Provider PROVIDER = new BouncyCastleProvider();
-
-	private static final File USER_HOME = new File(System.getProperty("user.home"));
-
-	private static final File DATA_DIR = new File(USER_HOME, ".vaov");
-
-	private static final File PUBLIC_KEYS_FILE = new File(DATA_DIR, "public");
-
-	private static final File USER_KEYS_FILE = new File(DATA_DIR, "user");
-
-	static {
-		Security.addProvider(getProvider());
 	}
 
 }

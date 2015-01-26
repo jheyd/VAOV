@@ -15,10 +15,6 @@ import vaov.remote.message.to.VoteContentTO;
 
 public abstract class MessageHandler {
 
-	private static boolean sendMessage(MessageContentTO messageContent, PrivateAccount author) {
-		return MessageService.send(messageContent, author);
-	}
-
 	public static void sendMessageToUser(String alias, String message, PrivateAccount author) {
 		MessageToUserContentTO content = new MessageToUserContentTO(alias, message);
 		sendMessage(content, author);
@@ -40,6 +36,10 @@ public abstract class MessageHandler {
 	public static void sendVote(boolean[] votes, String target, PrivateAccount author) {
 		MessageContentTO vote = new VoteContentTO(votes, target);
 		sendMessage(vote, author);
+	}
+
+	private static boolean sendMessage(MessageContentTO messageContent, PrivateAccount author) {
+		return MessageService.send(messageContent, author);
 	}
 
 }

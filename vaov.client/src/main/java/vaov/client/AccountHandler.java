@@ -19,16 +19,16 @@ public abstract class AccountHandler {
 		return account;
 	}
 
-	private static PrivateAccount getNewPrivateAccount() {
-		KeyPair keyPair = AccountCreationService.generateKeyPair();
-		KeyId keyId = AccountCreationService.generateKeyId(keyPair);
-		return new PrivateAccount(keyId, keyPair);
-	}
-
 	public static PrivateAccount getAccount(KeyId keyId, Password password) {
 		PrivateAccount account = new PrivateAccount(keyId, KeystoreService.loadKeyPair(keyId, password));
 		password.overwrite();
 		return account;
+	}
+
+	private static PrivateAccount getNewPrivateAccount() {
+		KeyPair keyPair = AccountCreationService.generateKeyPair();
+		KeyId keyId = AccountCreationService.generateKeyId(keyPair);
+		return new PrivateAccount(keyId, keyPair);
 	}
 
 }

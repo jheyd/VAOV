@@ -2,10 +2,6 @@ package vaov.client;
 
 public class Password {
 
-	public char[] getCharArray() {
-		return charArray;
-	}
-
 	private char[] charArray;
 
 	private boolean overwritten = false;
@@ -14,13 +10,17 @@ public class Password {
 		this.charArray = charArray;
 	}
 
-	public void overwrite() {
-		Util.overwriteCharArray(charArray);
-		overwritten = true;
+	public char[] getCharArray() {
+		return charArray;
 	}
 
 	public boolean isOverwritten() {
 		return overwritten;
+	}
+
+	public void overwrite() {
+		Util.overwriteCharArray(charArray);
+		overwritten = true;
 	}
 
 }

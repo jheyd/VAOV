@@ -61,7 +61,8 @@ public class PrintService {
 		g.setColor(Color.black);
 		BoundingBox box = new BoundingBox(new Point(20, 20), new Dimension((int) d.getWidth() - 20, 30));
 		/* g.drawRect((int)box.getAbsoluteLocation().getX(),
-		 * (int)box.getAbsoluteLocation().getY(), (int)box.getSize().getWidth(),
+		 * (int)box.getAbsoluteLocation().getY(),
+		 * (int)box.getSize().getWidth(),
 		 * (int)box.getSize().getHeight()); */
 		g.setFont(text);
 		FontMetrics fm = g.getFontMetrics();
@@ -80,7 +81,8 @@ public class PrintService {
 
 		box = new BoundingBox(new Point(20, 50), new Dimension((int) d.getWidth() - 20, 150));
 		/* g.drawRect((int)box.getAbsoluteLocation().getX(),
-		 * (int)box.getAbsoluteLocation().getY(), (int)box.getSize().getWidth(),
+		 * (int)box.getAbsoluteLocation().getY(),
+		 * (int)box.getSize().getWidth(),
 		 * (int)box.getSize().getHeight()); */
 		g.setFont(title);
 		fm = g.getFontMetrics();
@@ -122,7 +124,8 @@ public class PrintService {
 		box = new BoundingBox(new Point(20, 250), new Dimension((int) d.getWidth() - 20, 50));
 
 		/* g.drawRect((int)box.getAbsoluteLocation().getX(),
-		 * (int)box.getAbsoluteLocation().getY(), (int)box.getSize().getWidth(),
+		 * (int)box.getAbsoluteLocation().getY(),
+		 * (int)box.getSize().getWidth(),
 		 * (int)box.getSize().getHeight()); */
 		try {
 			child = box.getStringBounds("ID: " + hash, BoundingBox.HORIZ_ALIGN_LEFT, BoundingBox.VERT_ALIGN_TOP, fm,
