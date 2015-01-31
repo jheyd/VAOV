@@ -48,12 +48,14 @@ public class KeystoreService {
 	}
 
 	public static void storeKeyPair(KeyId keyId, Password password, KeyPair keys) {
-		storeKey(keyId.getPublicAlias(), keys.getPublic(), password, Config.getKeyStore(), null);
-		storeKey(keyId.getPrivateAlias(), keys.getPrivate(), password, Config.getKeyStore(), getCerts(keys));
+		storeKey(keyId.getPublicAlias(), keys.getPublic(), password, Config.getKeyStore(), Optional.empty());
+		storeKey(keyId.getPrivateAlias(), keys.getPrivate(), password, Config.getKeyStore(),
+		Optional.of(getCerts(keys)));
 	}
 
 	public static void storePublicKey(KeyId keyId, PublicKey key) {
-		storeKey(keyId.getPublicAlias(), key, Config.getPublicKeyPassword(), Config.getPublicKeysFile(), null);
+		storeKey(keyId.getPublicAlias(), key, Config.getPublicKeyPassword(), Config.getPublicKeysFile(),
+		Optional.empty());
 	}
 
 	private static Certificate[] getCerts(KeyPair keys) {
@@ -103,7 +105,8 @@ public class KeystoreService {
 		return key;
 	}
 
-	private static void storeKey(String alias, Key key, Password password, File keyStoreFile, Certificate[] certs) {
+	private static void storeKey(String alias, Key key, Password password, File keyStoreFile,
+	Optional<Certificate[]> certs) {
 		try {
 			KeyStore ks = KeyStore.getInstance(Config.getKeyStoreType(), Config.getProvider());
 			char[] passwordChars = password.getCharArray();
@@ -122,7 +125,11 @@ public class KeystoreService {
 				keyStoreFile.getParentFile().mkdirs();
 				keyStoreFile.createNewFile();
 			}
-			ks.setKeyEntry(alias, key, passwordChars, certs);
+			if (certs.isPresent()) {
+				ks.setKeyEntry(alias, key, passwordChars, certs.get());
+			} else {
+				ks.setKeyEntry(alias, key, passwordChars, null);
+			}
 
 			try (FileOutputStream fileOutputStream = new FileOutputStream(Config.getKeyStore());) {
 				ks.store(fileOutputStream, passwordChars);
