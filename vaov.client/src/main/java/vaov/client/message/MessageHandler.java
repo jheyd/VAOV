@@ -1,11 +1,10 @@
-package vaov.client;
+package vaov.client.message;
 
 import java.security.PublicKey;
 
 import vaov.client.account.Account;
 import vaov.client.account.PrivateAccount;
-import vaov.client.message.MessageService;
-import vaov.client.util.PublicKeyConverter;
+import vaov.client.util.Config;
 import vaov.remote.account.to.PublicKeyTO;
 import vaov.remote.message.to.MessageContentTO;
 import vaov.remote.message.to.MessageToUserContentTO;
@@ -22,7 +21,7 @@ public abstract class MessageHandler {
 
 	public static void sendNewAccount(Account newAccount, PrivateAccount author) {
 		PublicKey pk = newAccount.getPublicKey();
-		PublicKeyTO publicKeyTO = PublicKeyConverter.writePublicKey(pk);
+		PublicKeyTO publicKeyTO = Config.getPublicKeyConverter().writePublicKey(pk);
 
 		NewAccountContentTO content = new NewAccountContentTO(publicKeyTO.getModulus(), publicKeyTO.getExponent());
 		sendMessage(content, author);

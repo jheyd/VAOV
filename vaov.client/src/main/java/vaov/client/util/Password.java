@@ -1,4 +1,5 @@
-package vaov.client;
+package vaov.client.util;
+
 
 public class Password {
 

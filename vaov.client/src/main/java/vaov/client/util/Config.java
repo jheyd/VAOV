@@ -11,8 +11,6 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import vaov.client.Password;
-
 /**
  * Config stores all those configuration parameters that are somehow chosen
  * arbitrarily.
@@ -32,6 +30,8 @@ public class Config {
 	private static final String SIGNATURE_ALGORITHM = "RSA/NONE/PKCS1Padding";
 
 	private static final Charset CHARSET = Charset.forName("UTF8");
+
+	private static final PublicKeyConverter PUBLIC_KEY_CONVERTER = new RSAPublicKeyConverter();
 
 	/* KeyStore specific settings. These are only local, so changes are not
 	 * fatal. */
@@ -89,6 +89,10 @@ public class Config {
 
 	public static String getSignatureAlgorithm() {
 		return SIGNATURE_ALGORITHM;
+	}
+
+	public static PublicKeyConverter getPublicKeyConverter() {
+		return PUBLIC_KEY_CONVERTER;
 	}
 
 }

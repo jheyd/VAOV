@@ -27,7 +27,6 @@ import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 
-import vaov.client.Password;
 import vaov.remote.services.KeyId;
 
 public class KeystoreService {

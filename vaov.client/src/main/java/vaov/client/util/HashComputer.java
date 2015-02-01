@@ -7,6 +7,7 @@ import java.security.interfaces.RSAPublicKey;
 
 import org.apache.commons.codec.binary.Base64;
 
+import vaov.client.message.MessageTOFactory;
 import vaov.remote.message.to.MessageContentTO;
 
 public class HashComputer {
@@ -29,12 +30,12 @@ public class HashComputer {
 	 * @param publicKey
 	 *            the key for which to compute the hash.
 	 * @return the computed hash
-	 * @throws KeyException
+	 * @
 	 *             if the Key is not a RSA key
 	 */
-	public static String computeHash(PublicKey publicKey) throws KeyException {
+	public static String computeHash(PublicKey publicKey)  {
 		if (!(publicKey instanceof RSAPublicKey)) {
-			throw new KeyException("Key is not a RSAPublicKey");
+			throw new RuntimeException("Key is not a RSAPublicKey");
 		}
 		RSAPublicKey pub = (RSAPublicKey) publicKey;
 

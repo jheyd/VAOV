@@ -1,17 +1,16 @@
-package vaov.client;
+package vaov.client.account;
 
 import java.security.KeyPair;
 import java.util.Optional;
 
-import vaov.client.account.PrivateAccount;
-import vaov.client.util.AccountCreationService;
 import vaov.client.util.KeystoreService;
+import vaov.client.util.Password;
 import vaov.remote.services.KeyId;
 
 public abstract class AccountHandler {
 
 	/**
-	 * Generate a new Account and store it in the KeyStore
+	 * Generate a new PrivateAccount and store it in the KeyStore
 	 */
 	public static PrivateAccount createNewAccount(Password pass) {
 		PrivateAccount account = getNewPrivateAccount();

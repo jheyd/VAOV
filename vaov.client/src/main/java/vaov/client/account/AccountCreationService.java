@@ -1,9 +1,10 @@
-package vaov.client.util;
+package vaov.client.account;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 
+import vaov.client.util.HashComputer;
 import vaov.remote.services.KeyId;
 
 public class AccountCreationService {

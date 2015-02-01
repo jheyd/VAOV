@@ -17,8 +17,6 @@ import vaov.client.account.PublishedAccountsService;
 import vaov.client.service.ServiceFactory;
 import vaov.client.util.Config;
 import vaov.client.util.HashComputer;
-import vaov.client.util.KeyException;
-import vaov.client.util.MessageTOFactory;
 import vaov.remote.message.to.MessageContentTO;
 import vaov.remote.message.to.MessageTO;
 import vaov.remote.services.VaovMessageService;
@@ -63,7 +61,7 @@ public class MessageService {
 
 	private static boolean verifySignature(String digest, String signature, PublicKey pk) {
 		if (!(pk instanceof RSAPublicKey)) {
-			throw new KeyException("Key is not a RSAPublicKey");
+			throw new RuntimeException("Key is not a RSAPublicKey");
 		}
 		try {
 			Cipher cipher = Config.getCipher();

@@ -1,4 +1,4 @@
-package vaov.client.util;
+package vaov.client.message;
 
 import java.io.StringWriter;
 import java.security.InvalidKeyException;
@@ -17,6 +17,8 @@ import javax.xml.bind.Marshaller;
 import org.apache.commons.codec.binary.Base64;
 
 import vaov.client.account.PrivateAccount;
+import vaov.client.util.Config;
+import vaov.client.util.HashComputer;
 import vaov.remote.message.to.MessageContentTO;
 import vaov.remote.message.to.MessageTO;
 import vaov.remote.message.to.MessageToUserContentTO;
@@ -26,8 +28,7 @@ import vaov.remote.message.to.VoteContentTO;
 
 public class MessageTOFactory {
 
-	public static MessageTO createMessageTO(PrivateAccount privateauthor, MessageContentTO messageContent)
-	throws KeyException {
+	public static MessageTO createMessageTO(PrivateAccount privateauthor, MessageContentTO messageContent) {
 		String digest = HashComputer.computeHash(messageContent);
 		String signature = computeSignature(digest, privateauthor.getPrivateKey());
 
@@ -39,7 +40,7 @@ public class MessageTOFactory {
 		return messageTO;
 	}
 
-	static String marshalMessageContentTO(MessageContentTO message) {
+	public static String marshalMessageContentTO(MessageContentTO message) {
 		String result;
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(MessageContentTO.class, MessageToUserContentTO.class,
@@ -56,38 +57,20 @@ public class MessageTOFactory {
 
 	}
 
-	/**
-	 * Encrypts a given string with the specified private key.
-	 *
-	 * @param digest
-	 *            the text to encrypt
-	 * @param pk
-	 *            the private key to use
-	 * @return the encoded string.
-	 * @throws KeyException
-	 */
-	private static String computeSignature(String digest, PrivateKey pk) throws KeyException {
+	private static String computeSignature(String digest, PrivateKey pk) {
 		if (!(pk instanceof RSAPrivateKey)) {
-			throw new KeyException("Key is not a RSAPrivateKey");
+			throw new RuntimeException("Key is not a RSAPrivateKey");
 		}
 		byte[] val;
 		try {
 			Cipher c = Cipher.getInstance(Config.getSignatureAlgorithm(), Config.getProvider());
 			c.init(Cipher.ENCRYPT_MODE, pk);
 			val = c.doFinal(digest.getBytes(Config.getCharset()));
-		} catch (InvalidKeyException e) {
-			throw new KeyException("Key is not a valid Key", e);
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		} catch (NoSuchPaddingException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalBlockSizeException e) {
-			throw new RuntimeException(e);
-		} catch (BadPaddingException e) {
+		} catch (NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException
+		| InvalidKeyException e) {
 			throw new RuntimeException(e);
 		}
-		String encoded = Base64.encodeBase64String(val);
-		return encoded;
+		return Base64.encodeBase64String(val);
 	}
 
 }
