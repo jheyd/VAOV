@@ -5,8 +5,8 @@ import java.text.ParseException;
 import java.util.Optional;
 import java.util.function.Function;
 
-import vaov.client.account.PrivateAccount;
-import vaov.client.util.Password;
+import vaov.client.account.model.Password;
+import vaov.client.account.model.PrivateAccount;
 import vaov.client.util.Util;
 import de.janheyd.javalibs.method.Method;
 import de.janheyd.javalibs.method.MethodParameters;

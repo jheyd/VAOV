@@ -1,4 +1,4 @@
-package vaov.client.util;
+package vaov.client.account;
 
 import java.security.PublicKey;
 

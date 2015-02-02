@@ -3,7 +3,8 @@ package vaov.client.util;
 import java.util.Optional;
 
 import vaov.client.Control;
-import vaov.client.account.PrivateAccount;
+import vaov.client.account.model.Password;
+import vaov.client.account.model.PrivateAccount;
 import de.janheyd.javalibs.ask.AskUtils;
 
 public class Util {

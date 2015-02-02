@@ -1,4 +1,4 @@
-package vaov.client.util;
+package vaov.client.account.service;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +27,8 @@ import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 
+import vaov.client.account.model.Password;
+import vaov.client.util.Config;
 import vaov.remote.services.KeyId;
 
 public class KeystoreService {

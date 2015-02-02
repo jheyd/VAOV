@@ -11,6 +11,10 @@ import javax.crypto.NoSuchPaddingException;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import vaov.client.account.PublicKeyConverter;
+import vaov.client.account.RSAPublicKeyConverter;
+import vaov.client.account.model.Password;
+
 /**
  * Config stores all those configuration parameters that are somehow chosen
  * arbitrarily.

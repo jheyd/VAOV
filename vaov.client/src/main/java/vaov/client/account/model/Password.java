@@ -1,4 +1,6 @@
-package vaov.client.util;
+package vaov.client.account.model;
+
+import vaov.client.util.Util;
 
 
 public class Password {

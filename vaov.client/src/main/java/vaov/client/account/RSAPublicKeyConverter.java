@@ -1,4 +1,4 @@
-package vaov.client.util;
+package vaov.client.account;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -7,6 +7,8 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 
+import vaov.client.util.Config;
+import vaov.client.util.PositiveBigInteger;
 import vaov.remote.account.to.PublicKeyTO;
 
 public class RSAPublicKeyConverter implements PublicKeyConverter {

@@ -1,4 +1,4 @@
-package vaov.client;
+package vaov.client.util;
 
 import static java.lang.String.valueOf;
 
