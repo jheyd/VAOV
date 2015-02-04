@@ -24,10 +24,11 @@ public class Client {
 	}
 
 	public Client() {
-		Method messageMethod = MethodFactory.createMessageMethod();
-		Method voteMethod = MethodFactory.createVoteMethod();
-		Method newAccountMethod = MethodFactory.createNewAccountMethod(outputWriter);
-		Method registerAccountMethod = MethodFactory.createRegisterAccountMethod();
+		MethodFactory methodFactory = new MethodFactory();
+		Method messageMethod = methodFactory.createMessageMethod();
+		Method voteMethod = methodFactory.createVoteMethod();
+		Method newAccountMethod = methodFactory.createNewAccountMethod(outputWriter);
+		Method registerAccountMethod = methodFactory.createRegisterAccountMethod();
 
 		commandExecuter = new CommandExecuter(messageMethod, voteMethod, newAccountMethod, registerAccountMethod);
 	}

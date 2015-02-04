@@ -10,22 +10,37 @@ import vaov.client.message.MessageService;
 import vaov.client.util.VoteParser;
 import vaov.remote.services.KeyId;
 
-public abstract class Control {
+public class Control {
 
-	public static Optional<PrivateAccount> getAccount(String alias, Password password)  {
-		return AccountService.getAccount(new KeyId(alias), password);
+	private AccountService accountService;
+	private MessageService messageService;
+	private VoteParser voteParser;
+
+	public Control() {
+		this(new AccountService(), new MessageService(), new VoteParser());
 	}
 
-	public static void message(PrivateAccount acc, String target, String message) {
-		MessageService.sendMessageToUser(target, message, acc);
+	public Control(AccountService accountService, MessageService messageService, VoteParser voteParser) {
+		super();
+		this.accountService = accountService;
+		this.messageService = messageService;
+		this.voteParser = voteParser;
 	}
 
-	public static String newAccount(Password pass)  {
-		return AccountService.createNewAccount(pass).getAlias();
+	public Optional<PrivateAccount> getAccount(String alias, Password password) {
+		return accountService.getPrivateAccount(new KeyId(alias), password);
 	}
 
-	public static void vote(PrivateAccount acc, String targetID, String voteString) throws ParseException {
-		boolean[] vote = VoteParser.parseVoteString(voteString);
-		MessageService.sendVote(vote, targetID, acc);
+	public void message(PrivateAccount acc, String target, String message) {
+		messageService.sendMessageToUser(target, message, acc);
+	}
+
+	public String newAccount(Password pass) {
+		return accountService.createNewAccount(pass).getAlias();
+	}
+
+	public void vote(PrivateAccount acc, String targetID, String voteString) throws ParseException {
+		boolean[] vote = voteParser.parseVoteString(voteString);
+		messageService.sendVote(vote, targetID, acc);
 	}
 }

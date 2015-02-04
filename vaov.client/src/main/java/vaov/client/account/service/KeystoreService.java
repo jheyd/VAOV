@@ -33,7 +33,7 @@ import vaov.remote.services.KeyId;
 
 public class KeystoreService {
 
-	public static Optional<KeyPair> loadKeyPair(KeyId keyId, Password password) {
+	public Optional<KeyPair> loadKeyPair(KeyId keyId, Password password) {
 		Optional<PublicKey> publicKey = Optional.ofNullable((PublicKey) loadKey(keyId.getPublicAlias(), password,
 		Config.getKeyStore()));
 		PrivateKey privateKey = (PrivateKey) loadKey(keyId.getPrivateAlias(), password, Config.getKeyStore());
@@ -43,23 +43,23 @@ public class KeystoreService {
 		return Optional.of(new KeyPair(publicKey.get(), privateKey));
 	}
 
-	public static Optional<PublicKey> loadPublicKey(KeyId keyId) {
+	public Optional<PublicKey> loadPublicKey(KeyId keyId) {
 		return Optional.ofNullable((PublicKey) loadKey(keyId.getPublicAlias(), Config.getPublicKeyPassword(),
 		Config.getPublicKeysFile()));
 	}
 
-	public static void storeKeyPair(KeyId keyId, Password password, KeyPair keys) {
+	public void storeKeyPair(KeyId keyId, Password password, KeyPair keys) {
 		storeKey(keyId.getPublicAlias(), keys.getPublic(), password, Config.getKeyStore(), Optional.empty());
 		storeKey(keyId.getPrivateAlias(), keys.getPrivate(), password, Config.getKeyStore(),
 		Optional.of(getCerts(keys)));
 	}
 
-	public static void storePublicKey(KeyId keyId, PublicKey key) {
+	public void storePublicKey(KeyId keyId, PublicKey key) {
 		storeKey(keyId.getPublicAlias(), key, Config.getPublicKeyPassword(), Config.getPublicKeysFile(),
 		Optional.empty());
 	}
 
-	private static Certificate[] getCerts(KeyPair keys) {
+	private Certificate[] getCerts(KeyPair keys) {
 		/* We need a stupid certificate to store the key, so just create a
 		 * self-signed one. */
 		Date startDate = Date.valueOf("2000-01-01");

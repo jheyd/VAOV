@@ -34,7 +34,7 @@ public class PrintService {
 	 *            used to write the pdf-file
 	 * @param hash
 	 */
-	public static void print(OutputStream out, String hash) {
+	public void print(OutputStream out, String hash) {
 		PDFJob job = new PDFJob(out, "geheimes Akkreditierungsdokument");
 		PageFormat pf = new PageFormat();
 		Paper p = new Paper();

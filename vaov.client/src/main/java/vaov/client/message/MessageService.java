@@ -5,7 +5,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Optional;
 
@@ -34,20 +33,24 @@ import vaov.remote.message.to.NickChangeContentTO;
 import vaov.remote.message.to.VoteContentTO;
 import vaov.remote.services.VaovMessageService;
 
-/**
- * A signed message that is used to communicate with any kind of service. Every
- * Message is associated to an {@link Account}. The account supplies the key for
- * verifying the message.
- *
- * Messages that were created by a {@link PrivateAccount} can be send. The
- * sending process adds a signature to the message text.
- *
- * @author arne
- *
- */
 public class MessageService {
 
-	public static String marshalMessageContentTO(MessageContentTO message) {
+	private AccountService accountService;
+	private HashComputer hashComputer;
+	private VaovMessageService messageService;
+
+	public MessageService() {
+		this(new AccountService(), new HashComputer(), ServiceFactory.getMessageService());
+	}
+
+	public MessageService(AccountService accountService, HashComputer hashComputer, VaovMessageService messageService) {
+		this.accountService = accountService;
+		this.hashComputer = hashComputer;
+		this.messageService = messageService;
+
+	}
+
+	public String marshalMessageContentTO(MessageContentTO message) {
 		String result;
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(MessageContentTO.class, MessageToUserContentTO.class,
@@ -64,12 +67,12 @@ public class MessageService {
 
 	}
 
-	public static void sendMessageToUser(String alias, String message, PrivateAccount author) {
+	public void sendMessageToUser(String alias, String message, PrivateAccount author) {
 		MessageToUserContentTO content = new MessageToUserContentTO(alias, message);
 		sendMessage(content, author);
 	}
 
-	public static void sendNewAccount(Account newAccount, PrivateAccount author) {
+	public void sendNewAccount(Account newAccount, PrivateAccount author) {
 		PublicKey pk = newAccount.getPublicKey();
 		PublicKeyTO publicKeyTO = Config.getPublicKeyConverter().writePublicKey(pk);
 
@@ -77,25 +80,25 @@ public class MessageService {
 		sendMessage(content, author);
 	}
 
-	public static void sendNickchange(String newNick, PrivateAccount author) {
+	public void sendNickchange(String newNick, PrivateAccount author) {
 		NickChangeContentTO content = new NickChangeContentTO(newNick);
 		sendMessage(content, author);
 	}
 
-	public static void sendVote(boolean[] votes, String target, PrivateAccount author) {
+	public void sendVote(boolean[] votes, String target, PrivateAccount author) {
 		MessageContentTO vote = new VoteContentTO(votes, target);
 		sendMessage(vote, author);
 	}
 
-	public static boolean verifyMessage(MessageTO message) {
-		Optional<PublicKey> optional = AccountService.getKey(message.getAuthor());
+	public boolean verifyMessage(MessageTO message) {
+		Optional<PublicKey> optional = accountService.getAccount(message.getAuthor());
 		if (!optional.isPresent()) {
 			return false;
 		}
 		PublicKey publicKey = optional.get();
 		MessageContentTO content = message.getContent();
 
-		String computed_digest = HashComputer.computeHash(content);
+		String computed_digest = hashComputer.computeHash(content);
 		if (!computed_digest.equals(message.getDigest())) {
 			// throw new
 			// VerificationException("Digest does not match to message. Message may be manipulated!");
@@ -104,10 +107,7 @@ public class MessageService {
 		return verifySignature(message.getDigest(), message.getSignature(), publicKey);
 	}
 
-	private static String computeSignature(String digest, PrivateKey pk) {
-		if (!(pk instanceof RSAPrivateKey)) {
-			throw new RuntimeException("Key is not a RSAPrivateKey");
-		}
+	private String computeSignature(String digest, PrivateKey pk) {
 		byte[] val;
 		try {
 			Cipher c = Cipher.getInstance(Config.getSignatureAlgorithm(), Config.getProvider());
@@ -120,8 +120,8 @@ public class MessageService {
 		return Base64.encodeBase64String(val);
 	}
 
-	private static MessageTO createMessageTO(PrivateAccount privateauthor, MessageContentTO messageContent) {
-		String digest = HashComputer.computeHash(messageContent);
+	private MessageTO createMessageTO(PrivateAccount privateauthor, MessageContentTO messageContent) {
+		String digest = hashComputer.computeHash(messageContent);
 		String signature = computeSignature(digest, privateauthor.getPrivateKey());
 
 		MessageTO messageTO = new MessageTO();
@@ -132,19 +132,17 @@ public class MessageService {
 		return messageTO;
 	}
 
-	private static boolean send(MessageContentTO messageContent, PrivateAccount author) {
-		MessageTO messageTO = MessageService.createMessageTO(author, messageContent);
-
-		VaovMessageService messageService = ServiceFactory.getMessageService();
+	private boolean send(MessageContentTO messageContent, PrivateAccount author) {
+		MessageTO messageTO = createMessageTO(author, messageContent);
 
 		return messageService.send(messageTO);
 	}
 
-	private static boolean sendMessage(MessageContentTO messageContent, PrivateAccount author) {
+	private boolean sendMessage(MessageContentTO messageContent, PrivateAccount author) {
 		return send(messageContent, author);
 	}
 
-	private static boolean verifySignature(String digest, String signature, PublicKey pk) {
+	private boolean verifySignature(String digest, String signature, PublicKey pk) {
 		if (!(pk instanceof RSAPublicKey)) {
 			throw new RuntimeException("Key is not a RSAPublicKey");
 		}

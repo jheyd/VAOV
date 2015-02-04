@@ -15,11 +15,11 @@ public class Util {
 	 *
 	 * @param alias
 	 * @return
-	 * @
+	 *         @
 	 */
-	public static Optional<PrivateAccount> askAcc(String alias)  {
+	public static Optional<PrivateAccount> askAcc(String alias) {
 		Password password = Util.askPassword("password for " + alias + ": ");
-		Optional<PrivateAccount> acc = Control.getAccount(alias, password);
+		Optional<PrivateAccount> acc = new Control().getAccount(alias, password);
 		password.overwrite();
 		return acc;
 	}

@@ -1,8 +1,6 @@
 package vaov.client.account.service;
 
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.util.Optional;
 
@@ -16,23 +14,39 @@ import vaov.remote.account.to.PublicKeyTO;
 import vaov.remote.services.KeyId;
 import vaov.remote.services.VaovAccountService;
 
-public abstract class AccountService {
+public class AccountService {
 
-	private static final String ALGORITHM = "RSA"; //$NON-NLS-1$
-	private static final int KEY_SIZE = 4096;
+	private KeystoreService keystoreService;
+	private HashComputer hashComputer;
+	private VaovAccountService accountService;
+	private AccountCreationService accountCreationService;
+
+	public AccountService() {
+		this(new KeystoreService(), new HashComputer(), ServiceFactory.getAccountService(),
+		new RsaAccountCreationService());
+	}
+
+	public AccountService(KeystoreService keystoreService, HashComputer hashComputer,
+	VaovAccountService accountService, AccountCreationService accountCreationService) {
+		super();
+		this.keystoreService = keystoreService;
+		this.hashComputer = hashComputer;
+		this.accountService = accountService;
+		this.accountCreationService = accountCreationService;
+	}
 
 	/**
 	 * Generate a new PrivateAccount and store it in the KeyStore
 	 */
-	public static PrivateAccount createNewAccount(Password pass) {
+	public PrivateAccount createNewAccount(Password pass) {
 		PrivateAccount account = getNewPrivateAccount();
-		KeystoreService.storeKeyPair(account.getKeyId(), pass, account.getKeyPair());
+		keystoreService.storeKeyPair(account.getKeyId(), pass, account.getKeyPair());
 		pass.overwrite();
 		return account;
 	}
 
-	public static Optional<PrivateAccount> getAccount(KeyId keyId, Password password) {
-		Optional<KeyPair> optional = KeystoreService.loadKeyPair(keyId, password);
+	public Optional<PrivateAccount> getPrivateAccount(KeyId keyId, Password password) {
+		Optional<KeyPair> optional = keystoreService.loadKeyPair(keyId, password);
 		if (!optional.isPresent()) {
 			return Optional.empty();
 		}
@@ -41,54 +55,38 @@ public abstract class AccountService {
 		return Optional.of(account);
 	}
 
-	private static PrivateAccount getNewPrivateAccount() {
-		KeyPair keyPair = AccountService.generateKeyPair();
-		KeyId keyId = AccountService.generateKeyId(keyPair);
+	private PrivateAccount getNewPrivateAccount() {
+		KeyPair keyPair = accountCreationService.generateKeyPair();
+		KeyId keyId = generateKeyId(keyPair);
 		return new PrivateAccount(keyId, keyPair);
 	}
 
-	public static KeyId generateKeyId(KeyPair keyPair) {
-		return new KeyId(HashComputer.computeHash(keyPair.getPublic()));
+	private KeyId generateKeyId(KeyPair keyPair) {
+		return new KeyId(hashComputer.computeHash(keyPair.getPublic()));
 	}
 
-	public static KeyPair generateKeyPair() {
-		return getKeyPairGenerator().generateKeyPair();
-	}
-
-	static KeyPairGenerator getKeyPairGenerator() {
-		KeyPairGenerator kpg;
-		try {
-			kpg = KeyPairGenerator.getInstance(ALGORITHM);
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
-		kpg.initialize(KEY_SIZE);
-		return kpg;
-	}
-
-	public static Optional<PublicKey> getKey(KeyId keyId) {
+	public Optional<PublicKey> getAccount(KeyId keyId) {
 		if (!hasKey(keyId)) {
 			getAccountFromServer(keyId);
 		}
-		return KeystoreService.loadPublicKey(keyId);
+		return keystoreService.loadPublicKey(keyId);
 	}
 
-	private static void getAccountFromServer(KeyId keyId) {
-		VaovAccountService accountService = ServiceFactory.getAccountService();
+	private void getAccountFromServer(KeyId keyId) {
 		AccountTO accountTO = accountService.getAccount(keyId);
 		if (!keyId.equals(new KeyId(accountTO.getHash()))) {
 			throw new RuntimeException("Hash from server does not match");
 		}
 		PublicKeyTO publicKeyTO = accountTO.getPublicKey();
 		PublicKey publicKey = Config.getPublicKeyConverter().readPublicKey(publicKeyTO);
-		KeystoreService.storePublicKey(keyId, publicKey);
+		keystoreService.storePublicKey(keyId, publicKey);
 	}
 
 	/**
 	 * checks if the database has a valid entry for the hash
 	 */
-	static boolean hasKey(KeyId keyId) {
-		return KeystoreService.loadPublicKey(keyId).isPresent();
+	private boolean hasKey(KeyId keyId) {
+		return keystoreService.loadPublicKey(keyId).isPresent();
 	}
 
 }

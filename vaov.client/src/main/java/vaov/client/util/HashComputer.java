@@ -12,6 +12,8 @@ import vaov.remote.message.to.MessageContentTO;
 
 public class HashComputer {
 
+	MessageService messageService = new MessageService();
+
 	/**
 	 * Hashes the specified text and returns the computed digest
 	 *
@@ -19,8 +21,8 @@ public class HashComputer {
 	 *            the messageContentTO to hash
 	 * @return the computed hash (digest)
 	 */
-	public static String computeHash(MessageContentTO messageContent) {
-		String marshalledMessageContent = MessageService.marshalMessageContentTO(messageContent);
+	public String computeHash(MessageContentTO messageContent) {
+		String marshalledMessageContent = messageService.marshalMessageContentTO(messageContent);
 		return computeHash(marshalledMessageContent);
 	}
 
@@ -30,10 +32,10 @@ public class HashComputer {
 	 * @param publicKey
 	 *            the key for which to compute the hash.
 	 * @return the computed hash
-	 * @
-	 *             if the Key is not a RSA key
+	 *         @
+	 *         if the Key is not a RSA key
 	 */
-	public static String computeHash(PublicKey publicKey)  {
+	public String computeHash(PublicKey publicKey) {
 		if (!(publicKey instanceof RSAPublicKey)) {
 			throw new RuntimeException("Key is not a RSAPublicKey");
 		}
@@ -45,7 +47,7 @@ public class HashComputer {
 		return computeHash(input1, input2);
 	}
 
-	private static String computeHash(byte[]... input) {
+	private String computeHash(byte[]... input) {
 		MessageDigest messageDigest;
 		try {
 			messageDigest = MessageDigest.getInstance(Config.getHashAlgorithm(), Config.getProvider());
@@ -59,7 +61,7 @@ public class HashComputer {
 		return Base64.encodeBase64String(val);
 	}
 
-	private static String computeHash(String messageContent) {
+	private String computeHash(String messageContent) {
 		// make sure message ends with a new line TODO test why???
 		String s = messageContent + "\n";
 		return computeHash(s.getBytes(Config.getCharset()));

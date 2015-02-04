@@ -4,13 +4,13 @@ import static java.lang.String.valueOf;
 
 import java.text.ParseException;
 
-public abstract class VoteParser {
+public class VoteParser {
 
 	private static final String NO_SYMBOLS = "nNfF0";
 
 	private static final String YES_SYMBOLS = "yYjJtT1";
 
-	public static boolean[] parseVoteString(String voteString) throws ParseException {
+	public boolean[] parseVoteString(String voteString) throws ParseException {
 		boolean[] votes = new boolean[voteString.length()];
 		for (int i = 0; i < voteString.length(); i++ ) {
 			votes[i] = VoteParser.parseVote(voteString, i);
