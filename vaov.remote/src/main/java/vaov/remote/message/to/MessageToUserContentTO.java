@@ -18,4 +18,9 @@ public class MessageToUserContentTO extends MessageContentTO {
 		return message;
 	}
 
+	@Override
+	public String toString() {
+		return "message to user \"" + username + "\" with content\"" + message + "\"";
+	}
+
 }

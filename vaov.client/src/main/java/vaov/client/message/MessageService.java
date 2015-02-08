@@ -2,8 +2,6 @@ package vaov.client.message;
 
 import java.io.StringWriter;
 import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Optional;
@@ -11,7 +9,6 @@ import java.util.Optional;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -38,15 +35,18 @@ public class MessageService {
 	private AccountService accountService;
 	private HashComputer hashComputer;
 	private VaovMessageService messageService;
+	private SignatureComputer signatureComputer;
 
 	public MessageService() {
-		this(new AccountService(), new HashComputer(), ServiceFactory.getMessageService());
+		this(new AccountService(), new HashComputer(), ServiceFactory.getMessageService(), new RsaSignatureComputer());
 	}
 
-	public MessageService(AccountService accountService, HashComputer hashComputer, VaovMessageService messageService) {
+	public MessageService(AccountService accountService, HashComputer hashComputer, VaovMessageService messageService,
+		SignatureComputer signatureComputer) {
 		this.accountService = accountService;
 		this.hashComputer = hashComputer;
 		this.messageService = messageService;
+		this.signatureComputer = signatureComputer;
 
 	}
 
@@ -54,7 +54,7 @@ public class MessageService {
 		String result;
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(MessageContentTO.class, MessageToUserContentTO.class,
-			NickChangeContentTO.class, VoteContentTO.class, NewAccountContentTO.class);
+				NickChangeContentTO.class, VoteContentTO.class, NewAccountContentTO.class);
 			StringWriter stringWriter = new StringWriter();
 			Marshaller marshaller = jaxbContext.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -107,22 +107,9 @@ public class MessageService {
 		return verifySignature(message.getDigest(), message.getSignature(), publicKey);
 	}
 
-	private String computeSignature(String digest, PrivateKey pk) {
-		byte[] val;
-		try {
-			Cipher c = Cipher.getInstance(Config.getSignatureAlgorithm(), Config.getProvider());
-			c.init(Cipher.ENCRYPT_MODE, pk);
-			val = c.doFinal(digest.getBytes(Config.getCharset()));
-		} catch (NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException
-		| InvalidKeyException e) {
-			throw new RuntimeException(e);
-		}
-		return Base64.encodeBase64String(val);
-	}
-
 	private MessageTO createMessageTO(PrivateAccount privateauthor, MessageContentTO messageContent) {
 		String digest = hashComputer.computeHash(messageContent);
-		String signature = computeSignature(digest, privateauthor.getPrivateKey());
+		String signature = signatureComputer.computeSignature(digest, privateauthor.getPrivateKey());
 
 		MessageTO messageTO = new MessageTO();
 		messageTO.setAuthor(privateauthor.getKeyId());
@@ -134,7 +121,6 @@ public class MessageService {
 
 	private boolean send(MessageContentTO messageContent, PrivateAccount author) {
 		MessageTO messageTO = createMessageTO(author, messageContent);
-
 		return messageService.send(messageTO);
 	}
 

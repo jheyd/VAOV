@@ -57,4 +57,9 @@ public class MessageTO {
 	public void setSignature(String signature) {
 		this.signature = signature;
 	}
+
+	@Override
+	public String toString() {
+		return "author: " + author + ", content: " + content + ", digest: " + digest + ", signature: " + signature;
+	}
 }

@@ -41,8 +41,6 @@ public class Config {
 	 * fatal. */
 	private static final String KEYSTORE_TYPE = "BKS";
 
-	private static final Provider PROVIDER = new BouncyCastleProvider();
-
 	private static final File USER_HOME = new File(System.getProperty("user.home"));
 
 	private static final File DATA_DIR = new File(USER_HOME, ".vaov");
@@ -50,6 +48,8 @@ public class Config {
 	private static final File PUBLIC_KEYS_FILE = new File(DATA_DIR, "public");
 
 	private static final File USER_KEYS_FILE = new File(DATA_DIR, "user");
+
+	private static final Provider PROVIDER = new BouncyCastleProvider();
 
 	static {
 		Security.addProvider(getProvider());

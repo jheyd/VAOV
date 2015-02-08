@@ -1,6 +1,5 @@
 package vaov.remote.services;
 
-
 public class KeyId {
 
 	private static final String ACCOUNT_ALIAS_PRIVATE = "_privatekey";
@@ -21,6 +20,11 @@ public class KeyId {
 	}
 
 	public String getAlias() {
+		return alias;
+	}
+
+	@Override
+	public String toString() {
 		return alias;
 	}
 }
