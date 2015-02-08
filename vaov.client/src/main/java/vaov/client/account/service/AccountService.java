@@ -4,8 +4,10 @@ import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.Optional;
 
+import vaov.client.account.model.Account;
 import vaov.client.account.model.Password;
 import vaov.client.account.model.PrivateAccount;
+import vaov.client.account.model.PublicAccount;
 import vaov.client.service.ServiceFactory;
 import vaov.client.util.Config;
 import vaov.client.util.HashComputer;
@@ -45,31 +47,23 @@ public class AccountService {
 		return account;
 	}
 
-	public Optional<PrivateAccount> getPrivateAccount(KeyId keyId, Password password) {
-		Optional<KeyPair> optional = keystoreService.loadKeyPair(keyId, password);
-		if (!optional.isPresent()) {
-			return Optional.empty();
+	public Optional<Account> getAccount(KeyId keyId) {
+		if (!hasKey(keyId)) {
+			getAccountFromServer(keyId);
 		}
-		PrivateAccount account = new PrivateAccount(keyId, optional.get());
-		password.overwrite();
-		return Optional.of(account);
+		Optional<PublicKey> publicKey = keystoreService.loadPublicKey(keyId);
+
+		return publicKey.map(x -> new PublicAccount(keyId, x));
 	}
 
-	private PrivateAccount getNewPrivateAccount() {
-		KeyPair keyPair = accountCreationService.generateKeyPair();
-		KeyId keyId = generateKeyId(keyPair);
-		return new PrivateAccount(keyId, keyPair);
+	public Optional<PrivateAccount> getPrivateAccount(KeyId keyId, Password password) {
+		Optional<KeyPair> optional = keystoreService.loadKeyPair(keyId, password);
+		password.overwrite();
+		return optional.map(x -> new PrivateAccount(keyId, x));
 	}
 
 	private KeyId generateKeyId(KeyPair keyPair) {
 		return new KeyId(hashComputer.computeHash(keyPair.getPublic()));
-	}
-
-	public Optional<PublicKey> getAccount(KeyId keyId) {
-		if (!hasKey(keyId)) {
-			getAccountFromServer(keyId);
-		}
-		return keystoreService.loadPublicKey(keyId);
 	}
 
 	private void getAccountFromServer(KeyId keyId) {
@@ -80,6 +74,12 @@ public class AccountService {
 		PublicKeyTO publicKeyTO = accountTO.getPublicKey();
 		PublicKey publicKey = Config.getPublicKeyConverter().readPublicKey(publicKeyTO);
 		keystoreService.storePublicKey(keyId, publicKey);
+	}
+
+	private PrivateAccount getNewPrivateAccount() {
+		KeyPair keyPair = accountCreationService.generateKeyPair();
+		KeyId keyId = generateKeyId(keyPair);
+		return new PrivateAccount(keyId, keyPair);
 	}
 
 	/**

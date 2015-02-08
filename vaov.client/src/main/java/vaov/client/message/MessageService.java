@@ -17,6 +17,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import vaov.client.account.model.Account;
 import vaov.client.account.model.PrivateAccount;
+import vaov.client.account.model.PublicAccount;
 import vaov.client.account.service.AccountService;
 import vaov.client.service.ServiceFactory;
 import vaov.client.util.Config;
@@ -72,7 +73,7 @@ public class MessageService {
 		sendMessage(content, author);
 	}
 
-	public void sendNewAccount(Account newAccount, PrivateAccount author) {
+	public void sendNewAccount(PublicAccount newAccount, PrivateAccount author) { // NO_UCD (unused code)
 		PublicKey pk = newAccount.getPublicKey();
 		PublicKeyTO publicKeyTO = Config.getPublicKeyConverter().writePublicKey(pk);
 
@@ -80,7 +81,7 @@ public class MessageService {
 		sendMessage(content, author);
 	}
 
-	public void sendNickchange(String newNick, PrivateAccount author) {
+	public void sendNickchange(String newNick, PrivateAccount author) { // NO_UCD (unused code)
 		NickChangeContentTO content = new NickChangeContentTO(newNick);
 		sendMessage(content, author);
 	}
@@ -90,12 +91,12 @@ public class MessageService {
 		sendMessage(vote, author);
 	}
 
-	public boolean verifyMessage(MessageTO message) {
-		Optional<PublicKey> optional = accountService.getAccount(message.getAuthor());
-		if (!optional.isPresent()) {
+	public boolean verifyMessage(MessageTO message) { // NO_UCD (unused code)
+		Optional<Account> account = accountService.getAccount(message.getAuthor());
+		if (!account.isPresent()) {
 			return false;
 		}
-		PublicKey publicKey = optional.get();
+		PublicKey publicKey = account.get().getPublicKey();
 		MessageContentTO content = message.getContent();
 
 		String computed_digest = hashComputer.computeHash(content);

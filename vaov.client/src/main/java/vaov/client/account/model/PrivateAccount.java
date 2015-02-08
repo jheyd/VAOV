@@ -2,16 +2,17 @@ package vaov.client.account.model;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 
 import vaov.remote.services.KeyId;
 
 public class PrivateAccount extends Account {
 
-	private PrivateKey privateKey;
+	private KeyPair keyPair;
 
 	public PrivateAccount(KeyId keyId, KeyPair keyPair) {
-		super(keyId, keyPair.getPublic());
-		this.privateKey = keyPair.getPrivate();
+		super(keyId);
+		this.keyPair = keyPair;
 	}
 
 	public String getAlias() {
@@ -19,11 +20,16 @@ public class PrivateAccount extends Account {
 	}
 
 	public KeyPair getKeyPair() {
-		return new KeyPair(getPublicKey(), getPrivateKey());
+		return keyPair;
 	}
 
 	public PrivateKey getPrivateKey() {
-		return privateKey;
+		return keyPair.getPrivate();
+	}
+
+	@Override
+	public PublicKey getPublicKey() {
+		return keyPair.getPublic();
 	}
 
 }

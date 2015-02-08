@@ -4,22 +4,18 @@ import java.security.PublicKey;
 
 import vaov.remote.services.KeyId;
 
-public class Account {
+public abstract class Account {
 
-	private PublicKey publicKey;
+	protected KeyId keyId;
 
-	private KeyId keyId;
-
-	public Account(KeyId keyId, PublicKey publicKey) {
+	public Account(KeyId keyId) {
 		this.keyId = keyId;
-		this.publicKey = publicKey;
 	}
 
 	public KeyId getKeyId() {
 		return keyId;
 	}
 
-	public PublicKey getPublicKey() {
-		return publicKey;
-	}
+	public abstract PublicKey getPublicKey();
+
 }
