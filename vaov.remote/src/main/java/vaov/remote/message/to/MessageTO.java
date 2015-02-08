@@ -2,10 +2,11 @@ package vaov.remote.message.to;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import vaov.remote.ValueObject;
 import vaov.remote.services.KeyId;
 
 @XmlRootElement
-public class MessageTO {
+public class MessageTO extends ValueObject {
 
 	private KeyId author;
 

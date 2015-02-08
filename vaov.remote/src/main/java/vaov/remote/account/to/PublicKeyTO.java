@@ -1,6 +1,8 @@
 package vaov.remote.account.to;
 
-public class PublicKeyTO {
+import vaov.remote.ValueObject;
+
+public class PublicKeyTO extends ValueObject {
 
 	private String modulus;
 	private String exponent;
@@ -10,12 +12,12 @@ public class PublicKeyTO {
 		this.exponent = exponent;
 	}
 
-	public String getModulus() {
-		return modulus;
-	}
-
 	public String getExponent() {
 		return exponent;
+	}
+
+	public String getModulus() {
+		return modulus;
 	}
 
 }

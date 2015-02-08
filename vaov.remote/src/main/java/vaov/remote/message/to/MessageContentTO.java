@@ -1,6 +1,7 @@
 package vaov.remote.message.to;
 
+import vaov.remote.ValueObject;
 
-public class MessageContentTO {
+public class MessageContentTO extends ValueObject {
 
 }

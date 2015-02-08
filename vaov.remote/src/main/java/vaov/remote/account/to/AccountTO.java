@@ -1,6 +1,8 @@
 package vaov.remote.account.to;
 
-public class AccountTO {
+import vaov.remote.ValueObject;
+
+public class AccountTO extends ValueObject {
 
 	private String hash;
 	private PublicKeyTO publicKey;
