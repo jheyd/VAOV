@@ -1,19 +1,12 @@
 package vaov.client.message;
 
 import java.io.StringWriter;
-import java.security.InvalidKeyException;
 import java.security.PublicKey;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Optional;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-
-import org.apache.commons.codec.binary.Base64;
 
 import vaov.client.account.model.Account;
 import vaov.client.account.model.PrivateAccount;
@@ -105,7 +98,7 @@ public class MessageService {
 			// VerificationException("Digest does not match to message. Message may be manipulated!");
 			return false;
 		}
-		return verifySignature(message.getDigest(), message.getSignature(), publicKey);
+		return signatureComputer.verifySignature(message.getDigest(), message.getSignature(), publicKey);
 	}
 
 	private MessageTO createMessageTO(PrivateAccount privateauthor, MessageContentTO messageContent) {
@@ -127,19 +120,5 @@ public class MessageService {
 
 	private boolean sendMessage(MessageContentTO messageContent, PrivateAccount author) {
 		return send(messageContent, author);
-	}
-
-	private boolean verifySignature(String digest, String signature, PublicKey pk) {
-		if (!(pk instanceof RSAPublicKey)) {
-			throw new RuntimeException("Key is not a RSAPublicKey");
-		}
-		try {
-			Cipher cipher = Config.getCipher();
-			cipher.init(Cipher.DECRYPT_MODE, pk);
-			byte[] val = cipher.doFinal(Base64.decodeBase64(signature));
-			return digest.equals(new String(val, Config.getCharset()));
-		} catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-			throw new RuntimeException(e);
-		}
 	}
 }

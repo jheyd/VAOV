@@ -4,7 +4,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Provider;
+import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -35,6 +37,21 @@ public class RsaSignatureComputer implements SignatureComputer {
 			throw new RuntimeException(e);
 		}
 		return Base64.encodeBase64String(val);
+	}
+
+	@Override
+	public boolean verifySignature(String digest, String signature, PublicKey pk) {
+		if (!(pk instanceof RSAPublicKey)) {
+			throw new RuntimeException("publicKey is not an RSAPublicKey");
+		}
+		try {
+			Cipher cipher = Config.getCipher();
+			cipher.init(Cipher.DECRYPT_MODE, pk);
+			byte[] val = cipher.doFinal(Base64.decodeBase64(signature));
+			return digest.equals(new String(val, Config.getCharset()));
+		} catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

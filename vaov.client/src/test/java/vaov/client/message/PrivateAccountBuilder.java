@@ -22,4 +22,9 @@ public class PrivateAccountBuilder {
 		return this;
 	}
 
+	public PrivateAccountBuilder withPublicKey(PublicKey publicKey) {
+		this.publicKey = publicKey;
+		return this;
+	}
+
 }
