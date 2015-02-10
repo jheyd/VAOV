@@ -27,8 +27,10 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 public class PrintService {
 
+	// TODO 09.02.2015 jan replace hash parameter with public key
+	// TODO lots of refactoring
 	/**
-	 * Prints the pdf that should be but into the ballot box.
+	 * Prints the pdf that should be put into the ballot box.
 	 *
 	 * @param out
 	 *            used to write the pdf-file
@@ -70,10 +72,10 @@ public class PrintService {
 		BoundingBox child = null;
 		try {
 			child = box.getStringBounds("Bitte auf Papier Ausdrucken!", BoundingBox.HORIZ_ALIGN_LEFT,
-			BoundingBox.VERT_ALIGN_TOP, fm, padding);
+				BoundingBox.VERT_ALIGN_TOP, fm, padding);
 			child.drawWrappedString(g, fm, padding, BoundingBox.HORIZ_ALIGN_LEFT);
 			child = box.getStringBounds("Bitte auf Papier Ausdrucken!", BoundingBox.HORIZ_ALIGN_RIGHT,
-			BoundingBox.VERT_ALIGN_TOP, fm, padding);
+				BoundingBox.VERT_ALIGN_TOP, fm, padding);
 			child.drawWrappedString(g, fm, padding, BoundingBox.HORIZ_ALIGN_RIGHT);
 		} catch (StringTooLongException stle) {
 			throw new RuntimeException(stle);
@@ -89,7 +91,7 @@ public class PrintService {
 
 		try {
 			child = box.getStringBounds("Geheimes Akkreditierungsdokument", BoundingBox.HORIZ_ALIGN_LEFT,
-			BoundingBox.VERT_ALIGN_TOP, fm, padding);
+				BoundingBox.VERT_ALIGN_TOP, fm, padding);
 			child.drawWrappedString(g, fm, padding, BoundingBox.HORIZ_ALIGN_LEFT);
 		} catch (StringTooLongException stle) {
 			throw new RuntimeException(stle);
@@ -100,9 +102,9 @@ public class PrintService {
 		fm = g.getFontMetrics();
 		try {
 			child = box
-			.getStringBounds(
-			"Dieses PDF enthält das Erkennungsmerkmal (ID) deines Accounts. Um mit verifizierten Account (und somit stimmberechtigt) am Online-Beteiligungssystem teilnehmen zu können, musst du dieses Dokument ausdrucken und in die dafür vorgesehene Akkreditierungsurne werfen.",
-			BoundingBox.HORIZ_ALIGN_LEFT, BoundingBox.VERT_ALIGN_TOP, fm, padding);
+				.getStringBounds(
+					"Dieses PDF enthält das Erkennungsmerkmal (ID) deines Accounts. Um mit verifizierten Account (und somit stimmberechtigt) am Online-Beteiligungssystem teilnehmen zu können, musst du dieses Dokument ausdrucken und in die dafür vorgesehene Akkreditierungsurne werfen.",
+					BoundingBox.HORIZ_ALIGN_LEFT, BoundingBox.VERT_ALIGN_TOP, fm, padding);
 			child.drawWrappedString(g, fm, padding, BoundingBox.HORIZ_ALIGN_LEFT);
 		} catch (StringTooLongException stle) {
 			throw new RuntimeException(stle);
@@ -111,9 +113,9 @@ public class PrintService {
 		box.subtract(child, BoundingBox.SUBTRACT_FROM_BOTTOM);
 		try {
 			child = box
-			.getStringBounds(
-			"Wenn du pseudonym an dem Online-Beteiligungstool teilnehmen möchtest, darfst du niemanden dieses Dokument zeigen. Es ist wie ein ausgefüllter, geheimer Stimmzettel.",
-			BoundingBox.HORIZ_ALIGN_LEFT, BoundingBox.VERT_ALIGN_TOP, fm, padding);
+				.getStringBounds(
+					"Wenn du pseudonym an dem Online-Beteiligungstool teilnehmen möchtest, darfst du niemanden dieses Dokument zeigen. Es ist wie ein ausgefüllter, geheimer Stimmzettel.",
+					BoundingBox.HORIZ_ALIGN_LEFT, BoundingBox.VERT_ALIGN_TOP, fm, padding);
 			child.drawWrappedString(g, fm, padding, BoundingBox.HORIZ_ALIGN_LEFT);
 		} catch (StringTooLongException stle) {
 			throw new RuntimeException(stle);
@@ -129,7 +131,7 @@ public class PrintService {
 		 * (int)box.getSize().getHeight()); */
 		try {
 			child = box.getStringBounds("ID: " + hash, BoundingBox.HORIZ_ALIGN_LEFT, BoundingBox.VERT_ALIGN_TOP, fm,
-			padding);
+				padding);
 			child.drawWrappedString(g, fm, padding, BoundingBox.HORIZ_ALIGN_LEFT);
 		} catch (StringTooLongException stle) {
 			throw new RuntimeException(stle);
@@ -162,10 +164,10 @@ public class PrintService {
 			g.setFont(text);
 			fm = g.getFontMetrics();
 			child = box.getStringBounds("Bitte auf Papier Ausdrucken!", BoundingBox.HORIZ_ALIGN_LEFT,
-			BoundingBox.VERT_ALIGN_TOP, fm, padding);
+				BoundingBox.VERT_ALIGN_TOP, fm, padding);
 			child.drawWrappedString(g, fm, padding, BoundingBox.HORIZ_ALIGN_LEFT);
 			child = box.getStringBounds("Bitte auf Papier Ausdrucken!", BoundingBox.HORIZ_ALIGN_RIGHT,
-			BoundingBox.VERT_ALIGN_TOP, fm, padding);
+				BoundingBox.VERT_ALIGN_TOP, fm, padding);
 			child.drawWrappedString(g, fm, padding, BoundingBox.HORIZ_ALIGN_RIGHT);
 		} catch (StringTooLongException stle) {
 			throw new RuntimeException(stle);
