@@ -28,16 +28,16 @@ import de.janheyd.javalibs.test.LambdaArgumentMatcher;
 public class AccountServiceTest {
 
 	private static final String HASH = "1";
-	private static final Password PASSWORD = new Password("password".toCharArray());
 	private KeyPair KEY_PAIR = new KeyPair(mock(PublicKey.class), mock(PrivateKey.class));
 	private KeyId KEY_ID = new KeyId("0");
 
+	private Password PASSWORD = new Password("password".toCharArray());
 	private KeystoreService keystoreServiceMock = mock(KeystoreService.class);
 	private HashComputer hashComputerMock = mock(HashComputer.class);
 	private VaovAccountService vaovAccountServiceMock = mock(VaovAccountService.class);
 	private AccountCreationService accountCreationServiceMock = mock(AccountCreationService.class);
 	private AccountService accountService = new AccountService(keystoreServiceMock, hashComputerMock,
-	vaovAccountServiceMock, accountCreationServiceMock);
+		vaovAccountServiceMock, accountCreationServiceMock);
 
 	@Test
 	public void testCreateNewAccount() {
@@ -47,12 +47,12 @@ public class AccountServiceTest {
 		PrivateAccount createdAccount = accountService.createNewAccount(PASSWORD);
 
 		verify(keystoreServiceMock).storeKeyPair(
-		eq(createdAccount.getKeyId()),
-		eq(PASSWORD),
-		argThat(new LambdaArgumentMatcher<KeyPair>(kp -> {
-			return kp.getPublic().equals(createdAccount.getPublicKey())
-			&& kp.getPrivate().equals(createdAccount.getPrivateKey());
-		})));
+			eq(createdAccount.getKeyId()),
+			eq(PASSWORD),
+			argThat(new LambdaArgumentMatcher<KeyPair>(kp -> {
+				return kp.getPublic().equals(createdAccount.getPublicKey())
+					&& kp.getPrivate().equals(createdAccount.getPrivateKey());
+			})));
 
 		assertThat(PASSWORD.isOverwritten(), is(true));
 		assertThat(createdAccount.getKeyId().getAlias(), is(HASH));
@@ -75,6 +75,7 @@ public class AccountServiceTest {
 		Optional<PrivateAccount> account = accountService.getPrivateAccount(KEY_ID, PASSWORD);
 
 		assertThat(account.isPresent(), is(true));
+		assertThat(PASSWORD.isOverwritten(), is(true));
 		assertThat(account.get().getKeyPair(), is(equalTo(KEY_PAIR)));
 	}
 

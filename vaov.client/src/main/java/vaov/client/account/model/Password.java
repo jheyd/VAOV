@@ -2,7 +2,6 @@ package vaov.client.account.model;
 
 import vaov.client.util.Util;
 
-
 public class Password {
 
 	private char[] charArray;
@@ -14,6 +13,9 @@ public class Password {
 	}
 
 	public char[] getCharArray() {
+		if (overwritten) {
+			throw new RuntimeException("Password has already been overwritten.");
+		}
 		return charArray;
 	}
 
