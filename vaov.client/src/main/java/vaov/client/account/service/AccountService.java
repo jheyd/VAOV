@@ -11,6 +11,7 @@ import vaov.client.account.model.PublicAccount;
 import vaov.client.service.ServiceFactory;
 import vaov.client.util.Config;
 import vaov.client.util.HashComputer;
+import vaov.client.util.RsaHashComputer;
 import vaov.remote.account.to.AccountTO;
 import vaov.remote.account.to.PublicKeyTO;
 import vaov.remote.services.KeyId;
@@ -24,7 +25,7 @@ public class AccountService {
 	private AccountCreationService accountCreationService;
 
 	public AccountService() {
-		this(new KeystoreService(), new HashComputer(), ServiceFactory.getAccountService(),
+		this(new KeystoreService(), new RsaHashComputer(), ServiceFactory.getAccountService(),
 		new RsaAccountCreationService());
 	}
 

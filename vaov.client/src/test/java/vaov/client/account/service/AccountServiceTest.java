@@ -21,6 +21,7 @@ import vaov.client.account.model.Account;
 import vaov.client.account.model.Password;
 import vaov.client.account.model.PrivateAccount;
 import vaov.client.util.HashComputer;
+import vaov.client.util.RsaHashComputer;
 import vaov.remote.services.KeyId;
 import vaov.remote.services.VaovAccountService;
 import de.janheyd.javalibs.test.LambdaArgumentMatcher;
@@ -33,7 +34,7 @@ public class AccountServiceTest {
 
 	private Password PASSWORD = new Password("password".toCharArray());
 	private KeystoreService keystoreServiceMock = mock(KeystoreService.class);
-	private HashComputer hashComputerMock = mock(HashComputer.class);
+	private HashComputer hashComputerMock = mock(RsaHashComputer.class);
 	private VaovAccountService vaovAccountServiceMock = mock(VaovAccountService.class);
 	private AccountCreationService accountCreationServiceMock = mock(AccountCreationService.class);
 	private AccountService accountService = new AccountService(keystoreServiceMock, hashComputerMock,

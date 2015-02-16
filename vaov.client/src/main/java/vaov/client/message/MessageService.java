@@ -15,6 +15,7 @@ import vaov.client.account.service.AccountService;
 import vaov.client.service.ServiceFactory;
 import vaov.client.util.Config;
 import vaov.client.util.HashComputer;
+import vaov.client.util.RsaHashComputer;
 import vaov.remote.account.to.PublicKeyTO;
 import vaov.remote.message.to.MessageContentTO;
 import vaov.remote.message.to.MessageTO;
@@ -32,7 +33,7 @@ public class MessageService {
 	private SignatureComputer signatureComputer;
 
 	public MessageService() {
-		this(new AccountService(), new HashComputer(), ServiceFactory.getMessageService(), new RsaSignatureComputer());
+		this(new AccountService(), new RsaHashComputer(), ServiceFactory.getMessageService(), new RsaSignatureComputer());
 	}
 
 	public MessageService(AccountService accountService, HashComputer hashComputer, VaovMessageService messageService,

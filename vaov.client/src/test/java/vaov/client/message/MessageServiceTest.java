@@ -14,6 +14,7 @@ import org.junit.Test;
 import vaov.client.account.model.PrivateAccount;
 import vaov.client.account.service.AccountService;
 import vaov.client.util.HashComputer;
+import vaov.client.util.RsaHashComputer;
 import vaov.remote.message.to.MessageContentTO;
 import vaov.remote.message.to.MessageTO;
 import vaov.remote.message.to.MessageToUserContentTO;
@@ -33,7 +34,7 @@ public class MessageServiceTest {
 	private static final PrivateKey privateKey = mock(PrivateKey.class);
 	private static final PublicKey publicKey = mock(PublicKey.class);
 	private AccountService accountService = mock(AccountService.class);
-	private HashComputer hashComputer = mock(HashComputer.class);
+	private HashComputer hashComputer = mock(RsaHashComputer.class);
 	private VaovMessageService vaovMessageService = mock(VaovMessageService.class);
 	private SignatureComputer signatureComputer = mock(SignatureComputer.class);
 	private MessageService messageService = new MessageService(accountService, hashComputer, vaovMessageService,

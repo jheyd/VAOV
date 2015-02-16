@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
-import java.security.Security;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -35,10 +34,10 @@ public class Config {
 
 	private static final Charset CHARSET = Charset.forName("UTF8");
 
-	private static final PublicKeyConverter PUBLIC_KEY_CONVERTER = new RSAPublicKeyConverter();
-
 	/* KeyStore specific settings. These are only local, so changes are not
 	 * fatal. */
+	private static final PublicKeyConverter PUBLIC_KEY_CONVERTER = new RSAPublicKeyConverter();
+
 	private static final String KEYSTORE_TYPE = "BKS";
 
 	private static final File USER_HOME = new File(System.getProperty("user.home"));
@@ -52,7 +51,8 @@ public class Config {
 	private static final Provider PROVIDER = new BouncyCastleProvider();
 
 	static {
-		Security.addProvider(getProvider());
+		// Security.addProvider(getProvider());
+		// Security.getProvider(getProvider().getName());
 	}
 
 	public static Charset getCharset() {
@@ -83,6 +83,10 @@ public class Config {
 		return PROVIDER;
 	}
 
+	public static PublicKeyConverter getPublicKeyConverter() {
+		return PUBLIC_KEY_CONVERTER;
+	}
+
 	public static Password getPublicKeyPassword() {
 		return new Password("123456".toCharArray());
 	}
@@ -93,10 +97,6 @@ public class Config {
 
 	public static String getSignatureAlgorithm() {
 		return SIGNATURE_ALGORITHM;
-	}
-
-	public static PublicKeyConverter getPublicKeyConverter() {
-		return PUBLIC_KEY_CONVERTER;
 	}
 
 }
