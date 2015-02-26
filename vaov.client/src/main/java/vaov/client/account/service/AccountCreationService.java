@@ -1,9 +1,9 @@
 package vaov.client.account.service;
 
-import java.security.KeyPair;
+import vaov.client.account.model.PrivateAccount;
 
 public interface AccountCreationService {
 
-	public abstract KeyPair generateKeyPair();
+	public abstract PrivateAccount createAccount();
 
 }

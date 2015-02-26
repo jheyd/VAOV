@@ -3,7 +3,6 @@ package vaov.client.account.service;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -20,30 +19,27 @@ import org.junit.Test;
 import vaov.client.account.model.Account;
 import vaov.client.account.model.Password;
 import vaov.client.account.model.PrivateAccount;
-import vaov.client.util.HashComputer;
-import vaov.client.util.RsaHashComputer;
 import vaov.remote.services.KeyId;
 import vaov.remote.services.VaovAccountService;
 import de.janheyd.javalibs.test.LambdaArgumentMatcher;
 
 public class AccountServiceTest {
 
-	private static final String HASH = "1";
-	private KeyPair KEY_PAIR = new KeyPair(mock(PublicKey.class), mock(PrivateKey.class));
-	private KeyId KEY_ID = new KeyId("0");
+	private static final String HASH = "hash";
+	private static final KeyId KEY_ID = new KeyId(HASH);
+	private static final KeyPair KEY_PAIR = new KeyPair(mock(PublicKey.class), mock(PrivateKey.class));
+	private static final PrivateAccount PRIVATE_ACCOUNT = new PrivateAccount(KEY_ID, KEY_PAIR);
+	private static final Password PASSWORD = new Password("password".toCharArray());
 
-	private Password PASSWORD = new Password("password".toCharArray());
 	private KeystoreService keystoreServiceMock = mock(KeystoreService.class);
-	private HashComputer hashComputerMock = mock(RsaHashComputer.class);
 	private VaovAccountService vaovAccountServiceMock = mock(VaovAccountService.class);
 	private AccountCreationService accountCreationServiceMock = mock(AccountCreationService.class);
-	private AccountService accountService = new AccountService(keystoreServiceMock, hashComputerMock,
-		vaovAccountServiceMock, accountCreationServiceMock);
+	private AccountService accountService = new AccountService(keystoreServiceMock, vaovAccountServiceMock,
+		accountCreationServiceMock);
 
 	@Test
 	public void testCreateNewAccount() {
-		when(accountCreationServiceMock.generateKeyPair()).thenReturn(KEY_PAIR);
-		when(hashComputerMock.computeHash(any(PublicKey.class))).thenReturn(HASH);
+		when(accountCreationServiceMock.createAccount()).thenReturn(PRIVATE_ACCOUNT);
 
 		PrivateAccount createdAccount = accountService.createNewAccount(PASSWORD);
 
@@ -56,7 +52,7 @@ public class AccountServiceTest {
 			})));
 
 		assertThat(PASSWORD.isOverwritten(), is(true));
-		assertThat(createdAccount.getKeyId().getAlias(), is(HASH));
+		assertThat(createdAccount, is(PRIVATE_ACCOUNT));
 	}
 
 	@Test

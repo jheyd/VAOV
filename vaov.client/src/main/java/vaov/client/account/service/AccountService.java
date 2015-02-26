@@ -10,8 +10,6 @@ import vaov.client.account.model.PrivateAccount;
 import vaov.client.account.model.PublicAccount;
 import vaov.client.service.ServiceFactory;
 import vaov.client.util.Config;
-import vaov.client.util.HashComputer;
-import vaov.client.util.RsaHashComputer;
 import vaov.remote.account.to.AccountTO;
 import vaov.remote.account.to.PublicKeyTO;
 import vaov.remote.services.KeyId;
@@ -20,20 +18,17 @@ import vaov.remote.services.VaovAccountService;
 public class AccountService {
 
 	private KeystoreService keystoreService;
-	private HashComputer hashComputer;
 	private VaovAccountService accountService;
 	private AccountCreationService accountCreationService;
 
 	public AccountService() {
-		this(new KeystoreService(), new RsaHashComputer(), ServiceFactory.getAccountService(),
-		new RsaAccountCreationService());
+		this(new KeystoreService(), ServiceFactory.getAccountService(), new RsaAccountCreationService());
 	}
 
-	public AccountService(KeystoreService keystoreService, HashComputer hashComputer,
-	VaovAccountService accountService, AccountCreationService accountCreationService) {
+	public AccountService(KeystoreService keystoreService, VaovAccountService accountService,
+		AccountCreationService accountCreationService) {
 		super();
 		this.keystoreService = keystoreService;
-		this.hashComputer = hashComputer;
 		this.accountService = accountService;
 		this.accountCreationService = accountCreationService;
 	}
@@ -42,7 +37,7 @@ public class AccountService {
 	 * Generate a new PrivateAccount and store it in the KeyStore
 	 */
 	public PrivateAccount createNewAccount(Password pass) {
-		PrivateAccount account = getNewPrivateAccount();
+		PrivateAccount account = accountCreationService.createAccount();
 		keystoreService.storeKeyPair(account.getKeyId(), pass, account.getKeyPair());
 		pass.overwrite();
 		return account;
@@ -63,10 +58,6 @@ public class AccountService {
 		return optional.map(x -> new PrivateAccount(keyId, x));
 	}
 
-	private KeyId generateKeyId(KeyPair keyPair) {
-		return new KeyId(hashComputer.computeHash(keyPair.getPublic()));
-	}
-
 	private void getAccountFromServer(KeyId keyId) {
 		AccountTO accountTO = accountService.getAccount(keyId);
 		if (!keyId.equals(new KeyId(accountTO.getHash()))) {
@@ -75,12 +66,6 @@ public class AccountService {
 		PublicKeyTO publicKeyTO = accountTO.getPublicKey();
 		PublicKey publicKey = Config.getPublicKeyConverter().readPublicKey(publicKeyTO);
 		keystoreService.storePublicKey(keyId, publicKey);
-	}
-
-	private PrivateAccount getNewPrivateAccount() {
-		KeyPair keyPair = accountCreationService.generateKeyPair();
-		KeyId keyId = generateKeyId(keyPair);
-		return new PrivateAccount(keyId, keyPair);
 	}
 
 	/**

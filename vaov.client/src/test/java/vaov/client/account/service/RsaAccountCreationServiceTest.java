@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import vaov.client.account.model.PrivateAccount;
 
-public class RsaAccountCreationServiceIntegrationTest {
+public class RsaAccountCreationServiceTest {
 
 	@Test
 	public void testCreateNewAccount() throws Exception {
