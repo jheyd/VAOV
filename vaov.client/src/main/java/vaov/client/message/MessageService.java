@@ -1,12 +1,7 @@
 package vaov.client.message;
 
-import java.io.StringWriter;
 import java.security.PublicKey;
 import java.util.Optional;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import vaov.client.account.model.Account;
 import vaov.client.account.model.PrivateAccount;
@@ -33,7 +28,8 @@ public class MessageService {
 	private SignatureComputer signatureComputer;
 
 	public MessageService() {
-		this(new AccountService(), new RsaHashComputer(), ServiceFactory.getMessageService(), new RsaSignatureComputer());
+		this(new AccountService(), new RsaHashComputer(), ServiceFactory.getMessageService(),
+			new RsaSignatureComputer());
 	}
 
 	public MessageService(AccountService accountService, HashComputer hashComputer, VaovMessageService messageService,
@@ -42,23 +38,6 @@ public class MessageService {
 		this.hashComputer = hashComputer;
 		this.messageService = messageService;
 		this.signatureComputer = signatureComputer;
-
-	}
-
-	public String marshalMessageContentTO(MessageContentTO message) {
-		String result;
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(MessageContentTO.class, MessageToUserContentTO.class,
-				NickChangeContentTO.class, VoteContentTO.class, NewAccountContentTO.class);
-			StringWriter stringWriter = new StringWriter();
-			Marshaller marshaller = jaxbContext.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			marshaller.marshal(message, stringWriter);
-			result = stringWriter.toString();
-		} catch (JAXBException e) {
-			throw new RuntimeException(e);
-		}
-		return result;
 
 	}
 

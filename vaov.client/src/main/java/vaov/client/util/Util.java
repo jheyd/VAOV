@@ -1,6 +1,11 @@
 package vaov.client.util;
 
+import java.io.StringWriter;
 import java.util.Optional;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import vaov.client.Control;
 import vaov.client.account.model.Password;
@@ -42,4 +47,19 @@ public class Util {
 		}
 	}
 
+	public static String marshal(Object object) {
+		String result;
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
+			StringWriter stringWriter = new StringWriter();
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller.marshal(object, stringWriter);
+			result = stringWriter.toString();
+		} catch (JAXBException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
+
+	}
 }

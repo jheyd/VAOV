@@ -7,12 +7,9 @@ import java.security.interfaces.RSAPublicKey;
 
 import org.apache.commons.codec.binary.Base64;
 
-import vaov.client.message.MessageService;
 import vaov.remote.message.to.MessageContentTO;
 
 public class RsaHashComputer implements HashComputer {
-
-	MessageService messageService = new MessageService();
 
 	/**
 	 * Hashes the specified text and returns the computed digest
@@ -23,7 +20,7 @@ public class RsaHashComputer implements HashComputer {
 	 */
 	@Override
 	public String computeHash(MessageContentTO messageContent) {
-		String marshalledMessageContent = messageService.marshalMessageContentTO(messageContent);
+		String marshalledMessageContent = Util.marshal(messageContent);
 		return computeHash(marshalledMessageContent);
 	}
 
