@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
+import java.security.Security;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -12,7 +13,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import vaov.client.account.PublicKeyConverter;
 import vaov.client.account.RSAPublicKeyConverter;
-import vaov.client.account.model.Password;
 
 /**
  * Config stores all those configuration parameters that are somehow chosen
@@ -38,8 +38,6 @@ public class Config {
 	 * fatal. */
 	private static final PublicKeyConverter PUBLIC_KEY_CONVERTER = new RSAPublicKeyConverter();
 
-	private static final String KEYSTORE_TYPE = "BKS";
-
 	private static final File USER_HOME = new File(System.getProperty("user.home"));
 
 	private static final File DATA_DIR = new File(USER_HOME, ".vaov");
@@ -51,8 +49,7 @@ public class Config {
 	private static final Provider PROVIDER = new BouncyCastleProvider();
 
 	static {
-		// Security.addProvider(getProvider());
-		// Security.getProvider(getProvider().getName());
+		Security.addProvider(getProvider());
 	}
 
 	public static Charset getCharset() {
@@ -71,12 +68,8 @@ public class Config {
 		return HASH_ALGORITHM;
 	}
 
-	public static File getKeyStore() {
+	public static File getKeyStoreFile() {
 		return USER_KEYS_FILE;
-	}
-
-	public static String getKeyStoreType() {
-		return KEYSTORE_TYPE;
 	}
 
 	public static Provider getProvider() {
@@ -85,10 +78,6 @@ public class Config {
 
 	public static PublicKeyConverter getPublicKeyConverter() {
 		return PUBLIC_KEY_CONVERTER;
-	}
-
-	public static Password getPublicKeyPassword() {
-		return new Password("123456".toCharArray());
 	}
 
 	public static File getPublicKeysFile() {
