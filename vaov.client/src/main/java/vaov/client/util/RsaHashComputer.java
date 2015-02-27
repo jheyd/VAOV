@@ -1,9 +1,14 @@
 package vaov.client.util;
 
+import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -20,8 +25,7 @@ public class RsaHashComputer implements HashComputer {
 	 */
 	@Override
 	public String computeHash(MessageContentTO messageContent) {
-		String marshalledMessageContent = Util.marshal(messageContent);
-		return computeHash(marshalledMessageContent);
+		return computeHash(marshal(messageContent));
 	}
 
 	/**
@@ -64,6 +68,22 @@ public class RsaHashComputer implements HashComputer {
 		// make sure message ends with a new line TODO test why???
 		String s = messageContent + "\n";
 		return computeHash(s.getBytes(Config.getCharset()));
+
+	}
+
+	public static String marshal(Object object) {
+		String result;
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
+			StringWriter stringWriter = new StringWriter();
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller.marshal(object, stringWriter);
+			result = stringWriter.toString();
+		} catch (JAXBException e) {
+			throw new RuntimeException(e);
+		}
+		return result;
 
 	}
 

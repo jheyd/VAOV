@@ -1,7 +1,5 @@
 package vaov.client.account.model;
 
-import vaov.client.util.Util;
-
 public class Password {
 
 	private char[] charArray;
@@ -24,7 +22,9 @@ public class Password {
 	}
 
 	public void overwrite() {
-		Util.overwriteCharArray(charArray);
+		for (int i = 0; i < charArray.length; i++ ) {
+			charArray[i] = 0;
+		}
 		overwritten = true;
 	}
 

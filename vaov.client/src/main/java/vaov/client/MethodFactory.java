@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import vaov.client.account.model.Password;
 import vaov.client.account.model.PrivateAccount;
-import vaov.client.util.Util;
+import de.janheyd.javalibs.ask.AskUtils;
 import de.janheyd.javalibs.method.Method;
 import de.janheyd.javalibs.method.MethodParameters;
 import de.janheyd.javalibs.method.MethodResponse;
@@ -28,7 +28,7 @@ public class MethodFactory {
 
 	public MethodWithoutSubMethods createMessageMethod() {
 		Function<MethodParameters, MethodResponse> function = parameters -> {
-			Optional<PrivateAccount> askAcc = Util.askAcc(parameters.getParameter(0));
+			Optional<PrivateAccount> askAcc = askAcc(parameters.getParameter(0));
 			if (!askAcc.isPresent()) {
 				return MethodResponse.error("Account not found");
 			}
@@ -41,7 +41,7 @@ public class MethodFactory {
 
 	public Method createNewAccountMethod(PrintWriter outputWriter) {
 		Function<MethodParameters, MethodResponse> function = params -> {
-			Password pass = Util.askPassword("Enter password for the Account: ");
+			Password pass = askPassword("Enter password for the Account: ");
 			String alias = control.newAccount(pass);
 			outputWriter.println("Created new account: " + alias);
 			return MethodResponse.success();
@@ -57,7 +57,7 @@ public class MethodFactory {
 	public Method createVoteMethod() {
 		Function<MethodParameters, MethodResponse> function = parameters -> {
 			try {
-				Optional<PrivateAccount> askAcc = Util.askAcc(parameters.getParameter(0));
+				Optional<PrivateAccount> askAcc = askAcc(parameters.getParameter(0));
 				if (!askAcc.isPresent()) {
 					return MethodResponse.error("Account not found");
 				}
@@ -69,6 +69,19 @@ public class MethodFactory {
 		};
 
 		return new MethodWithoutSubMethods("vote", function, "from", "targetId", "vote");
+	}
+
+	private Optional<PrivateAccount> askAcc(String alias) {
+		Password password = askPassword("password for " + alias + ": ");
+		Optional<PrivateAccount> acc = control.getAccount(alias, password);
+		password.overwrite();
+		return acc;
+	}
+
+	private static Password askPassword(String question) {
+		char[] buf = new char[256];
+		AskUtils.askCharArray(question, buf);
+		return new Password(buf);
 	}
 
 }
