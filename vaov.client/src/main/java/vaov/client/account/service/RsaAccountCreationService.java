@@ -14,17 +14,15 @@ public class RsaAccountCreationService implements AccountCreationService {
 	private static final String ALGORITHM = "RSA";
 	private static final int KEY_SIZE = 4096;
 	private HashComputer hashComputer;
+	private KeyPairGenerator keyPairGenerator;
 
 	public RsaAccountCreationService() {
-		this(new RsaHashComputer());
+		this(new RsaHashComputer(), getKeyPairGenerator());
 	}
 
-	public RsaAccountCreationService(HashComputer hashComputer) {
+	public RsaAccountCreationService(HashComputer hashComputer, KeyPairGenerator keyPairGenerator) {
 		this.hashComputer = hashComputer;
-	}
-
-	private static KeyPair generateKeyPair() {
-		return getKeyPairGenerator().generateKeyPair();
+		this.keyPairGenerator = keyPairGenerator;
 	}
 
 	private static KeyPairGenerator getKeyPairGenerator() {
@@ -40,7 +38,7 @@ public class RsaAccountCreationService implements AccountCreationService {
 
 	@Override
 	public PrivateAccount createAccount() {
-		KeyPair keyPair = generateKeyPair();
+		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 		KeyId keyId = generateKeyId(keyPair);
 		return new PrivateAccount(keyId, keyPair);
 	}
