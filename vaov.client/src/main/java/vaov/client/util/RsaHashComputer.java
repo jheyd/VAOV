@@ -1,6 +1,7 @@
 package vaov.client.util;
 
 import java.io.StringWriter;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -25,7 +26,8 @@ public class RsaHashComputer implements HashComputer {
 	 */
 	@Override
 	public String computeHash(MessageContentTO messageContent) {
-		return computeHash(marshal(messageContent));
+		String marshalledMessageContent = marshal(messageContent);
+		return computeHash(marshalledMessageContent.getBytes(Config.getCharset()));
 	}
 
 	/**
@@ -44,47 +46,40 @@ public class RsaHashComputer implements HashComputer {
 		}
 		RSAPublicKey pub = (RSAPublicKey) publicKey;
 
-		byte[] input1 = pub.getModulus().toByteArray();
-		byte[] input2 = pub.getPublicExponent().toByteArray();
-
-		return computeHash(input1, input2);
+		BigInteger modulus = pub.getModulus();
+		BigInteger publicExponent = pub.getPublicExponent();
+		return computeHash(modulus.toByteArray(), publicExponent.toByteArray());
 	}
 
-	private String computeHash(byte[]... input) {
-		MessageDigest messageDigest;
-		try {
-			messageDigest = MessageDigest.getInstance(Config.getHashAlgorithm(), Config.getProvider());
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
+	private static String computeHash(byte[]... input) {
+		MessageDigest messageDigest = getMessageDigestInstance();
+
 		for (byte[] singleInput : input) {
 			messageDigest.update(singleInput);
 		}
-		byte[] val = messageDigest.digest();
-		return Base64.encodeBase64String(val);
+
+		return Base64.encodeBase64String(messageDigest.digest());
 	}
 
-	private String computeHash(String messageContent) {
-		// make sure message ends with a new line TODO test why???
-		String s = messageContent + "\n";
-		return computeHash(s.getBytes(Config.getCharset()));
-
+	private static MessageDigest getMessageDigestInstance() {
+		try {
+			return MessageDigest.getInstance(Config.getHashAlgorithm(), Config.getProvider());
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	public static String marshal(Object object) {
-		String result;
+	private static String marshal(Object object) {
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
 			StringWriter stringWriter = new StringWriter();
 			Marshaller marshaller = jaxbContext.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			marshaller.marshal(object, stringWriter);
-			result = stringWriter.toString();
+			return stringWriter.toString();
 		} catch (JAXBException e) {
 			throw new RuntimeException(e);
 		}
-		return result;
-
 	}
 
 }
