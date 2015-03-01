@@ -6,7 +6,7 @@ import vaov.remote.services.KeyId;
 
 public abstract class Account {
 
-	protected KeyId keyId;
+	private KeyId keyId;
 
 	public Account(KeyId keyId) {
 		this.keyId = keyId;
