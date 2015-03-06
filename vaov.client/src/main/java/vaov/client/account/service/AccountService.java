@@ -2,6 +2,7 @@ package vaov.client.account.service;
 
 import java.security.KeyPair;
 import java.security.PublicKey;
+import java.security.UnrecoverableKeyException;
 import java.util.Optional;
 
 import vaov.client.account.model.Account;
@@ -35,8 +36,10 @@ public class AccountService {
 
 	/**
 	 * Generate a new PrivateAccount and store it in the KeyStore
+	 * 
+	 * @throws UnrecoverableKeyException
 	 */
-	public PrivateAccount createNewAccount(Password pass) {
+	public PrivateAccount createNewAccount(Password pass) throws UnrecoverableKeyException {
 		PrivateAccount account = accountCreationService.createAccount();
 		keystoreService.storeKeyPair(account.getKeyId(), pass, account.getKeyPair());
 		pass.overwrite();
@@ -52,7 +55,7 @@ public class AccountService {
 		return publicKey.map(x -> new PublicAccount(keyId, x));
 	}
 
-	public Optional<PrivateAccount> getPrivateAccount(KeyId keyId, Password password) {
+	public Optional<PrivateAccount> getPrivateAccount(KeyId keyId, Password password) throws UnrecoverableKeyException {
 		Optional<KeyPair> optional = keystoreService.loadKeyPair(keyId, password);
 		password.overwrite();
 		return optional.map(x -> new PrivateAccount(keyId, x));

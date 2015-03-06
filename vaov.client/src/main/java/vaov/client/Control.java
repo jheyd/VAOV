@@ -1,5 +1,6 @@
 package vaov.client;
 
+import java.security.UnrecoverableKeyException;
 import java.text.ParseException;
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ public class Control {
 		this.voteParser = voteParser;
 	}
 
-	public Optional<PrivateAccount> getAccount(String alias, Password password) {
+	public Optional<PrivateAccount> getAccount(String alias, Password password) throws UnrecoverableKeyException {
 		return accountService.getPrivateAccount(new KeyId(alias), password);
 	}
 
@@ -35,7 +36,7 @@ public class Control {
 		messageService.sendMessageToUser(target, message, acc);
 	}
 
-	public String newAccount(Password pass) {
+	public String newAccount(Password pass) throws UnrecoverableKeyException {
 		return accountService.createNewAccount(pass).getAlias();
 	}
 

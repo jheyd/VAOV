@@ -38,7 +38,7 @@ public class AccountServiceTest {
 		accountCreationServiceMock);
 
 	@Test
-	public void testCreateNewAccount() {
+	public void testCreateNewAccount() throws Exception {
 		when(accountCreationServiceMock.createAccount()).thenReturn(PRIVATE_ACCOUNT);
 
 		PrivateAccount createdAccount = accountService.createNewAccount(PASSWORD);
@@ -66,7 +66,7 @@ public class AccountServiceTest {
 	}
 
 	@Test
-	public void testGetPrivateAccount() {
+	public void testGetPrivateAccount() throws Exception {
 		when(keystoreServiceMock.loadKeyPair(KEY_ID, PASSWORD)).thenReturn(Optional.of(KEY_PAIR));
 
 		Optional<PrivateAccount> account = accountService.getPrivateAccount(KEY_ID, PASSWORD);

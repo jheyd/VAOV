@@ -1,6 +1,7 @@
 package vaov.client;
 
 import java.io.PrintWriter;
+import java.security.UnrecoverableKeyException;
 import java.text.ParseException;
 import java.util.Optional;
 import java.util.function.Function;
@@ -28,7 +29,12 @@ public class MethodFactory {
 
 	public MethodWithoutSubMethods createMessageMethod() {
 		Function<MethodParameters, MethodResponse> function = parameters -> {
-			Optional<PrivateAccount> askAcc = askAcc(parameters.getParameter(0));
+			Optional<PrivateAccount> askAcc;
+			try {
+				askAcc = askAcc(parameters.getParameter(0));
+			} catch (UnrecoverableKeyException e) {
+				return MethodResponse.error("Could not load key. Wrong Password? Reason: " + e.getMessage());
+			}
 			if (!askAcc.isPresent()) {
 				return MethodResponse.error("Account not found");
 			}
@@ -42,7 +48,12 @@ public class MethodFactory {
 	public Method createNewAccountMethod(PrintWriter outputWriter) {
 		Function<MethodParameters, MethodResponse> function = params -> {
 			Password pass = askPassword("Enter password for the Account: ");
-			String alias = control.newAccount(pass);
+			String alias;
+			try {
+				alias = control.newAccount(pass);
+			} catch (UnrecoverableKeyException e) {
+				return MethodResponse.error("Could not store key. Wrong Password? Reason: " + e.getMessage());
+			}
 			outputWriter.println("Created new account: " + alias);
 			return MethodResponse.success();
 		};
@@ -56,11 +67,16 @@ public class MethodFactory {
 
 	public Method createVoteMethod() {
 		Function<MethodParameters, MethodResponse> function = parameters -> {
+			Optional<PrivateAccount> askAcc;
 			try {
-				Optional<PrivateAccount> askAcc = askAcc(parameters.getParameter(0));
-				if (!askAcc.isPresent()) {
-					return MethodResponse.error("Account not found");
-				}
+				askAcc = askAcc(parameters.getParameter(0));
+			} catch (UnrecoverableKeyException e) {
+				return MethodResponse.error("Could not load key. Wrong Password? Reason: " + e.getMessage());
+			}
+			if (!askAcc.isPresent()) {
+				return MethodResponse.error("Account not found");
+			}
+			try {
 				control.vote(askAcc.get(), parameters.getParameter(1), parameters.getParameter(2));
 				return MethodResponse.success();
 			} catch (ParseException e) {
@@ -71,7 +87,7 @@ public class MethodFactory {
 		return new MethodWithoutSubMethods("vote", function, "from", "targetId", "vote");
 	}
 
-	private Optional<PrivateAccount> askAcc(String alias) {
+	private Optional<PrivateAccount> askAcc(String alias) throws UnrecoverableKeyException {
 		Password password = askPassword("password for " + alias + ": ");
 		Optional<PrivateAccount> acc = control.getAccount(alias, password);
 		password.overwrite();
