@@ -36,7 +36,7 @@ public class AccountService {
 
 	/**
 	 * Generate a new PrivateAccount and store it in the KeyStore
-	 * 
+	 *
 	 * @throws UnrecoverableKeyException
 	 */
 	public PrivateAccount createNewAccount(Password pass) throws UnrecoverableKeyException {

@@ -32,6 +32,17 @@ public class KeystoreServiceTest {
 	private File dir;
 	private KeystoreService keystoreService;
 
+	private static KeyPair getKeyPair() {
+		KeyPairGenerator kpg;
+		try {
+			kpg = KeyPairGenerator.getInstance("RSA", Config.getProvider());
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+		kpg.initialize(512);
+		return kpg.genKeyPair();
+	}
+
 	@Before
 	public void setUp() throws Exception {
 		dir = Files.createTempDirectory("vaov").toFile();
@@ -42,18 +53,25 @@ public class KeystoreServiceTest {
 		keystoreService = new KeystoreService(provider, publicKeysFile, keystoreFile);
 	}
 
-	@Test
-	public void testLoadUnknownPublicKey() throws Exception {
-		Optional<PublicKey> publicKey = keystoreService.loadPublicKey(KEY_ID);
-
-		assertThat(publicKey.isPresent(), is(false));
+	@After
+	public void tearDown() throws Exception {
+		FileUtils.deleteDirectory(dir);
 	}
 
 	@Test
 	public void testLoadUnknownKeyPair() throws Exception {
+
 		Optional<KeyPair> keyPair = keystoreService.loadKeyPair(KEY_ID, PASSWORD);
 
 		assertThat(keyPair.isPresent(), is(false));
+	}
+
+	@Test
+	public void testLoadUnknownPublicKey() throws Exception {
+
+		Optional<PublicKey> publicKey = keystoreService.loadPublicKey(KEY_ID);
+
+		assertThat(publicKey.isPresent(), is(false));
 	}
 
 	@Test
@@ -73,22 +91,6 @@ public class KeystoreServiceTest {
 		Optional<PublicKey> publicKey = keystoreService.loadPublicKey(KEY_ID);
 
 		assertThat(publicKey.get(), is(keyPair.getPublic()));
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		FileUtils.deleteDirectory(dir);
-	}
-
-	private static KeyPair getKeyPair() {
-		KeyPairGenerator kpg;
-		try {
-			kpg = KeyPairGenerator.getInstance("RSA", Config.getProvider());
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
-		kpg.initialize(512);
-		return kpg.genKeyPair();
 	}
 
 }

@@ -18,13 +18,19 @@ public class MethodFactory {
 
 	private Control control;
 
-	public MethodFactory(Control control) {
-		super();
-		this.control = control;
+	private static Password askPassword(String question) {
+		char[] buf = new char[256];
+		AskUtils.askCharArray(question, buf);
+		return new Password(buf);
 	}
 
 	public MethodFactory() {
 		this(new Control());
+	}
+
+	public MethodFactory(Control control) {
+		super();
+		this.control = control;
 	}
 
 	public MethodWithoutSubMethods createMessageMethod() {
@@ -92,12 +98,6 @@ public class MethodFactory {
 		Optional<PrivateAccount> acc = control.getAccount(alias, password);
 		password.overwrite();
 		return acc;
-	}
-
-	private static Password askPassword(String question) {
-		char[] buf = new char[256];
-		AskUtils.askCharArray(question, buf);
-		return new Password(buf);
 	}
 
 }

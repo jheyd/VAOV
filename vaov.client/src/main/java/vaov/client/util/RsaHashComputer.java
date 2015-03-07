@@ -17,6 +17,37 @@ import vaov.remote.message.to.MessageContentTO;
 
 public class RsaHashComputer implements HashComputer {
 
+	private static String computeHash(byte[]... input) {
+		MessageDigest messageDigest = getMessageDigestInstance();
+
+		for (byte[] singleInput : input) {
+			messageDigest.update(singleInput);
+		}
+
+		return Base64.encodeBase64String(messageDigest.digest());
+	}
+
+	private static MessageDigest getMessageDigestInstance() {
+		try {
+			return MessageDigest.getInstance(Config.getHashAlgorithm(), Config.getProvider());
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static String marshal(Object object) {
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
+			StringWriter stringWriter = new StringWriter();
+			Marshaller marshaller = jaxbContext.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller.marshal(object, stringWriter);
+			return stringWriter.toString();
+		} catch (JAXBException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * Hashes the specified text and returns the computed digest
 	 *
@@ -49,37 +80,6 @@ public class RsaHashComputer implements HashComputer {
 		BigInteger modulus = pub.getModulus();
 		BigInteger publicExponent = pub.getPublicExponent();
 		return computeHash(modulus.toByteArray(), publicExponent.toByteArray());
-	}
-
-	private static String computeHash(byte[]... input) {
-		MessageDigest messageDigest = getMessageDigestInstance();
-
-		for (byte[] singleInput : input) {
-			messageDigest.update(singleInput);
-		}
-
-		return Base64.encodeBase64String(messageDigest.digest());
-	}
-
-	private static MessageDigest getMessageDigestInstance() {
-		try {
-			return MessageDigest.getInstance(Config.getHashAlgorithm(), Config.getProvider());
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private static String marshal(Object object) {
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(object.getClass());
-			StringWriter stringWriter = new StringWriter();
-			Marshaller marshaller = jaxbContext.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			marshaller.marshal(object, stringWriter);
-			return stringWriter.toString();
-		} catch (JAXBException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 }

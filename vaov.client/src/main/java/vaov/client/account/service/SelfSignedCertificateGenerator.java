@@ -43,10 +43,6 @@ public class SelfSignedCertificateGenerator {
 		return getCertificate(getCertificateBuilder(keys.getPublic()), getSigner(keys));
 	}
 
-	private static X509v1CertificateBuilder getCertificateBuilder(PublicKey publicKey) {
-		return new X509v1CertificateBuilder(ISSUER, SERIAL, NOT_BEFORE, NOT_AFTER, SUBJECT, getPublicKeyInfo(publicKey));
-	}
-
 	private static X509Certificate getCertificate(X509v1CertificateBuilder certificateBuilder, ContentSigner signer) {
 		try {
 			return new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider()).getCertificate(
@@ -56,13 +52,8 @@ public class SelfSignedCertificateGenerator {
 		}
 	}
 
-	private static ContentSigner getSigner(KeyPair keys) {
-		try {
-			return new JcaContentSignerBuilder(SIGNATURE_ALGORITHM).setProvider(new BouncyCastleProvider()).build(
-				keys.getPrivate());
-		} catch (OperatorCreationException e) {
-			throw new RuntimeException(e);
-		}
+	private static X509v1CertificateBuilder getCertificateBuilder(PublicKey publicKey) {
+		return new X509v1CertificateBuilder(ISSUER, SERIAL, NOT_BEFORE, NOT_AFTER, SUBJECT, getPublicKeyInfo(publicKey));
 	}
 
 	private static SubjectPublicKeyInfo getPublicKeyInfo(PublicKey publicKey) {
@@ -76,6 +67,15 @@ public class SelfSignedCertificateGenerator {
 			return SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(new RSAKeyParameters(isPrivate, rsaPublicKey
 				.getModulus(), rsaPublicKey.getPublicExponent()));
 		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static ContentSigner getSigner(KeyPair keys) {
+		try {
+			return new JcaContentSignerBuilder(SIGNATURE_ALGORITHM).setProvider(new BouncyCastleProvider()).build(
+				keys.getPrivate());
+		} catch (OperatorCreationException e) {
 			throw new RuntimeException(e);
 		}
 	}
