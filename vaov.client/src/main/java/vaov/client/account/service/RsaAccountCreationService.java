@@ -16,6 +16,10 @@ public class RsaAccountCreationService implements AccountCreationService {
 	private HashComputer hashComputer;
 	private KeyPairGenerator keyPairGenerator;
 
+	public static RsaAccountCreationService createRsaAccountCreationService() {
+		return new RsaAccountCreationService(new RsaHashComputer(), getKeyPairGenerator());
+	}
+
 	private static KeyPairGenerator getKeyPairGenerator() {
 		KeyPairGenerator kpg;
 		try {
@@ -25,10 +29,6 @@ public class RsaAccountCreationService implements AccountCreationService {
 		}
 		kpg.initialize(KEY_SIZE);
 		return kpg;
-	}
-
-	public RsaAccountCreationService() {
-		this(new RsaHashComputer(), getKeyPairGenerator());
 	}
 
 	public RsaAccountCreationService(HashComputer hashComputer, KeyPairGenerator keyPairGenerator) {

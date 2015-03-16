@@ -6,13 +6,13 @@ import java.text.ParseException;
 import java.util.Optional;
 import java.util.function.Function;
 
-import vaov.client.account.model.Password;
 import vaov.client.account.model.PrivateAccount;
 import de.janheyd.javalibs.ask.AskUtils;
 import de.janheyd.javalibs.method.Method;
 import de.janheyd.javalibs.method.MethodParameters;
 import de.janheyd.javalibs.method.MethodResponse;
 import de.janheyd.javalibs.method.MethodWithoutSubMethods;
+import de.janheyd.javalibs.password.Password;
 
 public class MethodFactory {
 

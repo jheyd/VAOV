@@ -6,12 +6,12 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
-import vaov.remote.services.VaovAccountService;
+import vaov.remote.services.AccountRemoteService;
 import vaov.remote.services.VaovMessageService;
 
-public class ServiceFactory {
+public class RemoteServiceFactory {
 
-	public static VaovAccountService getAccountService() {
+	public static AccountRemoteService getAccountRemoteService() {
 		URL url;
 		try {
 			url = new URL("http://localhost:8080/HelloWorld/hello?wsdl");
@@ -24,7 +24,7 @@ public class ServiceFactory {
 
 		Service service = Service.create(url, qname);
 
-		return service.getPort(VaovAccountService.class);
+		return service.getPort(AccountRemoteService.class);
 
 	}
 

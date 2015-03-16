@@ -11,7 +11,7 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
-import vaov.client.account.model.Password;
+import de.janheyd.javalibs.password.Password;
 import vaov.client.account.model.PrivateAccount;
 import vaov.client.account.service.AccountService;
 import vaov.client.message.MessageService;

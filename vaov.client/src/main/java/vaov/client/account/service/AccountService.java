@@ -6,31 +6,32 @@ import java.security.UnrecoverableKeyException;
 import java.util.Optional;
 
 import vaov.client.account.model.Account;
-import vaov.client.account.model.Password;
 import vaov.client.account.model.PrivateAccount;
 import vaov.client.account.model.PublicAccount;
-import vaov.client.service.ServiceFactory;
+import vaov.client.service.RemoteServiceFactory;
 import vaov.client.util.Config;
 import vaov.remote.account.to.AccountTO;
 import vaov.remote.account.to.PublicKeyTO;
 import vaov.remote.services.KeyId;
-import vaov.remote.services.VaovAccountService;
+import vaov.remote.services.AccountRemoteService;
+import de.janheyd.javalibs.password.Password;
 
 public class AccountService {
 
 	private KeystoreService keystoreService;
-	private VaovAccountService accountService;
+	private AccountRemoteService accountRemoteService;
 	private AccountCreationService accountCreationService;
 
-	public AccountService() {
-		this(new KeystoreService(), ServiceFactory.getAccountService(), new RsaAccountCreationService());
+	public static AccountService createAccountService() {
+		return new AccountService(KeystoreService.createKeystoreService(), RemoteServiceFactory.getAccountRemoteService(),
+			RsaAccountCreationService.createRsaAccountCreationService());
 	}
 
-	public AccountService(KeystoreService keystoreService, VaovAccountService accountService,
+	public AccountService(KeystoreService keystoreService, AccountRemoteService accountRemoteService,
 		AccountCreationService accountCreationService) {
 		super();
 		this.keystoreService = keystoreService;
-		this.accountService = accountService;
+		this.accountRemoteService = accountRemoteService;
 		this.accountCreationService = accountCreationService;
 	}
 
@@ -62,7 +63,7 @@ public class AccountService {
 	}
 
 	private void getAccountFromServer(KeyId keyId) {
-		AccountTO accountTO = accountService.getAccount(keyId);
+		AccountTO accountTO = accountRemoteService.getAccount(keyId);
 		if (!keyId.equals(new KeyId(accountTO.getHash()))) {
 			throw new RuntimeException("Hash from server does not match");
 		}

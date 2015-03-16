@@ -17,10 +17,10 @@ import java.util.Optional;
 import org.junit.Test;
 
 import vaov.client.account.model.Account;
-import vaov.client.account.model.Password;
 import vaov.client.account.model.PrivateAccount;
 import vaov.remote.services.KeyId;
-import vaov.remote.services.VaovAccountService;
+import vaov.remote.services.AccountRemoteService;
+import de.janheyd.javalibs.password.Password;
 import de.janheyd.javalibs.test.LambdaArgumentMatcher;
 
 public class AccountServiceTest {
@@ -32,7 +32,7 @@ public class AccountServiceTest {
 	private static final Password PASSWORD = new Password("password".toCharArray());
 
 	private KeystoreService keystoreServiceMock = mock(KeystoreService.class);
-	private VaovAccountService vaovAccountServiceMock = mock(VaovAccountService.class);
+	private AccountRemoteService vaovAccountServiceMock = mock(AccountRemoteService.class);
 	private AccountCreationService accountCreationServiceMock = mock(AccountCreationService.class);
 	private AccountService accountService = new AccountService(keystoreServiceMock, vaovAccountServiceMock,
 		accountCreationServiceMock);

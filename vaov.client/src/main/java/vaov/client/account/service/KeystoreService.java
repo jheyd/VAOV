@@ -17,9 +17,9 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.Optional;
 
-import vaov.client.account.model.Password;
 import vaov.client.util.Config;
 import vaov.remote.services.KeyId;
+import de.janheyd.javalibs.password.Password;
 
 public class KeystoreService {
 
@@ -30,8 +30,8 @@ public class KeystoreService {
 	private File publicKeysFile;
 	private File userKeysFile;
 
-	public KeystoreService() {
-		this(Config.getProvider(), Config.getPublicKeysFile(), Config.getKeyStoreFile());
+	public static KeystoreService createKeystoreService() {
+		return new KeystoreService(Config.getProvider(), Config.getPublicKeysFile(), Config.getKeyStoreFile());
 	}
 
 	public KeystoreService(Provider provider, File publicKeysFile, File keystoreFile) {
@@ -102,7 +102,7 @@ public class KeystoreService {
 	}
 
 	private KeyStore loadExistingKeyStore(File keyStoreFile, Password password) throws NoSuchAlgorithmException,
-		CertificateException, UnrecoverableKeyException {
+	CertificateException, UnrecoverableKeyException {
 		try (FileInputStream fileInputStream = new FileInputStream(keyStoreFile)) {
 			KeyStore keystore = getKeyStoreInstance();
 			keystore.load(fileInputStream, password.getCharArray());
@@ -126,7 +126,7 @@ public class KeystoreService {
 	}
 
 	private KeyStore loadKeyStore(File keyStoreFile, Password password) throws NoSuchAlgorithmException,
-	CertificateException, IOException, UnrecoverableKeyException {
+		CertificateException, IOException, UnrecoverableKeyException {
 		if (!keyStoreFile.exists()) {
 			return loadNewKeyStore();
 		}

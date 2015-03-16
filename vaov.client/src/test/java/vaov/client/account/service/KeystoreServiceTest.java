@@ -17,7 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import vaov.client.account.model.Password;
+import de.janheyd.javalibs.password.Password;
 import vaov.client.util.Config;
 import vaov.remote.services.KeyId;
 

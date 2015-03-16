@@ -4,7 +4,7 @@ import java.security.UnrecoverableKeyException;
 import java.text.ParseException;
 import java.util.Optional;
 
-import vaov.client.account.model.Password;
+import de.janheyd.javalibs.password.Password;
 import vaov.client.account.model.PrivateAccount;
 import vaov.client.account.service.AccountService;
 import vaov.client.message.MessageService;
@@ -18,7 +18,7 @@ public class Control {
 	private VoteParser voteParser;
 
 	public Control() {
-		this(new AccountService(), new MessageService(), new VoteParser());
+		this(AccountService.createAccountService(), new MessageService(), new VoteParser());
 	}
 
 	public Control(AccountService accountService, MessageService messageService, VoteParser voteParser) {

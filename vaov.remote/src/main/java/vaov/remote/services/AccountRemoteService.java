@@ -11,7 +11,7 @@ import vaov.remote.account.to.AccountTO;
 
 @WebService
 @SOAPBinding(style = Style.RPC)
-public interface VaovAccountService {
+public interface AccountRemoteService {
 
 	@WebMethod
 	Collection<AccountTO> getPublishedAccounts();

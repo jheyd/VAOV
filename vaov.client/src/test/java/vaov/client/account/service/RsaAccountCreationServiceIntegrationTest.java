@@ -14,7 +14,7 @@ public class RsaAccountCreationServiceIntegrationTest {
 
 	@Test
 	public void testCreateNewAccount() throws Exception {
-		PrivateAccount privateAccount = new RsaAccountCreationService().createAccount();
+		PrivateAccount privateAccount = RsaAccountCreationService.createRsaAccountCreationService().createAccount();
 
 		assertThat(privateAccount.getPrivateKey() instanceof RSAPrivateKey, is(true));
 		assertThat(privateAccount.getPublicKey() instanceof RSAPublicKey, is(true));
