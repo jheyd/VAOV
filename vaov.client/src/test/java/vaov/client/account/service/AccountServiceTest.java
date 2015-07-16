@@ -18,10 +18,10 @@ import org.junit.Test;
 
 import vaov.client.account.model.Account;
 import vaov.client.account.model.PrivateAccount;
-import vaov.remote.services.KeyId;
 import vaov.remote.services.AccountRemoteService;
-import de.janheyd.javalibs.password.Password;
-import de.janheyd.javalibs.test.LambdaArgumentMatcher;
+import vaov.remote.services.KeyId;
+import vaov.util.password.Password;
+import vaov.util.test.LambdaArgumentMatcher;
 
 public class AccountServiceTest {
 

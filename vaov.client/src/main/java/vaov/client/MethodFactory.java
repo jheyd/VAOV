@@ -7,12 +7,12 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import vaov.client.account.model.PrivateAccount;
-import de.janheyd.javalibs.ask.AskUtils;
-import de.janheyd.javalibs.method.Method;
-import de.janheyd.javalibs.method.MethodParameters;
-import de.janheyd.javalibs.method.MethodResponse;
-import de.janheyd.javalibs.method.MethodWithoutSubMethods;
-import de.janheyd.javalibs.password.Password;
+import vaov.util.ask.AskUtils;
+import vaov.util.method.Method;
+import vaov.util.method.MethodParameters;
+import vaov.util.method.MethodResponse;
+import vaov.util.method.MethodWithoutSubMethods;
+import vaov.util.password.Password;
 
 public class MethodFactory {
 
@@ -41,9 +41,8 @@ public class MethodFactory {
 			} catch (UnrecoverableKeyException e) {
 				return MethodResponse.error("Could not load key. Wrong Password? Reason: " + e.getMessage());
 			}
-			if (!askAcc.isPresent()) {
+			if (!askAcc.isPresent())
 				return MethodResponse.error("Account not found");
-			}
 			control.message(askAcc.get(), parameters.getParameter(1), parameters.getParameter(2));
 			return MethodResponse.success();
 		};
@@ -79,9 +78,8 @@ public class MethodFactory {
 			} catch (UnrecoverableKeyException e) {
 				return MethodResponse.error("Could not load key. Wrong Password? Reason: " + e.getMessage());
 			}
-			if (!askAcc.isPresent()) {
+			if (!askAcc.isPresent())
 				return MethodResponse.error("Account not found");
-			}
 			try {
 				control.vote(askAcc.get(), parameters.getParameter(1), parameters.getParameter(2));
 				return MethodResponse.success();

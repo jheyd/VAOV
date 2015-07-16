@@ -13,6 +13,7 @@
         <module>vaov.client</module>
         <module>vaov.server</module>
         <module>vaov.remote</module>
+		<module>vaov.util</module>
     </modules>
     
 </project>

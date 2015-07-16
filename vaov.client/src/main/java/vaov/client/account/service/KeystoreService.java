@@ -19,7 +19,7 @@ import java.util.Optional;
 
 import vaov.client.util.Config;
 import vaov.remote.services.KeyId;
-import de.janheyd.javalibs.password.Password;
+import vaov.util.password.Password;
 
 public class KeystoreService {
 
@@ -45,16 +45,13 @@ public class KeystoreService {
 		Optional<PublicKey> loadPublicKey = loadPublicKey(keyId, password);
 		Optional<PrivateKey> loadPrivateKey = loadPrivateKey(keyId, password);
 
-		if (!loadPublicKey.isPresent() && !loadPrivateKey.isPresent()) {
+		if (!loadPublicKey.isPresent() && !loadPrivateKey.isPresent())
 			return Optional.empty();
-		}
 
-		if (!loadPublicKey.isPresent() && loadPrivateKey.isPresent()) {
+		if (!loadPublicKey.isPresent() && loadPrivateKey.isPresent())
 			throw new RuntimeException("publicKey not present but privateKey present");
-		}
-		if (loadPublicKey.isPresent() && !loadPrivateKey.isPresent()) {
+		if (loadPublicKey.isPresent() && !loadPrivateKey.isPresent())
 			throw new RuntimeException("privateKey not present but publicKey present");
-		}
 
 		return Optional.of(new KeyPair(loadPublicKey.get(), loadPrivateKey.get()));
 	}
@@ -67,14 +64,12 @@ public class KeystoreService {
 			throw new RuntimeException(e);
 		}
 
-		if (!keyOpt.isPresent()) {
+		if (!keyOpt.isPresent())
 			return Optional.empty();
-		}
 
 		Key key = keyOpt.get();
-		if (!(key instanceof PublicKey)) {
+		if (!(key instanceof PublicKey))
 			throw new RuntimeException("key is not a PublicKey");
-		}
 
 		return Optional.of((PublicKey) key);
 	}
@@ -102,16 +97,15 @@ public class KeystoreService {
 	}
 
 	private KeyStore loadExistingKeyStore(File keyStoreFile, Password password) throws NoSuchAlgorithmException,
-	CertificateException, UnrecoverableKeyException {
+		CertificateException, UnrecoverableKeyException {
 		try (FileInputStream fileInputStream = new FileInputStream(keyStoreFile)) {
 			KeyStore keystore = getKeyStoreInstance();
 			keystore.load(fileInputStream, password.getCharArray());
 			return keystore;
 		} catch (IOException e) {
 			Throwable cause = e.getCause();
-			if (cause instanceof UnrecoverableKeyException) {
+			if (cause instanceof UnrecoverableKeyException)
 				throw (UnrecoverableKeyException) cause;
-			}
 			throw new RuntimeException(e);
 		}
 	}
@@ -126,14 +120,12 @@ public class KeystoreService {
 	}
 
 	private KeyStore loadKeyStore(File keyStoreFile, Password password) throws NoSuchAlgorithmException,
-		CertificateException, IOException, UnrecoverableKeyException {
-		if (!keyStoreFile.exists()) {
+	CertificateException, IOException, UnrecoverableKeyException {
+		if (!keyStoreFile.exists())
 			return loadNewKeyStore();
-		}
 
-		if (keyStoreFile.isDirectory()) {
+		if (keyStoreFile.isDirectory())
 			throw new RuntimeException("a directory with the name of the keystore exists"); // TODO 23.02.2015 jan error handling
-		}
 
 		return loadExistingKeyStore(keyStoreFile, password);
 	}
@@ -157,27 +149,23 @@ public class KeystoreService {
 	private Optional<PrivateKey> loadPrivateKey(KeyId keyId, Password password) throws UnrecoverableKeyException {
 		Optional<Key> keyOpt = loadKey(keyId.getPrivateAlias(), password, userKeysFile);
 
-		if (!keyOpt.isPresent()) {
+		if (!keyOpt.isPresent())
 			return Optional.empty();
-		}
 
 		Key key = keyOpt.get();
-		if (!(key instanceof PrivateKey)) {
+		if (!(key instanceof PrivateKey))
 			throw new RuntimeException("key is not a PrivateKey");
-		}
 
 		return Optional.of((PrivateKey) key);
 	}
 
 	private Optional<PublicKey> loadPublicKey(KeyId keyId, Password password) throws UnrecoverableKeyException {
 		Optional<Key> keyOpt = loadKey(keyId.getPublicAlias(), password, userKeysFile);
-		if (!keyOpt.isPresent()) {
+		if (!keyOpt.isPresent())
 			return Optional.empty();
-		}
 		Key key = keyOpt.get();
-		if (!(key instanceof PublicKey)) {
+		if (!(key instanceof PublicKey))
 			throw new RuntimeException("key is not a PublicKey");
-		}
 		PublicKey publicKey = (PublicKey) key;
 		Optional<PublicKey> publicKeyOpt = Optional.of(publicKey);
 		return publicKeyOpt;

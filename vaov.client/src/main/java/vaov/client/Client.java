@@ -2,8 +2,8 @@ package vaov.client;
 
 import java.io.PrintWriter;
 
-import de.janheyd.javalibs.method.CommandExecuter;
-import de.janheyd.javalibs.method.Method;
+import vaov.util.method.CommandExecuter;
+import vaov.util.method.Method;
 
 /**
  * API for the Client

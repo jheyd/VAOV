@@ -12,9 +12,9 @@ import vaov.client.service.RemoteServiceFactory;
 import vaov.client.util.Config;
 import vaov.remote.account.to.AccountTO;
 import vaov.remote.account.to.PublicKeyTO;
-import vaov.remote.services.KeyId;
 import vaov.remote.services.AccountRemoteService;
-import de.janheyd.javalibs.password.Password;
+import vaov.remote.services.KeyId;
+import vaov.util.password.Password;
 
 public class AccountService {
 
@@ -23,8 +23,8 @@ public class AccountService {
 	private AccountCreationService accountCreationService;
 
 	public static AccountService createAccountService() {
-		return new AccountService(KeystoreService.createKeystoreService(), RemoteServiceFactory.getAccountRemoteService(),
-			RsaAccountCreationService.createRsaAccountCreationService());
+		return new AccountService(KeystoreService.createKeystoreService(),
+			RemoteServiceFactory.getAccountRemoteService(), RsaAccountCreationService.createRsaAccountCreationService());
 	}
 
 	public AccountService(KeystoreService keystoreService, AccountRemoteService accountRemoteService,
@@ -64,9 +64,8 @@ public class AccountService {
 
 	private void getAccountFromServer(KeyId keyId) {
 		AccountTO accountTO = accountRemoteService.getAccount(keyId);
-		if (!keyId.equals(new KeyId(accountTO.getHash()))) {
+		if (!keyId.equals(new KeyId(accountTO.getHash())))
 			throw new RuntimeException("Hash from server does not match");
-		}
 		PublicKeyTO publicKeyTO = accountTO.getPublicKey();
 		PublicKey publicKey = Config.getPublicKeyConverter().readPublicKey(publicKeyTO);
 		keystoreService.storePublicKey(keyId, publicKey);

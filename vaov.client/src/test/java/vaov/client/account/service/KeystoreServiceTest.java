@@ -17,9 +17,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.janheyd.javalibs.password.Password;
 import vaov.client.util.Config;
 import vaov.remote.services.KeyId;
+import vaov.util.password.Password;
 
 public class KeystoreServiceTest {
 
