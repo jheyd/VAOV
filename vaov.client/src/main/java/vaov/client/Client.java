@@ -2,6 +2,8 @@ package vaov.client;
 
 import java.io.PrintWriter;
 
+import vaov.client.service.RemoteServiceDummyFactory;
+import vaov.client.service.RemoteServiceFactory;
 import vaov.util.method.CommandExecuter;
 import vaov.util.method.Method;
 
@@ -18,13 +20,15 @@ public class Client {
 	private CommandExecuter commandExecuter;
 
 	public static void main(String[] args) {
-		Client client = new Client();
+		RemoteServiceFactory remoteServiceFactoryImpl = new RemoteServiceDummyFactory();
+		Client client = new Client(remoteServiceFactoryImpl);
 		client.setOutput(new PrintWriter(System.out));
 		client.execute(args);
 	}
 
-	public Client() {
-		MethodFactory methodFactory = new MethodFactory();
+	public Client(RemoteServiceFactory remoteServiceFactoryImpl) {
+
+		MethodFactory methodFactory = new MethodFactory(remoteServiceFactoryImpl);
 		Method messageMethod = methodFactory.createMessageMethod();
 		Method voteMethod = methodFactory.createVoteMethod();
 		Method newAccountMethod = methodFactory.createNewAccountMethod(outputWriter);

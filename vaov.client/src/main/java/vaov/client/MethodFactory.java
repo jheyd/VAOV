@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import vaov.client.account.model.PrivateAccount;
+import vaov.client.service.RemoteServiceFactory;
 import vaov.util.ask.AskUtils;
 import vaov.util.method.Method;
 import vaov.util.method.MethodParameters;
@@ -24,13 +25,13 @@ public class MethodFactory {
 		return new Password(buf);
 	}
 
-	public MethodFactory() {
-		this(new Control());
-	}
-
 	public MethodFactory(Control control) {
 		super();
 		this.control = control;
+	}
+
+	public MethodFactory(RemoteServiceFactory remoteServiceFactoryImpl) {
+		this(new Control(remoteServiceFactoryImpl));
 	}
 
 	public MethodWithoutSubMethods createMessageMethod() {

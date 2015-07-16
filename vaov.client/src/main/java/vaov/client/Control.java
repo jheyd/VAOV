@@ -7,6 +7,7 @@ import java.util.Optional;
 import vaov.client.account.model.PrivateAccount;
 import vaov.client.account.service.AccountService;
 import vaov.client.message.MessageService;
+import vaov.client.service.RemoteServiceFactory;
 import vaov.client.util.VoteParser;
 import vaov.remote.services.KeyId;
 import vaov.util.password.Password;
@@ -17,15 +18,17 @@ public class Control {
 	private MessageService messageService;
 	private VoteParser voteParser;
 
-	public Control() {
-		this(AccountService.createAccountService(), new MessageService(), new VoteParser());
-	}
-
 	public Control(AccountService accountService, MessageService messageService, VoteParser voteParser) {
 		super();
 		this.accountService = accountService;
 		this.messageService = messageService;
 		this.voteParser = voteParser;
+	}
+
+	public Control(RemoteServiceFactory remoteServiceFactoryImpl) {
+
+		this(AccountService.createAccountService(remoteServiceFactoryImpl),
+			new MessageService(remoteServiceFactoryImpl), new VoteParser());
 	}
 
 	public Optional<PrivateAccount> getAccount(String alias, Password password) throws UnrecoverableKeyException {

@@ -22,9 +22,10 @@ public class AccountService {
 	private AccountRemoteService accountRemoteService;
 	private AccountCreationService accountCreationService;
 
-	public static AccountService createAccountService() {
+	public static AccountService createAccountService(RemoteServiceFactory remoteServiceFactoryImpl) {
 		return new AccountService(KeystoreService.createKeystoreService(),
-			RemoteServiceFactory.getAccountRemoteService(), RsaAccountCreationService.createRsaAccountCreationService());
+			remoteServiceFactoryImpl.getAccountRemoteService(),
+			RsaAccountCreationService.createRsaAccountCreationService());
 	}
 
 	public AccountService(KeystoreService keystoreService, AccountRemoteService accountRemoteService,

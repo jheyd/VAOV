@@ -27,11 +27,6 @@ public class MessageService {
 	private VaovMessageService messageService;
 	private SignatureComputer signatureComputer;
 
-	public MessageService() {
-		this(AccountService.createAccountService(), new RsaHashComputer(), RemoteServiceFactory.getMessageService(),
-			new RsaSignatureComputer());
-	}
-
 	public MessageService(AccountService accountService, HashComputer hashComputer, VaovMessageService messageService,
 		SignatureComputer signatureComputer) {
 		this.accountService = accountService;
@@ -39,6 +34,11 @@ public class MessageService {
 		this.messageService = messageService;
 		this.signatureComputer = signatureComputer;
 
+	}
+
+	public MessageService(RemoteServiceFactory remoteServiceFactoryImpl) {
+		this(AccountService.createAccountService(remoteServiceFactoryImpl), new RsaHashComputer(),
+			remoteServiceFactoryImpl.getMessageService(), new RsaSignatureComputer());
 	}
 
 	public void sendMessageToUser(String alias, String message, PrivateAccount author) {
@@ -66,18 +66,16 @@ public class MessageService {
 
 	public boolean verifyMessage(MessageTO message) { // NO_UCD (unused code)
 		Optional<Account> account = accountService.getAccount(message.getAuthor());
-		if (!account.isPresent()) {
+		if (!account.isPresent())
 			return false;
-		}
 		PublicKey publicKey = account.get().getPublicKey();
 		MessageContentTO content = message.getContent();
 
 		String computed_digest = hashComputer.computeHash(content);
-		if (!computed_digest.equals(message.getDigest())) {
+		if (!computed_digest.equals(message.getDigest()))
 			// throw new
 			// VerificationException("Digest does not match to message. Message may be manipulated!");
 			return false;
-		}
 		return signatureComputer.verifySignature(message.getDigest(), message.getSignature(), publicKey);
 	}
 
