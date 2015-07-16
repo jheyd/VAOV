@@ -1,6 +1,7 @@
 Kommunikationsmuster: P2P mit Servern
 
 Definition "Stimme": signierte und mit Zeitstempel versehene Daten, die einen ausgefüllten Stimmzettel repräsentieren
+
 Definition "Urne": Datenblock, der alle bekannten Stimmen zusammenfasst
 
 Server und Peers:
